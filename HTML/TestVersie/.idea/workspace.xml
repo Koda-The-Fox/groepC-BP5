@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="525e0a4b-8ea8-49b3-8897-835f891a7e90" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/media/images/tree-logo.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/footer.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/head.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/header+navmenu.html" afterDir="false" />
+    <list default="true" id="525e0a4b-8ea8-49b3-8897-835f891a7e90" name="Changes" comment="Basic design setup with preparation on endresult.">
+      <change afterPath="$PROJECT_DIR$/overzicht.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/emptyTemplate.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/footer.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/media/css/GlobalStyle.css" beforeDir="false" afterPath="$PROJECT_DIR$/media/css/GlobalStyle.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/js/GlobalFunctions.js" beforeDir="false" afterPath="$PROJECT_DIR$/media/js/GlobalFunctions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/footer.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/head.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/head.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/header+navmenu.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/header+navmenu.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,12 +45,17 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../../PHP/interpeters/php-8.0.10-nts-Win32-vs16-x64/php.exe" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="reference.webide.settings.project.settings.php" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\Cloud opslag\GitHub\groepC-BP5\HTML\TestVersie" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="F:\Cloud opslag\GitHub\groepC-BP5\HTML\TestVersie\templates" />
+      <recent name="F:\Cloud opslag\GitHub\groepC-BP5\HTML\TestVersie" />
       <recent name="F:\Cloud opslag\GitHub\groepC-BP5\HTML\TestVersie\media\images" />
     </key>
   </component>
@@ -60,8 +68,16 @@
       <option name="presentableId" value="Default" />
       <updated>1632171991073</updated>
       <workItem from="1632171992931" duration="367000" />
-      <workItem from="1632172800255" duration="4317000" />
+      <workItem from="1632172800255" duration="5362000" />
     </task>
+    <task id="LOCAL-00001" summary="Basic design setup with preparation on endresult.">
+      <created>1632177205310</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1632177205310</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -78,5 +94,9 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Basic design setup with preparation on endresult." />
+    <option name="LAST_COMMIT_MESSAGE" value="Basic design setup with preparation on endresult." />
   </component>
 </project>

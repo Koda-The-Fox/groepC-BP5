@@ -1,9 +1,9 @@
 
 :root {
     /*=========[THEME COLORS]=========*/
-    --primaryColor: red;
-    --secondaryColor: green;
-    --accentsColoe: blue;
+    --primaryColor:     255, 0  , 0  ;
+    --secondaryColor:   0  , 255, 0  ;
+    --accentsColor:     0  , 0  , 255;
 
 
     /*=========[Banner variables]=========*/
@@ -107,7 +107,7 @@
     width: 100%;
     min-height: var(--footerHeight);
 
-    background-color: rgba(105,250,265, 0.75);/*Temporary color*/
+    background-color: rgba(var(--secondaryColor), 0.75);/*Temporary color*/
 }
 
 
