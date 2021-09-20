@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="525e0a4b-8ea8-49b3-8897-835f891a7e90" name="Changes" comment="Basic design setup with preparation on endresult.">
-      <change afterPath="$PROJECT_DIR$/overzicht.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/emptyTemplate.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/footer.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/media/css/GlobalStyle.css" beforeDir="false" afterPath="$PROJECT_DIR$/media/css/GlobalStyle.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/media/js/GlobalFunctions.js" beforeDir="false" afterPath="$PROJECT_DIR$/media/js/GlobalFunctions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/footer.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/head.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/head.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/header+navmenu.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/header+navmenu.html" afterDir="false" />
-    </list>
+    <list default="true" id="525e0a4b-8ea8-49b3-8897-835f891a7e90" name="Changes" comment="Some Design improvements plus some PHP functionality.&#10;&#10;* Generated date in footer;&#10;* Title properly shows page title + companyName;&#10;* Color Style setup;" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -68,7 +57,7 @@
       <option name="presentableId" value="Default" />
       <updated>1632171991073</updated>
       <workItem from="1632171992931" duration="367000" />
-      <workItem from="1632172800255" duration="5362000" />
+      <workItem from="1632172800255" duration="5488000" />
     </task>
     <task id="LOCAL-00001" summary="Basic design setup with preparation on endresult.">
       <created>1632177205310</created>
@@ -77,7 +66,14 @@
       <option name="project" value="LOCAL" />
       <updated>1632177205310</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Some Design improvements plus some PHP functionality.&#10;&#10;* Generated date in footer;&#10;* Title properly shows page title + companyName;&#10;* Color Style setup;">
+      <created>1632178298898</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1632178298898</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -97,6 +93,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Basic design setup with preparation on endresult." />
-    <option name="LAST_COMMIT_MESSAGE" value="Basic design setup with preparation on endresult." />
+    <MESSAGE value="Some Design improvements plus some PHP functionality.&#10;&#10;* Generated date in footer;&#10;* Title properly shows page title + companyName;&#10;* Color Style setup;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Some Design improvements plus some PHP functionality.&#10;&#10;* Generated date in footer;&#10;* Title properly shows page title + companyName;&#10;* Color Style setup;" />
   </component>
 </project>
