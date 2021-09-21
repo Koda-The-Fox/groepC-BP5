@@ -7,12 +7,13 @@
 
 
     /*=========[Banner variables]=========*/
-    --bannerHeight: 100px;
+    --bannerHeight: 115px;
 
     /*---------[logo]---------*/
     --logoBorderRadius: 25%;
-    --logoMargin: 5px;
+    --logoMargin: 13px;
     --logoSize: calc(var(--bannerHeight) - calc(2 * var(--logoMargin)));
+    --logoZInddex: 1;
 
 
 
@@ -22,12 +23,39 @@
 
 
 
+/*==========================[Content window]============================*/
+.content{
+    border: black 1px;
+    border-radius: 25px;
+
+    background-color: white;
+
+    width: 80%;
+
+    position: relative;
+    float: top;
+
+    left: 50%;
+    top: 50px;
+
+    padding: 10px;
+
+    transform: translate(-50%, 0%);
+}
+
+
+/*==========================[Background]============================*/
+body {
+    min-height: 100vh;
+    background-color: rgb(var(--accentsColor));
+    background-image: url("../images/Tree-wallpaper-to-use-as-background-137.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+}
 
 
 
-
-/*==========================[]============================*/
-/*==========================[]============================*/
 /*==========================[Banner]============================*/
 #banner{
     height: var(--bannerHeight);
@@ -41,7 +69,14 @@
     float: left;
 }
 
+#CompanyLogo:hover{
+    transform: scale(1.2);
+    box-shadow: white 0 0 10px ;
+}
 #CompanyLogo{
+    transition: transform 300ms ease-in-out;
+
+    z-index: var(--logoZInddex);
 
     width: var(--logoSize);
     height: var(--logoSize);
