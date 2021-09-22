@@ -16,7 +16,7 @@ include("templates/head.php");
 <body>
 <?php
 // Banner Title
-include("templates/header+navmenu.html");
+include("templates/header+navmenu.php");
 ?>
 
 
