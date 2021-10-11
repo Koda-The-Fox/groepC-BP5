@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#BCE38F">
+
+    <ImageView
+        android:id="@+id/IV_logo3"
+        android:layout_width="50dp"
+        android:layout_height="98dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="345dp"
+        android:layout_marginBottom="627dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo_1" />
+
+    <LinearLayout
+        android:layout_width="419dp"
+        android:layout_height="562dp"
+        android:layout_marginTop="27dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/IV_logo3">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/CV_kas"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#FFFFFF"
+                android:backgroundTint="#745E7E39"
+                android:hapticFeedbackEnabled="true">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/TV_kas"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="44dp"
+                        android:layout_weight="1"
+                        android:text="Kas"
+                        android:textAlignment="center"
+                        android:textColor="#BCE38F"
+                        android:textSize="36sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@+id/TV_kasnummer"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/TV_kasnummer"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginBottom="44dp"
+                        android:layout_weight="1"
+                        android:text="@string/string_kas"
+                        android:textAlignment="center"
+                        android:textColor="#BCE38F"
+                        android:textSize="36sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/TV_kas"
+                        tools:text="1" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/CV_pH"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:cardBackgroundColor="#745E7E39">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/TV_pH"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="pH-waarde"
+                        android:textAlignment="center"
+                        android:textColor="#BCE38F"
+                        android:textSize="24sp"
+                        android:textStyle="bold|italic" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/TV_pHwaarde"
+                            android:layout_width="112dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/pHwaarde"
+                            android:textAlignment="center"
+                            android:textColor="#BCE38F"
+                            android:textSize="60sp"
+                            android:textStyle="bold"
+                            tools:text="7" />
+
+                        <ImageView
+                            android:id="@+id/IV_pH_good"
+                            android:layout_width="103dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            app:srcCompat="@drawable/ic_baseline_circle_24_2" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <Space
+                            android:layout_width="39dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                        <ImageView
+                            android:id="@+id/IV_pH_bad"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            app:srcCompat="@drawable/ic_baseline_circle_24_bad" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/CV_luchtTemp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:cardBackgroundColor="#745E7E39" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/TV_luchtTemp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="luchttemperatuur"
+                        android:textAlignment="center"
+                        android:textColor="#BCE38F"
+                        android:textSize="24sp"
+                        android:textStyle="bold|italic" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/TV_luchtTemp_waarde"
+                            android:layout_width="39dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/luchtTemp_waarde"
+                            android:textAlignment="center"
+                            android:textColor="#BCE38F"
+                            android:textSize="60sp"
+                            android:textStyle="bold"
+                            tools:text="18℃" />
+
+                        <ImageView
+                            android:id="@+id/IV_luchtTemp_good"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            app:srcCompat="@drawable/ic_baseline_circle_24_2" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <Space
+                            android:layout_width="37dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                        <ImageView
+                            android:id="@+id/IV_luchtTemp_bad"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            app:srcCompat="@drawable/ic_baseline_circle_24_bad" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/CV_luchtVocht"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:cardBackgroundColor="#745E7E39" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/TV_luchtVocht"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="luchtvochtigheid"
+                        android:textAlignment="center"
+                        android:textColor="#BCE38F"
+                        android:textSize="24sp"
+                        android:textStyle="bold|italic" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/TV_luchtVocht_waarde"
+                            android:layout_width="24dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/luchtVocht_waarde"
+                            android:textAlignment="center"
+                            android:textColor="#BCE38F"
+                            android:textSize="60sp"
+                            android:textStyle="bold"
+                            tools:text="70%" />
+
+                        <ImageView
+                            android:id="@+id/IV_luchtVocht_good"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            app:srcCompat="@drawable/ic_baseline_circle_24_2" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <Space
+                            android:layout_width="24dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                        <ImageView
+                            android:id="@+id/IV_luchtVocht_bad"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            app:srcCompat="@drawable/ic_baseline_circle_24_bad" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/CV_bodemTemp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:cardBackgroundColor="#745E7E39" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/TV_bodemTemp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="bodemtemperatuur"
+                        android:textAlignment="center"
+                        android:textColor="#BCE38F"
+                        android:textSize="24sp"
+                        android:textStyle="bold|italic" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/TV_bodemTemp_waarde"
+                            android:layout_width="45dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/bodemTemp_waarde"
+                            android:textAlignment="center"
+                            android:textColor="#BCE38F"
+                            android:textSize="60sp"
+                            android:textStyle="bold"
+                            tools:text="10℃" />
+
+                        <ImageView
+                            android:id="@+id/IV_bodemTemp_good"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            app:srcCompat="@drawable/ic_baseline_circle_24_2" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <Space
+                            android:layout_width="45dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                        <ImageView
+                            android:id="@+id/IV_bodemTemp_bad"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            app:srcCompat="@drawable/ic_baseline_circle_24_bad" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/CV_bodemVocht"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:cardBackgroundColor="#745E7E39" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/TV_bodemVocht"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="bodemvochtigheid"
+                        android:textAlignment="center"
+                        android:textColor="#BCE38F"
+                        android:textSize="24sp"
+                        android:textStyle="bold|italic" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/TV_bodemVocht_waarde"
+                            android:layout_width="28dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/bodemVocht_waarde"
+                            android:textAlignment="center"
+                            android:textColor="#BCE38F"
+                            android:textSize="60sp"
+                            android:textStyle="bold"
+                            tools:text="60%" />
+
+                        <ImageView
+                            android:id="@+id/IV_bodemVocht_good"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            app:srcCompat="@drawable/ic_baseline_circle_24_2" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <Space
+                            android:layout_width="48dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                        <ImageView
+                            android:id="@+id/IV_bodemVocht_bad"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            app:srcCompat="@drawable/ic_baseline_circle_24_bad" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

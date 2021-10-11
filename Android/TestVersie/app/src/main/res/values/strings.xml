@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">WaterkersProject</string>
+    <string name="string_kas">string_kas</string>
+    <string name="pHcijfer">pHcijfer</string>
+    <string name="luchtTemp_waarde" />
+    <string name="luchtVocht_waarde" />
+    <string name="bodemTemp_waarde" />
+    <string name="bodemVocht_waarde" />
+    <string name="pHwaarde" />
 </resources>
