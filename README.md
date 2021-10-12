@@ -1,7 +1,7 @@
 # WaterkersProject
 
 ## Contributors 
-* Jordy van Venmrooij ([Koda](https://github.com/Koda-The-Fox))
+* Jordy van Venrooij ([Koda](https://github.com/Koda-The-Fox))
 * Charlotte de Groot ([degrootcharlotte](https://github.com/degrootcharlotte))
 * Thobian de koning ([????](#))
 
