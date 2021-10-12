@@ -7,9 +7,7 @@
  */
 
 
-
-package src.sample.Model;
-
+package app.src.main.Model;
 
 /**
  * De Gebruiker
@@ -53,14 +51,14 @@ public class Gebruiker {
      */
     boolean ValidateLogin(String Username, String Pass){
         /*
-        * Maak een code die een select doet naar de database en kijk of de combinatie van de waardes username en password bestaat
-        * LET OP de password is versleuteld met een SHA, dus versleutel de gegeven password met 'SHA2('Password', 256)'
-        * Voorbeeld:
-        * SELECT * FROM `Gebruiker` where `LoginNaam` like 'Username' and `LoginPass` like SHA2('Pass', 256);
-        *
-        * Als de combinatie bestaat, dan krijgen we een result. Als de combinatie niet bestaat dan krijgen we niets terug.
-        * Hier kunnen wij een boolean op baseren, als het goed is zit dit al in de request van SQL.
-        */
+         * Maak een code die een select doet naar de database en kijk of de combinatie van de waardes username en password bestaat
+         * LET OP de password is versleuteld met een SHA, dus versleutel de gegeven password met 'SHA2('Password', 256)'
+         * Voorbeeld:
+         * SELECT * FROM `Gebruiker` where `LoginNaam` like 'Username' and `LoginPass` like SHA2('Pass', 256);
+         *
+         * Als de combinatie bestaat, dan krijgen we een result. Als de combinatie niet bestaat dan krijgen we niets terug.
+         * Hier kunnen wij een boolean op baseren, als het goed is zit dit al in de request van SQL.
+         */
         return true;
     }
 
