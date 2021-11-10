@@ -6,7 +6,7 @@
  * Based on:UML Klassen DIAGRAM v3.0 Rev.1
  */
 
-package src.sample.Model;
+package sample.Model;
 
 import java.sql.Date;
 
