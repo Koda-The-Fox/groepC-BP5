@@ -53,9 +53,6 @@ public class Login {
     private static final double[] BTN_SIZE = {90, 90}; // Width x Height
 
 
-
-
-
     BorderPane borderPane = new BorderPane();
 
     public static Stage stage;
