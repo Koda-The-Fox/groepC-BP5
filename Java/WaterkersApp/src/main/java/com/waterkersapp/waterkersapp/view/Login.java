@@ -1,6 +1,7 @@
 package com.waterkersapp.waterkersapp.view;
 
 import com.waterkersapp.waterkersapp.model.Gebruiker;
+import javafx.css.Style;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -21,10 +22,11 @@ public class Login {
 
     // Variables
     ///////////////////////[Window]\\\\\\\\\\\\\\\\\\\\\
-    private static final double[] ICON_SIZE = {100, 100}; //Default: 100;
     private static final double[] WINDOW_SIZE = {800, 450}; // Default: 800 * 450;
-
     Color backgroundColor = Color.web("#BADC8F");
+
+    ///////////////////////[Logo]\\\\\\\\\\\\\\\\\\\\\
+    private static final double[] ICON_SIZE = {100, 100}; //Default: 100;
 
     ///////////////////////[Input fields]\\\\\\\\\\\\\\\\\\\\\
     // Border
@@ -34,19 +36,20 @@ public class Login {
     // Background
     private static final double TXTF_BCGND_RADIUS = TXTF_BRDR_RADIUS;
 
-
     ///////////////////////[Login Button]\\\\\\\\\\\\\\\\\\\\\
     // Font
     private static final double BTN_FNT_SIZE = 16; // default: 14
     private static final String BTN_FNT_WGHT = "bold";
-    private static final Color BTN_FNT_CLR = Color.WHITE; // HEX: FFF, RGB: 255, 255, 255
+    private static final Color BTN_FNT_CLR = Color.web("#FFF"); // RGB: 255, 255, 255
+    private static final String BTN_FNT_FAM = "Arial";
     // Border
-    private static final Color BTN_BRDR_CLR = Color.web("719C40"); // RGB: 113, 156, 64
+    private static final Color BTN_BRDR_CLR = Color.web("#719C40"); // RGB: 113, 156, 64
+    private static final double BTN_BRDR_RADIUS = 100;
     private static final double BTN_BRDR_WDTH = TXTF_BRDR_WDTH;
     // Background
-    private static final Color BTN_BCK_CLR = Color.web("A07E63"); // RGB: 160, 126, 99
+    private static final Color BTN_BCK_CLR = Color.web("#A07E63"); // RGB: 160, 126, 99
     // Geometry
-    private static final int BTN_RADIUS = 100;
+    private static final double BTN_RADIUS = BTN_BRDR_RADIUS;
     private static final double[] BTN_SIZE = {90, 90}; // Width x Height
 
 
@@ -108,13 +111,6 @@ public class Login {
 
     public Login() {
 
-        BackgroundFill background_fill = new BackgroundFill(backgroundColor,
-                CornerRadii.EMPTY, Insets.EMPTY);
-
-        // create Background
-        Background background = new Background(background_fill);
-
-
         ImageView imgLogo = new ImageView(ICON);
         imgLogo.setFitHeight(ICON_SIZE[0]);
         imgLogo.setFitWidth(ICON_SIZE[1]);
@@ -134,6 +130,7 @@ public class Login {
                 "-fx-background-radius:"+TXTF_BCGND_RADIUS+";"
         );
         tbxPassword.setStyle(tbxUsername.getStyle());
+        System.out.println("TextFields: \n" + tbxPassword.getStyle().replace(";", ";\n")); // Preview the style parameters in the console
 
         /*
         Hyperlink hlPassword = new Hyperlink("Reset Password");
@@ -171,22 +168,24 @@ public class Login {
         // Set the variables as the style
         btnLogin.setStyle(
                 // Font
+                "-fx-font-family:"+BTN_FNT_FAM+";"+
                 "-fx-font-size:"+BTN_FNT_SIZE+";"+
                 "-fx-font-weight:"+BTN_FNT_WGHT+";"+
                 "-fx-text-fill:#"+Integer.toHexString(BTN_FNT_CLR.hashCode())+";"+
                 // Border
-                "-fx-border-color:#"+Integer.toHexString(BTN_BRDR_CLR.hashCode())+";"+
                 "-fx-border-width:"+BTN_BRDR_WDTH+";"+
-                "-fx-border-radius:"+BTN_RADIUS+";"+
+                "-fx-border-radius:"+BTN_BRDR_RADIUS+";"+
+                "-fx-border-color:#"+Integer.toHexString(BTN_BRDR_CLR.hashCode())+";"+
                 // Background
+                "-fx-background-radius:"+BTN_RADIUS+";"+
                 "-fx-background-color:#"+Integer.toHexString(BTN_BCK_CLR.hashCode())+";"+
                 // Geometry
-                "-fx-background-radius:"+BTN_RADIUS+";"+
                 "-fx-min-width:"+BTN_SIZE[0]+";"+
                 "-fx-min-height:"+BTN_SIZE[1]+";"+
                 "-fx-max-width:"+BTN_SIZE[0]+";"+
                 "-fx-max-height:"+BTN_SIZE[1]+";"
         );
+        System.out.println("btnLogin: \n" + btnLogin.getStyle().replace(";", ";\n")); // Preview the style parameters in the console
 
         VBox loginBox = new VBox(tbxUsername, tbxPassword);
         HBox buttonsBox = new HBox(btnLogin);
@@ -205,7 +204,7 @@ public class Login {
         wrapperBox.setAlignment(Pos.CENTER);
 
         borderPane.setCenter(wrapperBox);
-        borderPane.setBackground(background);
+        borderPane.setBackground(new Background(new BackgroundFill(backgroundColor, null, null)));
         borderPane.setPadding(new Insets(10));
     }
 }
