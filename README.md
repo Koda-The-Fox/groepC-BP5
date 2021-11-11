@@ -39,3 +39,10 @@
 - [ ] library toevoegen;
 - [ ] Connecite maken & testen;
 - [ ] Integratie van code en Database;  
+
+# Design
+## Java
+### 
+![Login Screen](/Media/Images/Design/UI/Login_java.jpg)
+
+## Android
