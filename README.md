@@ -1,5 +1,5 @@
 # WaterkersProject
-[Waterkers Logo](/Media/Images/logo.png)
+![Waterkers Logo](/Media/Images/logo.png)
 
 ### Contributors 
 * Jordy van Venrooij ([Koda](https://github.com/Koda-The-Fox))
