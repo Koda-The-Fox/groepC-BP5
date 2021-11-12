@@ -2,6 +2,7 @@ package com.waterkersapp.waterkersapp;
 
 import com.waterkersapp.waterkersapp.view.Login;
 import com.waterkersapp.waterkersapp.view.Menu;
+import com.waterkersapp.waterkersapp.view.SensorOverview;
 import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -19,9 +20,18 @@ public class MainWindow extends Application {
         // LOGIN
         //Login login = new Login();
         //Login.create(login);
+
         // MENU
-        Menu menu = new Menu();
-        Menu.create(menu);
+//        Menu menu = new Menu();
+//        Menu.create(menu);
+
+        // Sensor overzicht
+        SensorOverview sensorOverview = new SensorOverview();
+        SensorOverview.create(sensorOverview, "Grondvochtigheid");
+
+        // Beheer
+        //Beheer beheer = new Beheer();
+        //Beheer.create(beheer);
     }
 
     /*
