@@ -56,18 +56,9 @@ Wij willen aan de hand van ons product het verbruik van schon water verminderen 
 ![Login Screen Java](/Media/Images/Design/UI/Login_java.jpg)
 #### Menu screen
 ![Menu Screen Java](/Media/Images/Design/UI/menu_java.jpg)
-#### Grondvochtigheid screen
+#### Sensor screens
+The Sensor Screens are dynamic and will use the same design for all the sensors.
 ![Grondvochtigheid Screen Java](/Media/Images/Design/UI/grondvochtigheid_java.jpg)
-#### LuchtTemp screen
-![LuchtTemp Screen Java](/Media/Images/Design/UI/luchtTemp_java.jpg)
-#### Luchtvochtigheid screen
-![Luchtvochtigheid Screen Java](/Media/Images/Design/UI/luchtvochtigheid_java.jpg)
-#### pH-waarde screen
-![pH-waarde Screen Java](/Media/Images/Design/UI/pH-waarde_java.jpg)
-#### Grondtemp screen
-![Grondtemp Screen Java](/Media/Images/Design/UI/grondTemp_java.jpg)
-#### Beheer screen
-![Beheer Screen Java](/Media/Images/Design/UI/beheer_java.jpg)
 
 
 ### Android
