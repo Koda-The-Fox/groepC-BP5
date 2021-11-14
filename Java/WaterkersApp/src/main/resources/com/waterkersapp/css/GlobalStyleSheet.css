@@ -1,0 +1,9 @@
+
+.root{
+    -fx-background-color:#BADC8F;
+}
+
+.title{
+    -fx-font-weight:bolder;
+    -fx-text-fill:#7DB143; /* RGB: 125, 177, 67 */
+}

@@ -1,0 +1,24 @@
+
+
+.table-view{
+    -fx-background-color:#232323;
+}
+
+.table-view .column-header,
+.table-view .column-header .filler,
+.table-view .column-header-background .filler{
+    -fx-border-width:0.5px;
+    -fx-border-color:white;
+    -fx-background-color:#70AD46; /* RGB: 112, 173, 70 */
+    -fx-dark-text-color: #ffffff; /* RGB: 255, 255, 255 */
+    -fx-mid-text-color: #ffffff; /* RGB: 255, 255, 255 */
+    -fx-light-text-color: #ffffff; /* RGB: 255, 255, 255 */
+}
+
+.table-row-cell:odd{
+    -fx-background-color:#C6E0B3; /* RGB: 198, 224, 179 */
+}
+
+.table-row-cell:even{
+    -fx-background-color:#E2EFDB; /* RGB: 226, 239, 219 */
+}

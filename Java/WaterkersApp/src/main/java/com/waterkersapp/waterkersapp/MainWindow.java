@@ -26,7 +26,7 @@ public class MainWindow extends Application {
 //        Menu.create(menu);
 
         // Sensor overzicht
-        SensorOverview sensorOverview = new SensorOverview();
+        SensorOverview sensorOverview = new SensorOverview("Grondvochtigheid");
         SensorOverview.create(sensorOverview, "Grondvochtigheid");
 
         // Beheer
