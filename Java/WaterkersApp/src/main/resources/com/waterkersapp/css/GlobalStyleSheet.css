@@ -1,9 +1,81 @@
+* {
+    -fx-base2: #906B4E;
+}
+
 
 .root{
     -fx-background-color:#BADC8F;
 }
 
-.title{
+.ContentWindow{
+    -fx-border-color:#977363; /* RGB: 151, 115, 99 */
+    -fx-border-width:5;
+    -fx-border-radius:5;
+    -fx-background-color:#92BA64; /* RGB: 146, 186, 100 */
+    -fx-background-radius:5;
+}
+.scroll-pane > .viewport {
+    -fx-background-color:#92BA64; /* RGB: 146, 186, 100 */
+}
+
+.page_title{
     -fx-font-weight:bolder;
     -fx-text-fill:#7DB143; /* RGB: 125, 177, 67 */
+}
+
+.spinner > .text-field{
+    -fx-border-width:0;
+    -fx-border-radius:0;
+    -fx-background-radius:0; /* Same as border-width */
+}
+
+/* Text Fields */
+.text-field{
+
+    /* Border */
+    -fx-border-color:#906B4E;
+    -fx-border-width:5;
+    -fx-border-radius:5; /* Same as background-radius */
+    /* Background */
+    -fx-background-radius:5; /* Same as border-width */
+}
+
+
+/* Buttons */
+.button {
+    /* Font */
+    -fx-font-weight:bolder;
+    -fx-text-fill:#B9DB8E;
+    /* Border */
+    -fx-border-color:-fx-base2; /* RGB: 113, 156, 64 */
+    -fx-border-width:5;
+    -fx-border-radius:5; /* Same as background-radius */
+    /* Background */
+    -fx-background-radius:5; /* Same as border-width */
+    -fx-background-color:#92BA64; /* RGB: 160, 126, 99 */
+}
+
+
+/* Tables */
+.table-view{
+    -fx-background-color:#232323;
+}
+
+.table-view .column-header,
+.table-view .column-header .filler,
+.table-view .column-header-background .filler{
+    -fx-border-width:0.5px;
+    -fx-border-color:white;
+    -fx-background-color:#70AD46; /* RGB: 112, 173, 70 */
+    -fx-dark-text-color: #ffffff; /* RGB: 255, 255, 255 */
+    -fx-mid-text-color: #ffffff; /* RGB: 255, 255, 255 */
+    -fx-light-text-color: #ffffff; /* RGB: 255, 255, 255 */
+}
+
+.table-row-cell:odd{
+    -fx-background-color:#C6E0B3; /* RGB: 198, 224, 179 */
+}
+
+.table-row-cell:even{
+    -fx-background-color:#E2EFDB; /* RGB: 226, 239, 219 */
 }

@@ -1,11 +1,9 @@
 package com.waterkersapp.waterkersapp.view;
 
-import com.waterkersapp.waterkersapp.model.SensorReg;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import com.waterkersapp.waterkersapp.model.sensorRegistratie;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableListBase;
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -19,8 +17,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.sql.Date;
-import java.sql.Time;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.waterkersapp.waterkersapp.MainWindow.ICON;
 
@@ -40,19 +38,17 @@ public class SensorOverview {
     BorderPane borderPane = new BorderPane();
     //GridPane borderPane = new GridPane();
 
-    private static String Sensor;
 
     public static Stage stage;
 
-    public static void create(SensorOverview sensorOverview, String sensorTitle) {
+    public static void create(SensorOverview sensorOverview) {
         stage = new Stage();
-        stage.setTitle(sensorTitle);
-        Sensor = sensorTitle;
+        stage.setTitle("Sensor Overzicht");
         stage.getIcons().add(ICON);
 
         Scene scene = new Scene(sensorOverview.getParent(), (WINDOW_SIZE[0]), (WINDOW_SIZE[1]));
         // set the styles for the scene
-        scene.getStylesheets().addAll(SensorOverview.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString(), SensorOverview.class.getResource("/com/waterkersapp/css/SensorOverviewStyleSheet.css").toString());
+        scene.getStylesheets().addAll(SensorOverview.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString());
         stage.setScene(scene);
         // set the window to be resizable
         stage.setResizable(true); // default: true
@@ -73,6 +69,7 @@ public class SensorOverview {
     public SensorOverview(String sensorTitle) {
 
         HBox logoTitleBox = new HBox();
+
         GridPane gp = new GridPane();
 
         ImageView imgLogo = new ImageView(ICON);
@@ -80,7 +77,7 @@ public class SensorOverview {
         imgLogo.setFitWidth(ICON_SIZE[1]);
 
         Label title = new Label(sensorTitle);
-        title.getStyleClass().add("title");
+        title.getStyleClass().add("page_title");
         title.setStyle("-fx-font-size:"+ICON_SIZE[1]/2.5+";");
 
 
@@ -88,44 +85,75 @@ public class SensorOverview {
         titleBox.setAlignment(Pos.CENTER_LEFT);
 
 
-        int columncount = 4;
+        int columncount = 7;
         TableView tvContent = new TableView();
-        TableColumn<SensorReg, String> tcKas = new TableColumn<>("Kas");
-        tcKas.setCellValueFactory(new PropertyValueFactory<>("Kas"));
-        tcKas.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount*2));
-        TableColumn<SensorReg, Date> tcDate = new TableColumn<>("Datum");
+        TableColumn<sensorRegistratie, Integer> tcKas = new TableColumn<>("Arduino");
+        tcKas.setCellValueFactory(new PropertyValueFactory<>("Arduino"));
+        tcKas.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
+        TableColumn<sensorRegistratie, String> tcDate = new TableColumn<>("Datum & Tijd");
         tcDate.setCellValueFactory(new PropertyValueFactory<>("Datum"));
         tcDate.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
-        TableColumn<SensorReg, Time> tcTime = new TableColumn<>("Tijd");
-        tcTime.setCellValueFactory(new PropertyValueFactory<>("Tijd"));
-        tcTime.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount*2));
-        TableColumn<SensorReg, Double> tcValue = new TableColumn<>("Waarde");
-        tcValue.setCellValueFactory(new PropertyValueFactory<>("Waarde"));
-        tcValue.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount/(2)));
 
+        // Water
+        TableColumn<sensorRegistratie, String> tcWater = new TableColumn<>("Water");
+        TableColumn<sensorRegistratie, Double> tcPhVal = new TableColumn<>("PHwaarde");
+        tcPhVal.setCellValueFactory(new PropertyValueFactory<>("PHwaarde"));
+        tcPhVal.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
+        tcWater.getColumns().add(tcPhVal);
+        // Grond
+        TableColumn<sensorRegistratie, Double> tcGrond = new TableColumn<>("Grond");
+        TableColumn<sensorRegistratie, Double> tcGrTmp = new TableColumn<>("GrondTemp");
+        tcGrTmp.setCellValueFactory(new PropertyValueFactory<>("GrondTemp"));
+        tcGrTmp.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
+        TableColumn<sensorRegistratie, Double> tcGrVht = new TableColumn<>("GrondVocht");
+        tcGrVht.setCellValueFactory(new PropertyValueFactory<>("GrondVocht"));
+        tcGrVht.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
+        tcGrond.getColumns().addAll(tcGrTmp, tcGrVht);
+        // Lucht
+        TableColumn<sensorRegistratie, Date> tcLucht = new TableColumn<>("Lucht");
+        TableColumn<sensorRegistratie, Double> tcLuTmp = new TableColumn<>("LuchtTemp");
+        tcLuTmp.setCellValueFactory(new PropertyValueFactory<>("LuchtTemp"));
+        tcLuTmp.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
+        TableColumn<sensorRegistratie, Double> tcLuVht = new TableColumn<>("LuchtVocht");
+        tcLuVht.setCellValueFactory(new PropertyValueFactory<>("LuchtVocht"));
+        tcLuVht.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
+        tcLucht.getColumns().addAll(tcLuTmp, tcLuVht);
 
 
 
 
         // set the table width and height dynamically
         tvContent.prefWidthProperty().bind(gp.widthProperty());
-        tvContent.prefHeightProperty().bind(gp.heightProperty());
+//        tvContent.prefHeightProperty().bind(gp.heightProperty()); // GP height isn't dynamically sized
+        tvContent.setMinHeight(100);
 
-        tvContent.getColumns().addAll(tcKas, tcDate, tcTime, tcValue);
+        tvContent.setPlaceholder(new Label("Geen data gevonden, probeer later nog eens."));
 
-        System.out.println(new SensorReg("Kas 1", "2020-01-01", "09:30:00", 12));
-        System.out.println(new SensorReg("Kas 1", "2020-02-01", "10:30:00", 15));
-        System.out.println(new SensorReg("Kas 2", "2020-03-01", "11:30:00", 18));
+        tvContent.getColumns().addAll(tcKas, tcDate, tcWater, tcGrond, tcLucht);
 
+        System.out.println(new sensorRegistratie(1, "2020-01-01", 5, 12, 9, 60, 50));
+        System.out.println(new sensorRegistratie(2, "2020-02-01", 7, 15, 13, 75, 60));
+        System.out.println(new sensorRegistratie(3, "2020-03-01", 8 ,18 ,16 ,85, 90));
+
+
+        // @TODO Retrieve the data & make it in such a way that it loads in an observable list.
+        /*
+        tvContent.getItems().add( new sensorRegistratie(1, "2020-01-01", 5, 12, 9, 60, 50) );
+        tvContent.getItems().add( new sensorRegistratie(2, "2020-02-01", 7, 15, 13, 75, 60) );
+        tvContent.getItems().add( new sensorRegistratie(3, "2020-03-01", 8 ,18 ,16 ,85, 90) );
+*/
+
+        /*
         tvContent.getItems().addAll(
                new SensorReg("Kas 1", "2020-01-01", "09:30:00", 12),
                new SensorReg("Kas 1", "2020-02-01", "10:30:00", 15),
                new SensorReg("Kas 2", "2020-03-01", "11:30:00", 18)
         );
 
+         */
+
 
         GridPane.setConstraints(tvContent, 1, 3); // node, column, row
-        gp.setPadding(new Insets(50));
 
         logoTitleBox.getChildren().addAll(imgLogo, titleBox);
         logoTitleBox.setSpacing(10);
@@ -133,29 +161,37 @@ public class SensorOverview {
 
 
         gp.getChildren().addAll(tvContent);
-        gp.setStyle(
-                "-fx-border-color:#977363;"+ // RGB: 151, 115, 99
-                "-fx-border-width:5;"+
-                "-fx-border-radius:5;"+
-                "-fx-background-color:#92BA64;"+ // RGB: 146, 186, 100
-                "-fx-background-radius:5;"
-        );
 
-        HBox content = new HBox(gp);
-        content.setPadding(new Insets(0, ICON_SIZE[1]/2, 15, ICON_SIZE[1]/2));
+        ScrollPane contentWindow = new ScrollPane(gp);
 
-        VBox wrapperBox = new VBox(logoTitleBox,content);
+        contentWindow.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        contentWindow.getStyleClass().add("ContentWindow");
+        gp.setPadding(new Insets(50));
 
-        wrapperBox.setPadding(new Insets(10));
+        HBox contentWrapper = new HBox(contentWindow);
+        contentWrapper.setPadding(new Insets(0, ICON_SIZE[1]/2, 15, ICON_SIZE[1]/2));
+
+        VBox wrapperBox = new VBox(logoTitleBox,contentWrapper);
+
         wrapperBox.setSpacing(5);
+//        wrapperBox.setPadding(new Insets(20));
 
         // set the size of the wrapperBox dynamically to the window(Stage)
         wrapperBox.prefWidthProperty().bind(borderPane.widthProperty());
         wrapperBox.prefHeightProperty().bind(borderPane.heightProperty());
 
+
         // set the size of the grid pane dynamically to the wrapperBox
-        gp.prefWidthProperty().bind(wrapperBox.widthProperty());
-        gp.prefHeightProperty().bind(wrapperBox.heightProperty());
+        contentWindow.prefWidthProperty().bind(contentWrapper.widthProperty());
+        contentWindow.prefHeightProperty().bind(contentWrapper.heightProperty());
+
+        // set the size of the grid pane dynamically to the wrapperBox
+        contentWrapper.prefWidthProperty().bind(wrapperBox.widthProperty());
+        contentWrapper.prefHeightProperty().bind(wrapperBox.heightProperty());
+
+        // set the size of the grid pane dynamically to the wrapperBox
+        gp.prefWidthProperty().bind(contentWindow.widthProperty());
+//        gp.prefHeightProperty().bind(contentWindow.heightProperty());
 
         borderPane.setLeft(wrapperBox);
         //borderPane.setBackground(new Background(new BackgroundFill(backgroundColor, null, null)));

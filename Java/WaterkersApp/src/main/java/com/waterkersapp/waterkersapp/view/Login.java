@@ -64,7 +64,12 @@ public class Login {
 
         double Min_width = 533.333;
         double Min_height = 300;
-        stage.setScene(new Scene(login.getParent(), (WINDOW_SIZE[0]), (WINDOW_SIZE[1])));
+
+        Scene scene = new Scene(login.getParent(), (WINDOW_SIZE[0]), (WINDOW_SIZE[1]));
+        // set the styles for the scene
+        scene.getStylesheets().addAll(SensorOverview.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString(), SensorOverview.class.getResource("/com/waterkersapp/css/LoginStyle.css").toString());
+
+        stage.setScene(scene);
         stage.setMinWidth(Min_width);
         //stage.setMaxWidth(Max_width);
         stage.setMinHeight(Min_height);
@@ -109,23 +114,12 @@ public class Login {
     public Login() {
 
         ImageView imgLogo = new ImageView(ICON);
-        imgLogo.setFitHeight(ICON_SIZE[0]);
-        imgLogo.setFitWidth(ICON_SIZE[1]);
 
         TextField tbxUsername = new TextField();
         tbxUsername.setPromptText("Gebruikersnaam"); //to set the hint text
 
         PasswordField tbxPassword = new PasswordField();
         tbxPassword.setPromptText("Wachtwoord"); //to set the hint text
-
-        tbxUsername.setStyle(
-                // Border
-                "-fx-border-color:#"+Integer.toHexString(TXTF_BRDR_CLR.hashCode())+";"+
-                "-fx-border-width:"+TXTF_BRDR_WDTH+";"+
-                "-fx-border-radius:"+ TXTF_BRDR_RADIUS +";"+
-                // Background
-                "-fx-background-radius:"+TXTF_BCGND_RADIUS+";"
-        );
         tbxPassword.setStyle(tbxUsername.getStyle());
         System.out.println("TextFields: \n" + tbxPassword.getStyle().replace(";", ";\n")); // Preview the style parameters in the console
 
@@ -158,11 +152,21 @@ public class Login {
             }
 
              */
+
+
+            // Debug easy programming to allow navigation
+            // This action will later only be ran if the login is accepted
+            Menu menu = new Menu();
+            Menu.create(menu);
+
+            stage.close(); // Close the window
+
         });
         btnLogin.setDefaultButton(true);
 
 
         // Set the variables as the style
+                /*
         btnLogin.setStyle(
                 // Font
                 "-fx-font-family:"+BTN_FNT_FAM+";"+
@@ -182,26 +186,42 @@ public class Login {
                 "-fx-max-width:"+BTN_SIZE[0]+";"+
                 "-fx-max-height:"+BTN_SIZE[1]+";"
         );
-        System.out.println("btnLogin: \n" + btnLogin.getStyle().replace(";", ";\n")); // Preview the style parameters in the console
+
+                 */
 
         VBox loginBox = new VBox(tbxUsername, tbxPassword);
         HBox buttonsBox = new HBox(btnLogin);
         VBox statusBox = new VBox(txtSysMessage);
         VBox wrapperBox = new VBox(imgLogo, loginBox, statusBox, buttonsBox);
 
-        loginBox.setSpacing(10);
-        loginBox.setAlignment(Pos.CENTER);
-        loginBox.setMaxWidth(200);
+        imgLogo.fitWidthProperty().bind(wrapperBox.widthProperty().divide(8));
+        imgLogo.fitHeightProperty().bind(wrapperBox.widthProperty().divide(8));
 
+
+        loginBox.setSpacing(10);
+        loginBox.setMaxWidth(400);
+        loginBox.setAlignment(Pos.CENTER);
+        loginBox.prefWidthProperty().bind(wrapperBox.widthProperty().divide(50));
+        loginBox.prefHeightProperty().bind(wrapperBox.heightProperty().divide(50));
+
+        statusBox.setMaxWidth(400);
         statusBox.setAlignment(Pos.CENTER);
+        statusBox.prefWidthProperty().bind(wrapperBox.widthProperty());
+        statusBox.prefHeightProperty().bind(wrapperBox.heightProperty().divide(50));
 
         buttonsBox.setSpacing(10);
-        buttonsBox.setAlignment(Pos.CENTER);
+        buttonsBox.setMaxWidth(400);
+        buttonsBox.setAlignment(Pos.TOP_CENTER);
+        buttonsBox.prefWidthProperty().bind(wrapperBox.widthProperty());
+        buttonsBox.prefHeightProperty().bind(wrapperBox.heightProperty().divide(50));
 
         wrapperBox.setAlignment(Pos.CENTER);
+        wrapperBox.setSpacing(10);
+        wrapperBox.setPadding(new Insets(50, 300, 0, 300));
+        wrapperBox.prefWidthProperty().bind(borderPane.widthProperty());
+        wrapperBox.prefHeightProperty().bind(borderPane.heightProperty().divide(50));
 
         borderPane.setCenter(wrapperBox);
         borderPane.setBackground(new Background(new BackgroundFill(backgroundColor, null, null)));
-        borderPane.setPadding(new Insets(10));
     }
 }
