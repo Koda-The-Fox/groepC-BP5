@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">WaterkersAndroid</string>
+    <string name="logo">logo</string>
+    <string name="kas">Kas</string>
+    <string name="ph_waarde">pH-waarde</string>
+    <string name="luchttemperatuur">luchttemperatuur</string>
+    <string name="alarm">alarm</string>
+    <string name="luchtvochtigheid">luchtvochtigheid</string>
+    <string name="bodemtemperatuur">bodemtemperatuur</string>
+    <string name="bodemvochtigheid">bodemvochtigheid</string>
+</resources>
