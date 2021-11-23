@@ -145,7 +145,6 @@ public class Beheer {
         Button btnMaxLV = new Button("Reset");
 
 
-
         gp.add(lblWater, 1, 3, 2, 1);
         gp.add(lblMinPH, 1, 4);
         gp.add(numMinPH, 2, 4);
@@ -199,6 +198,20 @@ public class Beheer {
         b.setSpacing(5);
         VBox a = new VBox(gp ,b);
         a.setSpacing(40);
+
+        // Functions
+
+
+
+
+
+
+
+
+
+
+
+        // Initialising
 
         ScrollPane contentWindow = new ScrollPane(a);
         contentWindow.setPadding(new Insets(10));
