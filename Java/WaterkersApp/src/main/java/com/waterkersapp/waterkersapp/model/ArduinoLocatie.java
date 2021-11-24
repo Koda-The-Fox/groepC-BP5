@@ -2,11 +2,17 @@ package com.waterkersapp.waterkersapp.model;
 
 public class ArduinoLocatie {
 
-    int ArduinoID;
+    Integer ArduinoID;
     String Locatie;
     String Status;
 
-    public ArduinoLocatie(int arduinoID, String locatie, String status) {
+    /**
+     * Creates an empty ArduinoLocatie Object
+     */
+    public ArduinoLocatie() {}
+
+
+    public ArduinoLocatie(Integer arduinoID, String locatie, String status) {
         ArduinoID = arduinoID;
         Locatie = locatie;
         Status = status;
@@ -16,7 +22,7 @@ public class ArduinoLocatie {
         return ArduinoID;
     }
 
-    public void setArduinoID(int arduinoID) {
+    public void setArduinoID(Integer arduinoID) {
         ArduinoID = arduinoID;
     }
 
@@ -34,5 +40,10 @@ public class ArduinoLocatie {
 
     public void setStatus(String status) {
         Status = status;
+    }
+
+    @Override
+    public String toString() {
+        return Locatie + " ("+ Status + ")";
     }
 }

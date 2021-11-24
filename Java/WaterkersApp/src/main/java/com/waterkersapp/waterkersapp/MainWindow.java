@@ -21,8 +21,8 @@ public class MainWindow extends Application {
     @Override
     public void start(Stage primaryStage) {
         // LOGIN
-        Login login = new Login();
-        Login.create(login);
+//        Login login = new Login();
+//        Login.create(login);
 
         // MENU
 //        Menu menu = new Menu();
@@ -33,8 +33,8 @@ public class MainWindow extends Application {
 //        SensorOverview.create(sensorOverview, "Grondvochtigheid");
 
         // Beheer
-//        Beheer beheer = new Beheer();
-//        Beheer.create(beheer);
+        Beheer beheer = new Beheer();
+        Beheer.create(beheer);
     }
 
     /*

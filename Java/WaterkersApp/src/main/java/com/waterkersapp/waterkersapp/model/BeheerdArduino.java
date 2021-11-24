@@ -2,9 +2,9 @@ package com.waterkersapp.waterkersapp.model;
 
 public class BeheerdArduino {
     String LoginNaam;
-    int ArduinoID;
+    Integer ArduinoID;
 
-    public BeheerdArduino(String loginNaam, int arduinoID) {
+    public BeheerdArduino(String loginNaam, Integer arduinoID) {
         LoginNaam = loginNaam;
         ArduinoID = arduinoID;
     }
@@ -17,7 +17,7 @@ public class BeheerdArduino {
         LoginNaam = loginNaam;
     }
 
-    public int getArduinoID() {
+    public Integer getArduinoID() {
         return ArduinoID;
     }
 

@@ -1,0 +1,30 @@
+/**
+ This style overrides the Global style.
+*/
+
+
+.title{
+    -fx-font-weight: bolder;
+    -fx-font-size: 16px;
+}
+
+
+/* Buttons */
+.button{
+/* Font */
+-fx-font-size:10.0;
+-fx-text-fill:#ffffffff;
+/* Border */
+-fx-border-color:#719c40ff;
+/* Background */
+-fx-background-color:#a07e63ff;
+}
+
+
+GridPane {
+
+}
+
+GridPane > * {
+    -fx-min-height: 30 ;
+}

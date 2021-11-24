@@ -2,18 +2,25 @@ package com.waterkersapp.waterkersapp.model;
 
 public class MinMaxWaardes {
     private String Locatie;
-    private double MinPH;
-    private double MaxPH;
-    private double MinGT;
-    private double MaxGT;
-    private double MinLT;
-    private double MaxLT;
-    private double MinGV;
-    private double MaxGV;
-    private double MinLV;
-    private double MaxLV;
+    private double MinPH = 6; // value source : https://www.nrcs.usda.gov/Internet/FSE_DOCUMENTS/nrcs142p2_052208.pdf
+    private double MaxPH = 7; // value source : https://www.nrcs.usda.gov/Internet/FSE_DOCUMENTS/nrcs142p2_052208.pdf
+    private double MinGT = 15; // value source: https://www.houseplantsexpert.com/indoor-plants-temperature-guide.html
+    private double MaxGT = 24; // value source: https://www.houseplantsexpert.com/indoor-plants-temperature-guide.html
+    private double MinLT = 20; // value source: https://www.greenwaybiotech.com/blogs/gardening-articles/how-soil-moisture-affects-your-plants-growth
+    private double MaxLT = 60; // value source: https://www.greenwaybiotech.com/blogs/gardening-articles/how-soil-moisture-affects-your-plants-growth
+    private double MinGV = 15; // value source: https://www.houseplantsexpert.com/indoor-plants-temperature-guide.html
+    private double MaxGV = 24; // value source: https://www.houseplantsexpert.com/indoor-plants-temperature-guide.html
+    private double MinLV = 50; // value source: https://greenupside.com/what-is-the-best-humidity-level-for-plants/
+    private double MaxLV = 60; // value source: https://greenupside.com/what-is-the-best-humidity-level-for-plants/
 
-    public MinMaxWaardes() {
+    public MinMaxWaardes() {}
+
+    /**
+     * Creates a default setings object with the researched ideal values
+     * @param locatie The location of the new values
+     */
+    public MinMaxWaardes(String locatie) {
+        Locatie = locatie;
     }
 
     public MinMaxWaardes(String locatie, double minPH, double maxPH, double minGT, double maxGT, double minLT, double maxLT, double minGV, double maxGV, double minLV, double maxLV) {
@@ -116,6 +123,24 @@ public class MinMaxWaardes {
 
     public void setMaxLV(double maxLV) {
         MaxLV = maxLV;
+    }
+
+
+
+    public MinMaxWaardes copy(){
+        return new MinMaxWaardes(
+                this.Locatie,
+                this.MinPH,
+                this.MaxPH,
+                this.MinGT,
+                this.MaxGT,
+                this.MinLT,
+                this.MaxLT,
+                this.MinGV,
+                this.MaxGV,
+                this.MinLV,
+                this.MaxLV
+        );
     }
 
 
