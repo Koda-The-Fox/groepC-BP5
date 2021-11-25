@@ -38,15 +38,19 @@ Wij willen aan de hand van ons product het verbruik van schon water verminderen 
 
 ### Software
 #### Interface (UI)
-- [ ] Simpel UI;
-- [ ] Volledig opgemaakte UI;
-- [ ] Ge-optimaliseerd UI;
+- [X] Simpel UI;
+- [X] Volledig opgemaakte UI;
+- [X] Ge-optimaliseerd UI;
 
 #### Backend
-- [ ] N.A.
+- [X] Login
+- [X] Menu
+- [ ] Sensor overzicht
+- [ ] Beheer & Instellingen
 
 ##### Database
 - [ ] library toevoegen;
+- [X] Connecite(OODBC) maken & testen;
 - [ ] Connecite maken & testen;
 - [ ] Integratie van code en Database;  
 
