@@ -1,6 +1,8 @@
 package com.waterkersapp.waterkersapp.view;
 
+import com.waterkersapp.waterkersapp.control.LoginController;
 import com.waterkersapp.waterkersapp.model.Gebruiker;
+import com.waterkersapp.waterkersapp.util.SQLFunctions;
 import javafx.css.Style;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -134,60 +136,45 @@ public class Login {
         Button btnLogin = new Button("Login");
         btnLogin.requestFocus();
         btnLogin.setOnAction(event -> {
-            /*
-            if (!SQLFunctions.validateLogin(tbxUsername.getText(), tbxPassword.getText())){
-                setLoginAccepted(false);
 
-                txtFailMessage.setFill(Color.RED);
-                txtFailMessage.setText("Login failed, check if the entered\ninformation is correct and try again.");
-            } else {
-                setLoginAccepted(true);
-
-                setUser(SQLFunctions.getUser(tbxUsername.getText(), tbxPassword.getText()).get(0));
-
-                txtFailMessage.setFill(Color.GREEN);
-                txtFailMessage.setText("Login accepted, this window should\nexit automatically.");
-
-                stage.close(); // Close the window
+            if (tbxUsername.getText().isEmpty()){
+                txtSysMessage.setFill(Color.RED);
+                txtSysMessage.setText("Gebruikersnaam mag niet leeg zijn.");
             }
+            else if (tbxPassword.getText().isEmpty()){
+                txtSysMessage.setFill(Color.RED);
+                txtSysMessage.setText("Wachtwoord mag niet leeg zijn.");
+            }
+            else {// If both fields are not empty continue with the validation.
+                if (!LoginController.validateLogin(tbxUsername.getText(), tbxPassword.getText())) {
+                    setLoginAccepted(false);
 
-             */
+                    txtSysMessage.setFill(Color.RED);
+                    txtSysMessage.setText("Login failed, check if the entered\ninformation is correct and try again.");
+                } else {
+                    setLoginAccepted(true);
+
+                    txtSysMessage.setFill(Color.GREEN);
+                    txtSysMessage.setText("Login accepted, this window should\nexit automatically.");
 
 
-            // Debug easy programming to allow navigation
-            // This action will later only be ran if the login is accepted
-            Menu menu = new Menu();
-            Menu.create(menu);
+                    Menu menu = new Menu(LoginController.getUser(tbxUsername.getText(), tbxPassword.getText()));
+                    Menu.create(menu);
 
-            stage.close(); // Close the window
-
+                    stage.close(); // Close the window
+                }
+            }
         });
         btnLogin.setDefaultButton(true);
 
 
-        // Set the variables as the style
-                /*
-        btnLogin.setStyle(
-                // Font
-                "-fx-font-family:"+BTN_FNT_FAM+";"+
-                "-fx-font-size:"+BTN_FNT_SIZE+";"+
-                "-fx-font-weight:"+BTN_FNT_WGHT+";"+
-                "-fx-text-fill:#"+Integer.toHexString(BTN_FNT_CLR.hashCode())+";"+
-                // Border
-                "-fx-border-width:"+BTN_BRDR_WDTH+";"+
-                "-fx-border-radius:"+BTN_BRDR_RADIUS+";"+
-                "-fx-border-color:#"+Integer.toHexString(BTN_BRDR_CLR.hashCode())+";"+
-                // Background
-                "-fx-background-radius:"+BTN_RADIUS+";"+
-                "-fx-background-color:#"+Integer.toHexString(BTN_BCK_CLR.hashCode())+";"+
-                // Geometry
-                "-fx-min-width:"+BTN_SIZE[0]+";"+
-                "-fx-min-height:"+BTN_SIZE[1]+";"+
-                "-fx-max-width:"+BTN_SIZE[0]+";"+
-                "-fx-max-height:"+BTN_SIZE[1]+";"
-        );
 
-                 */
+
+
+
+
+
+
 
         VBox loginBox = new VBox(tbxUsername, tbxPassword);
         HBox buttonsBox = new HBox(btnLogin);

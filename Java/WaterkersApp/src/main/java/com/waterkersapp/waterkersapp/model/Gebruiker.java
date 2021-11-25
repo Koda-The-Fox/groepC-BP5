@@ -6,6 +6,9 @@ public class Gebruiker {
 
     public Gebruiker() {
     }
+    public Gebruiker(String loginNaam) {
+        LoginNaam = loginNaam;
+    }
     public Gebruiker(String loginNaam, String loginPass) {
         LoginNaam = loginNaam;
         LoginPass = loginPass;

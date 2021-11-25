@@ -28,13 +28,13 @@ public class MinMaxWaardesController {
             }
             return alWaardes;
         } catch (SQLException se) {
-            System.out.println("PersoonController[getAllMinMaxWaardes("+al.getLocatie()+")]: " + se.getMessage());
+            se.printStackTrace();
             return null;
         } finally {
             try {
                 con.close();
             } catch (SQLException se) {
-                se.getMessage();
+                se.printStackTrace();
             }
         }
     }

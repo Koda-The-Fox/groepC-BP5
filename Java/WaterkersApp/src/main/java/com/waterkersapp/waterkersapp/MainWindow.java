@@ -1,5 +1,6 @@
 package com.waterkersapp.waterkersapp;
 
+import com.waterkersapp.waterkersapp.model.Gebruiker;
 import com.waterkersapp.waterkersapp.view.Beheer;
 import com.waterkersapp.waterkersapp.view.Login;
 import com.waterkersapp.waterkersapp.view.Menu;
@@ -25,16 +26,16 @@ public class MainWindow extends Application {
 //        Login.create(login);
 
         // MENU
-//        Menu menu = new Menu();
-//        Menu.create(menu);
+        Menu menu = new Menu(new Gebruiker("JorVV"));
+        Menu.create(menu);
 
         // Sensor overzicht
 //        SensorOverview sensorOverview = new SensorOverview("Grondvochtigheid");
 //        SensorOverview.create(sensorOverview, "Grondvochtigheid");
 
         // Beheer
-        Beheer beheer = new Beheer();
-        Beheer.create(beheer);
+//        Beheer beheer = new Beheer();
+//        Beheer.create(beheer);
     }
 
     /*

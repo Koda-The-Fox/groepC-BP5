@@ -1,5 +1,6 @@
 package com.waterkersapp.waterkersapp.view;
 
+import com.waterkersapp.waterkersapp.model.ArduinoLocatie;
 import com.waterkersapp.waterkersapp.model.sensorRegistratie;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -66,7 +67,7 @@ public class SensorOverview {
     }
 
 
-    public SensorOverview(String sensorTitle) {
+    public SensorOverview(ArduinoLocatie al) {
 
         HBox logoTitleBox = new HBox();
 
@@ -76,14 +77,16 @@ public class SensorOverview {
         imgLogo.setFitHeight(ICON_SIZE[0]);
         imgLogo.setFitWidth(ICON_SIZE[1]);
 
-        Label title = new Label(sensorTitle);
-        title.getStyleClass().add("page_title");
-        title.setStyle("-fx-font-size:"+ICON_SIZE[1]/2.5+";");
+        Label tbxTitle = new Label("Sensor overview");
+        tbxTitle.getStyleClass().add("page_title");
+        tbxTitle.setStyle("-fx-font-size:"+ICON_SIZE[1]/2.5+";");
 
-
-        HBox titleBox = new HBox(title);
+        HBox titleBox = new HBox(tbxTitle);
         titleBox.setAlignment(Pos.CENTER_LEFT);
 
+        Label lblLocatie = new Label("Locatie: " + al.toString());
+        lblLocatie.setPadding(new Insets(0, 0, 0, ICON_SIZE[1]/2));
+        lblLocatie.setAlignment(Pos.CENTER_RIGHT);
 
         int columncount = 7;
         TableView tvContent = new TableView();
@@ -141,15 +144,12 @@ public class SensorOverview {
         tvContent.getItems().add( new sensorRegistratie(1, "2020-01-01", 5, 12, 9, 60, 50) );
         tvContent.getItems().add( new sensorRegistratie(2, "2020-02-01", 7, 15, 13, 75, 60) );
         tvContent.getItems().add( new sensorRegistratie(3, "2020-03-01", 8 ,18 ,16 ,85, 90) );
-*/
 
-        /*
         tvContent.getItems().addAll(
                new SensorReg("Kas 1", "2020-01-01", "09:30:00", 12),
                new SensorReg("Kas 1", "2020-02-01", "10:30:00", 15),
                new SensorReg("Kas 2", "2020-03-01", "11:30:00", 18)
         );
-
          */
 
 
@@ -158,7 +158,6 @@ public class SensorOverview {
         logoTitleBox.getChildren().addAll(imgLogo, titleBox);
         logoTitleBox.setSpacing(10);
         logoTitleBox.setAlignment(Pos.TOP_LEFT);
-
 
         gp.getChildren().addAll(tvContent);
 
@@ -171,7 +170,7 @@ public class SensorOverview {
         HBox contentWrapper = new HBox(contentWindow);
         contentWrapper.setPadding(new Insets(0, ICON_SIZE[1]/2, 15, ICON_SIZE[1]/2));
 
-        VBox wrapperBox = new VBox(logoTitleBox,contentWrapper);
+        VBox wrapperBox = new VBox(logoTitleBox, lblLocatie,contentWrapper);
 
         wrapperBox.setSpacing(5);
 //        wrapperBox.setPadding(new Insets(20));
@@ -179,6 +178,7 @@ public class SensorOverview {
         // set the size of the wrapperBox dynamically to the window(Stage)
         wrapperBox.prefWidthProperty().bind(borderPane.widthProperty());
         wrapperBox.prefHeightProperty().bind(borderPane.heightProperty());
+        wrapperBox.setPadding(new Insets(5, 0,0,0));
 
 
         // set the size of the grid pane dynamically to the wrapperBox

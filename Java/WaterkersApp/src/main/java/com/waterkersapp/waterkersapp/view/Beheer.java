@@ -77,7 +77,13 @@ public class Beheer {
     Spinner<Double> numMinLV;
     Spinner<Double> numMaxLV;
 
-    public Beheer() {
+    public Beheer(ArduinoLocatie al) {
+        if (al.equals(new ArduinoLocatie())){
+            // AL is a new object so no device is selected
+            // disable all buttons but the new device button
+            // @TODO add a new device button and add the functionality
+        }
+
         MinMaxWaardes currentWaardes = new MinMaxWaardes();
 
         HBox logoTitleBox = new HBox();
@@ -86,6 +92,9 @@ public class Beheer {
         ImageView imgLogo = new ImageView(ICON);
         Label title = new Label("Beheer/Instellingen");
         HBox titleBox = new HBox(title);
+
+        Label lblLocatie = new Label("Locatie: " + al.toString());
+        lblLocatie.setPadding(new Insets(0, 0, 0, ICON_SIZE[1]/2));
 
         imgLogo.setFitHeight(ICON_SIZE[0]);
         imgLogo.setFitWidth(ICON_SIZE[1]);
@@ -97,8 +106,8 @@ public class Beheer {
 
         /*--------------[Content]---------------*/
 
-        Label lblLocatie = new Label("Locatie:");
-        gp.add(lblLocatie, 1, 1); // node, column, row
+
+        /*
         ComboBox<ArduinoLocatie> cbLocatie = new ComboBox<>();
         gp.add(cbLocatie, 2, 1, 2, 1); // node, column, row
 
@@ -108,6 +117,7 @@ public class Beheer {
         if (!cbLocatie.getItems().isEmpty()){
             cbLocatie.getSelectionModel().select(0); // automatically select the first item @todo Make it so the uses selects an arduino in the top of the screen so all pages use that to view data
         }
+        */
 
 
         Label lblWater = new Label("WATER");
@@ -223,10 +233,13 @@ public class Beheer {
         a.setSpacing(40);
 
         // Functions
+        /*
         cbLocatie.setOnAction( e -> {
             ArduinoLocatie al = cbLocatie.getValue(); // get the selected location
             LoadData(al);
         });
+
+         */
 
 
 
@@ -238,7 +251,6 @@ public class Beheer {
 
 
         // Initialising
-
         ScrollPane contentWindow = new ScrollPane(a);
         contentWindow.setPadding(new Insets(10));
 
@@ -251,7 +263,7 @@ public class Beheer {
         contentWrapper.setPadding(new Insets(0, ICON_SIZE[1]/2, 15, ICON_SIZE[1]/2));
 
 
-        wrapperBox.getChildren().addAll(logoTitleBox,contentWrapper);
+        wrapperBox.getChildren().addAll(logoTitleBox, lblLocatie,contentWrapper);
 
         wrapperBox.setSpacing(5);
         wrapperBox.setPadding(new Insets(20));

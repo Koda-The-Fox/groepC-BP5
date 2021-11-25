@@ -4,7 +4,7 @@ public class ArduinoLocatie {
 
     Integer ArduinoID;
     String Locatie;
-    String Status;
+    String Status = null;
 
     /**
      * Creates an empty ArduinoLocatie Object
@@ -12,6 +12,10 @@ public class ArduinoLocatie {
     public ArduinoLocatie() {}
 
 
+    public ArduinoLocatie(Integer arduinoID, String locatie) {
+        ArduinoID = arduinoID;
+        Locatie = locatie;
+    }
     public ArduinoLocatie(Integer arduinoID, String locatie, String status) {
         ArduinoID = arduinoID;
         Locatie = locatie;
@@ -44,6 +48,11 @@ public class ArduinoLocatie {
 
     @Override
     public String toString() {
-        return Locatie + " ("+ Status + ")";
+        if (this.Status == null){
+            return Locatie;
+        }
+        else {
+            return Locatie + " (" + Status + ")";
+        }
     }
 }
