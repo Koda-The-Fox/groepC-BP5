@@ -1,11 +1,9 @@
 package com.waterkersapp.waterkersapp.view;
 
-import com.waterkersapp.waterkersapp.control.ArduinoLocatieController;
 import com.waterkersapp.waterkersapp.control.MinMaxWaardesController;
 import com.waterkersapp.waterkersapp.model.ArduinoLocatie;
 import com.waterkersapp.waterkersapp.model.MinMaxWaardes;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,11 +14,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.waterkersapp.waterkersapp.MainWindow.ICON;
 
@@ -66,6 +64,9 @@ public class Beheer {
         return borderPane;
     }
 
+
+    TextField tbxLocatie;
+
     Spinner<Double> numMinPH;
     Spinner<Double> numMaxPH;
     Spinner<Double> numMinGT;
@@ -77,14 +78,16 @@ public class Beheer {
     Spinner<Double> numMinLV;
     Spinner<Double> numMaxLV;
 
-    public Beheer(ArduinoLocatie al) {
-        if (al.equals(new ArduinoLocatie())){
+    public Beheer(ArduinoLocatie ArduinoLocatie) {
+        if (ArduinoLocatie.equals(new ArduinoLocatie())){
             // AL is a new object so no device is selected
             // disable all buttons but the new device button
             // @TODO add a new device button and add the functionality
         }
 
-        MinMaxWaardes currentWaardes = new MinMaxWaardes();
+        //@TODO get the right values from the database
+//        MinMaxWaardes currentWaardes = new MinMaxWaardes();
+        AtomicReference<MinMaxWaardes> currentWaardes = new AtomicReference<>(LoadData(ArduinoLocatie));
 
         HBox logoTitleBox = new HBox();
         GridPane gp = new GridPane();
@@ -93,8 +96,6 @@ public class Beheer {
         Label title = new Label("Beheer/Instellingen");
         HBox titleBox = new HBox(title);
 
-        Label lblLocatie = new Label("Locatie: " + al.toString());
-        lblLocatie.setPadding(new Insets(0, 0, 0, ICON_SIZE[1]/2));
 
         imgLogo.setFitHeight(ICON_SIZE[0]);
         imgLogo.setFitWidth(ICON_SIZE[1]);
@@ -107,75 +108,115 @@ public class Beheer {
         /*--------------[Content]---------------*/
 
 
-        /*
-        ComboBox<ArduinoLocatie> cbLocatie = new ComboBox<>();
-        gp.add(cbLocatie, 2, 1, 2, 1); // node, column, row
+        Button btnNewDevice = new Button("Nieuw Aparaat");
+        btnNewDevice.setOnAction(e -> {
+            //@TODO Make new device script, Maybe a new dialog where we can assign users to the device etc.
+        });
+        gp.add(btnNewDevice, 1, 1, 1, 1);
+        btnNewDevice.setDisable(true); //@TODO remove when testing or if new device script is done
 
-        ArduinoLocatieController alController = new ArduinoLocatieController();
-        //cbLocatie.getItems().addAll("Kas 1","Kas 2","Kas 3"); //@TODO Debug, remove values and load them from the database when possible
-        cbLocatie.getItems().addAll(alController.getAllArduinoLocaties());
-        if (!cbLocatie.getItems().isEmpty()){
-            cbLocatie.getSelectionModel().select(0); // automatically select the first item @todo Make it so the uses selects an arduino in the top of the screen so all pages use that to view data
-        }
-        */
+
+        Label lblLocatie = new Label("Locatie: ");
+        gp.add(lblLocatie, 1, 2, 1, 1);
+
+        //@TODO maybe make this a combobox with the known locations and use the button 'Nieuw Aparaat' to create new devices, this causes a problem becouse the device isnt a name but a reference to a known device in a different table
+        tbxLocatie = new TextField(currentWaardes.get().getLocatie());
+        gp.add(tbxLocatie, 2, 2, 1, 1);
+        Button btnLocatie = new Button("Reset");
+        btnLocatie.setOnAction(e -> {
+            tbxLocatie.setText(currentWaardes.get().getLocatie());
+        });
+        gp.add(btnLocatie, 3, 2, 1, 1);
+
+
 
 
         Label lblWater = new Label("WATER");
         lblWater.getStyleClass().add("title");
         Label lblMinPH = new Label("Min-pH:");
         numMinPH = new Spinner<> ();
-        numMinPH.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 10000, currentWaardes.getMinPH())); //@TODO set to the correct Min/Max values
+        numMinPH.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 10000, currentWaardes.get().getMinPH()));
         numMinPH.setEditable(true);
         Button btnMinPH = new Button("Reset");
+        btnMinPH.setOnAction(e -> {
+            numMinPH.getValueFactory().setValue(currentWaardes.get().getMinPH());
+        });
         Label lblMaxPH = new Label("Max-pH:");
         numMaxPH = new Spinner<> ();
-        numMaxPH.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 10000, currentWaardes.getMaxPH())); //@TODO set to the correct Min/Max values
+        numMaxPH.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 10000, currentWaardes.get().getMaxPH()));
         numMaxPH.setEditable(true);
         Button btnMaxPH = new Button("Reset");
+        btnMaxPH.setOnAction(e -> {
+            numMaxPH.getValueFactory().setValue(currentWaardes.get().getMaxPH());
+        });
         Label lblGrond = new Label("GROND");
         lblGrond.getStyleClass().add("title");
         Label lblMinGT = new Label("Min-grond temperatuur(°C):");
         numMinGT = new Spinner<> ();
-        numMinGT.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(-20, 40 ,15)); // Min temp source: https://www.howplantswork.com/2010/01/07/how-plants-survive-the-cold-or-not/ , Max temp source: https://www.americanmeadows.com/how-hot-is-too-hot-for-plants, init value source: https://www.houseplantsexpert.com/indoor-plants-temperature-guide.html
+        numMinGT.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(-20, 40 , currentWaardes.get().getMinGT())); // Min temp source: https://www.howplantswork.com/2010/01/07/how-plants-survive-the-cold-or-not/ , Max temp source: https://www.americanmeadows.com/how-hot-is-too-hot-for-plants, init value source: https://www.houseplantsexpert.com/indoor-plants-temperature-guide.html
         numMinGT.setEditable(true);
         Button btnMinGT = new Button("Reset");
+        btnMinGT.setOnAction(e -> {
+            numMinGT.getValueFactory().setValue(currentWaardes.get().getMinGT());
+        });
         Label lblMaxGT = new Label("Max-grond temperatuur(°C):");
         numMaxGT = new Spinner<> ();
-        numMaxGT.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(-20, 40, 24)); // Min temp source: https://www.howplantswork.com/2010/01/07/how-plants-survive-the-cold-or-not/ , Max temp source: https://www.americanmeadows.com/how-hot-is-too-hot-for-plants, init value source: https://www.houseplantsexpert.com/indoor-plants-temperature-guide.html
+        numMaxGT.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(-20, 40, currentWaardes.get().getMaxGT())); // Min temp source: https://www.howplantswork.com/2010/01/07/how-plants-survive-the-cold-or-not/ , Max temp source: https://www.americanmeadows.com/how-hot-is-too-hot-for-plants, init value source: https://www.houseplantsexpert.com/indoor-plants-temperature-guide.html
         numMaxGT.setEditable(true);
         Button btnMaxGT = new Button("Reset");
+        btnMaxGT.setOnAction(e -> {
+            numMaxGT.getValueFactory().setValue(currentWaardes.get().getMaxGT());
+        });
         Label lblMinGV = new Label("Min-grond vochtigheid(%):");
         numMinGV = new Spinner<> ();
-        numMinGV.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 100, 20)); // Moisture doesn't go below 0 or above 100 because it's a percentage. init value source: https://www.greenwaybiotech.com/blogs/gardening-articles/how-soil-moisture-affects-your-plants-growth
+        numMinGV.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 100, currentWaardes.get().getMinGV())); // Moisture doesn't go below 0 or above 100 because it's a percentage. init value source: https://www.greenwaybiotech.com/blogs/gardening-articles/how-soil-moisture-affects-your-plants-growth
         numMinGV.setEditable(true);
         Button btnMinGV = new Button("Reset");
+        btnMinGV.setOnAction(e -> {
+            numMinGV.getValueFactory().setValue(currentWaardes.get().getMinGV());
+        });
         Label lblMaxGV = new Label("Max-grond vochtigheid(%):");
         numMaxGV = new Spinner<> ();
-        numMaxGV.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 100, 60)); // Moisture doesn't go below 0 or above 100 because it's a percentage. init value source: https://www.greenwaybiotech.com/blogs/gardening-articles/how-soil-moisture-affects-your-plants-growth
+        numMaxGV.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 100, currentWaardes.get().getMaxGV())); // Moisture doesn't go below 0 or above 100 because it's a percentage. init value source: https://www.greenwaybiotech.com/blogs/gardening-articles/how-soil-moisture-affects-your-plants-growth
         numMaxGV.setEditable(true);
         Button btnMaxGV = new Button("Reset");
+        btnMaxGV.setOnAction(e -> {
+            numMinLT.getValueFactory().setValue(currentWaardes.get().getMaxGV());
+        });
         Label lblLucht = new Label("LUCHT");
         lblLucht.getStyleClass().add("title");
         Label lblMinLT = new Label("Min-Lucht temperatuur(°C):");
         numMinLT = new Spinner<> ();
-        numMinLT.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(-20, 40 ,15)); // Min temp source: https://www.howplantswork.com/2010/01/07/how-plants-survive-the-cold-or-not/ , Max temp source: https://www.americanmeadows.com/how-hot-is-too-hot-for-plants, init value source: https://www.houseplantsexpert.com/indoor-plants-temperature-guide.html
+        numMinLT.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(-20, 40 , currentWaardes.get().getMinLT())); // Min temp source: https://www.howplantswork.com/2010/01/07/how-plants-survive-the-cold-or-not/ , Max temp source: https://www.americanmeadows.com/how-hot-is-too-hot-for-plants, init value source: https://www.houseplantsexpert.com/indoor-plants-temperature-guide.html
         numMinLT.setEditable(true);
         Button btnMinLT = new Button("Reset");
+        btnMinLT.setOnAction(e -> {
+            numMinLT.getValueFactory().setValue(currentWaardes.get().getMinLT());
+        });
         Label lblMaxLT = new Label("Max-Lucht temperatuur(°C):");
         numMaxLT = new Spinner<> ();
-        numMaxLT.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(-20, 40, 24)); // Min temp source: https://www.howplantswork.com/2010/01/07/how-plants-survive-the-cold-or-not/ , Max temp source: https://www.americanmeadows.com/how-hot-is-too-hot-for-plants, init value source: https://www.houseplantsexpert.com/indoor-plants-temperature-guide.html
+        numMaxLT.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(-20, 40, currentWaardes.get().getMaxLT())); // Min temp source: https://www.howplantswork.com/2010/01/07/how-plants-survive-the-cold-or-not/ , Max temp source: https://www.americanmeadows.com/how-hot-is-too-hot-for-plants, init value source: https://www.houseplantsexpert.com/indoor-plants-temperature-guide.html
         numMaxLT.setEditable(true);
         Button btnMaxLT = new Button("Reset");
+        btnMaxLT.setOnAction(e -> {
+            numMaxLT.getValueFactory().setValue(currentWaardes.get().getMaxLT());
+        });
         Label lblMinLV = new Label("Min-Lucht vochtigheid(%):");
         numMinLV = new Spinner<> ();
-        numMinLV.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 100, 20)); // Moisture doesn't go below 0 or above 100 because it's a percentage. init value source: https://www.greenwaybiotech.com/blogs/gardening-articles/how-soil-moisture-affects-your-plants-growth
+        numMinLV.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 100, currentWaardes.get().getMinLV())); // Moisture doesn't go below 0 or above 100 because it's a percentage. init value source: https://www.greenwaybiotech.com/blogs/gardening-articles/how-soil-moisture-affects-your-plants-growth
         numMinLV.setEditable(true);
         Button btnMinLV = new Button("Reset");
+        btnMinLV.setOnAction(e -> {
+            numMinLV.getValueFactory().setValue(currentWaardes.get().getMinLV());
+        });
         Label lblMaxLV = new Label("Max-Lucht vochtigheid(%):");
         numMaxLV = new Spinner<> ();
-        numMaxLV.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 100, 60)); // Moisture doesn't go below 0 or above 100 because it's a percentage. init value source: https://www.greenwaybiotech.com/blogs/gardening-articles/how-soil-moisture-affects-your-plants-growth
+        numMaxLV.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 100, currentWaardes.get().getMaxLV())); // Moisture doesn't go below 0 or above 100 because it's a percentage. init value source: https://www.greenwaybiotech.com/blogs/gardening-articles/how-soil-moisture-affects-your-plants-growth
         numMaxLV.setEditable(true);
         Button btnMaxLV = new Button("Reset");
+        btnMaxLV.setOnAction(e -> {
+            numMaxLV.getValueFactory().setValue(currentWaardes.get().getMaxLV());
+        });
 
 
         gp.add(lblWater, 1, 3, 2, 1);
@@ -225,21 +266,29 @@ public class Beheer {
         gp.prefWidthProperty().bind(wrapperBox.widthProperty());
 //        gp.prefHeightProperty().bind(wrapperBox.heightProperty());
 
+
+        Text txtSysMessage = new Text (""); // set a new line so the label is visible by using an empty line./
+        txtSysMessage.setFill(Color.RED);
+
         Button btnSave = new Button("Opslaan");
+        btnSave.setOnAction(e -> {
+            MinMaxWaardesController MMC = new MinMaxWaardesController();
+            if (MMC.updateMinMaxWaardes(currentWaardes.get(), getInserinNewObject())){
+                txtSysMessage.setFill(Color.GREEN);
+                txtSysMessage.setText("Succesvol opgeslagen, u kunt dit scherm afsluiten.");
+                currentWaardes.set(getInserinNewObject());
+            }
+            else{
+                txtSysMessage.setFill(Color.RED);
+                txtSysMessage.setText("Er ging iets fout, controleer alle waardes of probeer het later nog eens. Als dit vaker voor komt neem contact op met de customer Support.");
+            }
+        });
         Button btnCancel = new Button("Afbreken");
         HBox b = new HBox( btnSave, btnCancel);
         b.setSpacing(5);
-        VBox a = new VBox(gp ,b);
-        a.setSpacing(40);
+        VBox a = new VBox(gp, txtSysMessage, b);
+        a.setSpacing(20);
 
-        // Functions
-        /*
-        cbLocatie.setOnAction( e -> {
-            ArduinoLocatie al = cbLocatie.getValue(); // get the selected location
-            LoadData(al);
-        });
-
-         */
 
 
 
@@ -263,7 +312,7 @@ public class Beheer {
         contentWrapper.setPadding(new Insets(0, ICON_SIZE[1]/2, 15, ICON_SIZE[1]/2));
 
 
-        wrapperBox.getChildren().addAll(logoTitleBox, lblLocatie,contentWrapper);
+        wrapperBox.getChildren().addAll(logoTitleBox /*, lblLocatie */,contentWrapper);
 
         wrapperBox.setSpacing(5);
         wrapperBox.setPadding(new Insets(20));
@@ -274,12 +323,33 @@ public class Beheer {
         borderPane.setLeft(wrapperBox);
     }
 
-    private void LoadData(ArduinoLocatie al){
+    /**
+     * Converts the current values in the spinners and text field into an object
+     * @return
+     */
+    private MinMaxWaardes getInserinNewObject(){
+        return new MinMaxWaardes(
+                tbxLocatie.getText(),
+
+                numMinPH.getValue(),
+                numMaxPH.getValue(),
+                numMinGT.getValue(),
+                numMaxGT.getValue(),
+                numMinLT.getValue(),
+                numMaxLT.getValue(),
+                numMinGV.getValue(),
+                numMaxGV.getValue(),
+                numMinLV.getValue(),
+                numMaxLV.getValue()
+        );
+    }
+
+    private MinMaxWaardes LoadData(ArduinoLocatie al){
         MinMaxWaardesController mmController = new MinMaxWaardesController();
-        MinMaxWaardes mmWaardes = mmController.getSpecificMinMaxWaardes(al);
+        return mmController.getSpecificMinMaxWaardes(al);
 
         //@TODO Use listener instead so the value is dynamic to the object. in that case we need an 'originalObject' & 'currentObject' so we can revert the changes.
-
+        /*
         numMinPH.getValueFactory().setValue(mmWaardes.getMinPH());
         numMaxPH.getValueFactory().setValue(mmWaardes.getMaxPH());
 
@@ -292,6 +362,7 @@ public class Beheer {
         numMaxLT.getValueFactory().setValue(mmWaardes.getMaxLT());
         numMinLV.getValueFactory().setValue(mmWaardes.getMinLV());
         numMaxLV.getValueFactory().setValue(mmWaardes.getMaxLV());
+        */
     }
 
 }
