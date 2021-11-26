@@ -41,12 +41,14 @@ Wij willen aan de hand van ons product het verbruik van schon water verminderen 
 - [X] Simpel UI;
 - [X] Volledig opgemaakte UI;
 - [X] Ge-optimaliseerd UI;
+- [ ] NewDevice Dialog UI;
 
 #### Backend
 - [X] Login
 - [X] Menu
 - [ ] Sensor overzicht
 - [ ] Beheer & Instellingen
+- [ ] NewDevice Dialog
 
 ##### Database
 - [ ] library toevoegen;
