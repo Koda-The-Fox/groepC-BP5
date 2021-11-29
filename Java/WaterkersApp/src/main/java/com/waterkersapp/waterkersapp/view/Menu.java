@@ -46,7 +46,7 @@ public class Menu {
 
         Scene scene = new Scene(menu.getParent(), (WINDOW_SIZE[0]), (WINDOW_SIZE[1]));
         // set the styles for the scene
-        scene.getStylesheets().addAll(SensorOverview.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString());
+        scene.getStylesheets().addAll(Menu.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString());
 
         stage.setScene(scene);
         // set the window to be resizable

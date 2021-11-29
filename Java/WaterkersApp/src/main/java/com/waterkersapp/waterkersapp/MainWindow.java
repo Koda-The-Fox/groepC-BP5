@@ -1,10 +1,7 @@
 package com.waterkersapp.waterkersapp;
 
 import com.waterkersapp.waterkersapp.model.Gebruiker;
-import com.waterkersapp.waterkersapp.view.Beheer;
-import com.waterkersapp.waterkersapp.view.Login;
-import com.waterkersapp.waterkersapp.view.Menu;
-import com.waterkersapp.waterkersapp.view.SensorOverview;
+import com.waterkersapp.waterkersapp.view.*;
 import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -26,8 +23,8 @@ public class MainWindow extends Application {
 //        Login.create(login);
 
         // MENU
-        Menu menu = new Menu(new Gebruiker("JorVV"));
-        Menu.create(menu);
+//        Menu menu = new Menu(new Gebruiker("JorVV"));
+//        Menu.create(menu);
 
         // Sensor overzicht
 //        SensorOverview sensorOverview = new SensorOverview("Grondvochtigheid");
@@ -36,6 +33,11 @@ public class MainWindow extends Application {
         // Beheer
 //        Beheer beheer = new Beheer();
 //        Beheer.create(beheer);
+
+
+        // change password dialog
+        ChangePassDial cpd = new ChangePassDial(new Gebruiker("JorW"));
+        ChangePassDial.create(cpd);
     }
 
     /*

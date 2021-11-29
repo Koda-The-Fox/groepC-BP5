@@ -36,7 +36,6 @@ public class Beheer {
 
 
     BorderPane borderPane = new BorderPane();
-    //GridPane borderPane = new GridPane();
 
     public static Stage stage;
 
@@ -47,7 +46,7 @@ public class Beheer {
 
         Scene scene = new Scene(beheer.getParent(), (WINDOW_SIZE[0]), (WINDOW_SIZE[1]));
         // set the styles for the scene
-        scene.getStylesheets().addAll(SensorOverview.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString(), SensorOverview.class.getResource("/com/waterkersapp/css/BeheerStyle.css").toString());
+        scene.getStylesheets().addAll(Beheer.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString(), SensorOverview.class.getResource("/com/waterkersapp/css/BeheerStyle.css").toString());
         stage.setScene(scene);
         // set the window to be resizable
         stage.setResizable(true); // default: true
@@ -63,7 +62,6 @@ public class Beheer {
     public Parent getParent() {
         return borderPane;
     }
-
 
     TextField tbxLocatie;
 
@@ -85,8 +83,6 @@ public class Beheer {
             // @TODO add a new device button and add the functionality
         }
 
-        //@TODO get the right values from the database
-//        MinMaxWaardes currentWaardes = new MinMaxWaardes();
         AtomicReference<MinMaxWaardes> currentWaardes = new AtomicReference<>(LoadData(ArduinoLocatie));
 
         HBox logoTitleBox = new HBox();
