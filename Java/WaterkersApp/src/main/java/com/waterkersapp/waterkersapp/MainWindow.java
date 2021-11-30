@@ -36,8 +36,7 @@ public class MainWindow extends Application {
 
 
         // change password dialog
-        ChangePassDial cpd = new ChangePassDial(new Gebruiker("JorW"));
-        ChangePassDial.create(cpd);
+        ChangePassDial.create(new Gebruiker("JorVV"));
     }
 
     /*
