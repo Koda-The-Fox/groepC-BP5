@@ -56,7 +56,7 @@ Wij willen aan de hand van ons product het verbruik van schon water verminderen 
 
 ##### Database
 - [ ] library toevoegen;
-- [X] Connecite(OODBC) maken & testen;
+- [X] Connecite(DBCP) maken & testen;
 - [ ] Connecite maken & testen;
 - [ ] Integratie van code en Database;  
 
