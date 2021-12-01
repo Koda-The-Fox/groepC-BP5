@@ -41,18 +41,22 @@ Wij willen aan de hand van ons product het verbruik van schon water verminderen 
 - [X] Simpel UI;
 - [X] Volledig opgemaakte UI;
 - [X] Ge-optimaliseerd UI;
-- [ ] NewDevice Dialog UI;
+- [ ] New/Change Device Dialog UI;
+- [ ] New/Change User Dialog UI;
+- [X] New/Change Password Dialog UI;
 
 #### Backend
-- [X] Login
-- [X] Menu
-- [ ] Sensor overzicht
-- [ ] Beheer & Instellingen
-- [ ] NewDevice Dialog
+- [X] Login;
+- [X] Menu;
+- [ ] Sensor overzicht;
+- [ ] Beheer & Instellingen;
+- [ ] New/Change Device Dialog;
+- [ ] New/Change User Dialog;
+- [X] New/Change Password Dialog;
 
 ##### Database
 - [ ] library toevoegen;
-- [X] Connecite(OODBC) maken & testen;
+- [X] Connecite(DBCP) maken & testen;
 - [ ] Connecite maken & testen;
 - [ ] Integratie van code en Database;  
 
