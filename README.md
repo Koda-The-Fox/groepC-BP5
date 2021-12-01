@@ -2,9 +2,9 @@
 ![Waterkers Logo](/Media/Images/logo.png)
 
 ### Contributors 
-* Jordy van Venrooij ([Koda](https://github.com/Koda-The-Fox))
-* Charlotte de Groot ([degrootcharlotte](https://github.com/degrootcharlotte))
-* Thobian de koning ([TPJThobian](https://github.com/TPJThobian))
+* Jordy van Venrooij ([Koda](https://github.com/Koda-The-Fox)) - JavaFX Application.
+* Charlotte de Groot ([degrootcharlotte](https://github.com/degrootcharlotte)) - Android Application.
+* Thobian de koning ([TPJThobian](https://github.com/TPJThobian)) - Heroku & Help with the rest of the projrct.
 
 
 ### Het project
