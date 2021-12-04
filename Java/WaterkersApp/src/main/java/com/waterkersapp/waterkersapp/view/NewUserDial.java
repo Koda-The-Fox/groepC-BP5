@@ -1,36 +1,40 @@
 package com.waterkersapp.waterkersapp.view;
 
-import com.waterkersapp.waterkersapp.control.ChangePassController;
-import com.waterkersapp.waterkersapp.model.ArduinoLocatie;
 import com.waterkersapp.waterkersapp.model.Gebruiker;
+<<<<<<< HEAD
 import com.waterkersapp.waterkersapp.model.sensorRegistratie;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+=======
+>>>>>>> parent of c409198 (Change new user dialog UI, Table Views functionality)
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+<<<<<<< HEAD
 import javax.security.auth.callback.Callback;
 
 import java.util.ArrayList;
 
+=======
+>>>>>>> parent of c409198 (Change new user dialog UI, Table Views functionality)
 import static com.waterkersapp.waterkersapp.MainWindow.ICON;
 
 public class NewUserDial {
 
+<<<<<<< HEAD
 
 
 
@@ -45,48 +49,77 @@ public class NewUserDial {
             dialog.setTitle("Gebruiker '" + ogUser.getLoginNaam() + "' bewerken.");
             dialog.setHeaderText("Gegevens veranderen voor gebruiker: " + ogUser.getLoginNaam());
         }
+=======
+    // Variables
+    ///////////////////////[Window]\\\\\\\\\\\\\\\\\\\\\
+    private static final double[] WINDOW_SIZE = {750, 450}; // Default: 800 * 450;
+    Color backgroundColor = Color.web("#BADC8F");
+
+    ///////////////////////[Logo]\\\\\\\\\\\\\\\\\\\\\
+    private static final double[] ICON_SIZE = {75, 75}; //Default: 100;
 
 
-        // Set the button types.
-        ButtonType loginButtonType = new ButtonType("Opslaan", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, new ButtonType("Annuleren", ButtonBar.ButtonData.CANCEL_CLOSE));
 
-        // Create the username and password labels and fields.
 
+
+    BorderPane borderPane = new BorderPane();
+
+    public static Stage stage;
+
+    public static void create(NewUserDial newUser) {
+        stage = new Stage();
+        stage.setTitle("Beheer/Instellingen");
+        stage.getIcons().add(ICON);
+>>>>>>> parent of c409198 (Change new user dialog UI, Table Views functionality)
+
+        Scene scene = new Scene(newUser.getParent(), (WINDOW_SIZE[0]), (WINDOW_SIZE[1]));
+        // set the styles for the scene
+        scene.getStylesheets().addAll(NewUserDial.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString());
+        stage.setScene(scene);
+        // set the window to be resizable
+        stage.setResizable(true); // default: true
+
+        stage.setOnCloseRequest(e -> stage.close());
+
+        stage.initModality(Modality.APPLICATION_MODAL);
+
+
+//        stage.show();
+        stage.showAndWait(); // show and stay focussed on window
+    }
+    public Parent getParent() {
+        return borderPane;
+    }
+
+
+    /**
+     * Leave ogUser null to create a new user.
+     * @param ogUser The user to edit.
+     */
+    public NewUserDial(Gebruiker ogUser) {
+        HBox titleBox = new HBox();
         GridPane gp = new GridPane();
         VBox wrapperBox = new VBox();
 
         // Set the title for the page.
         // if the variable ogUser == null the page is meant to create a user not edit one.
+        Label lblTitle = new Label("Gebruiker aanmaken.");
+        if (ogUser != null){
+            lblTitle.setText("Gebruiker '" + ogUser.getLoginNaam() + "' bewerken.");
+        }
 
         Label lblUsername = new Label("Gebruikersnaam: ");
         TextField tbxUsername = new TextField("");
-        Button btnRstUsern = new Button("Reset");
-        btnRstUsern.setOnAction(e -> {
-            if (ogUser != null){
-                tbxUsername.setText(ogUser.getLoginNaam());
-            }
-            else{
-                tbxUsername.setText("");
-            }
+        Button btnRstUsername = new Button("Reset");
+        btnRstUsername.setOnAction(e -> {
+            //@TODO Make the functionality to reset the text
         });
-        gp.add(lblUsername, 1, 1, 1, 1);
-        gp.add(tbxUsername, 2, 1, 1, 1);
-        gp.add(btnRstUsern, 3, 1, 1, 1);
         Label lblPassword = new Label("Wachtwoord: ");
-        Text txtSystemMsgPssword = new Text("");
-        Button btnChngePasword = new Button("Wachtwoord veranderen");
-        PasswordField tbxcrtePass = new PasswordField();
+        Button btnChngePasword = new Button("Verander wachtwoord");
         btnChngePasword.setOnAction(e -> {
-            if  (ChangePassDial.create(ogUser)){
-                txtSystemMsgPssword.setFill(Color.GREEN);
-                txtSystemMsgPssword.setText("Wachtwoord veraderen is gelukt.");
-            }
-            else{
-                txtSystemMsgPssword.setFill(Color.RED);
-                txtSystemMsgPssword.setText("Wachtwoord veraderen is mislukt of geannuleerd.");
-            }
+            //@TODO Direct tot the change password dialog
         });
+<<<<<<< HEAD
         gp.add(lblPassword, 1, 2, 1, 1);
 
         if (ogUser == null){
@@ -163,42 +196,35 @@ public class NewUserDial {
         TableColumn<ArduinoLocatie, String> tcStatus = new TableColumn<ArduinoLocatie, String>("Status");
         tcStatus.setCellValueFactory(cellData -> cellData.getValue().statusProperty());
         tcStatus.prefWidthProperty().bind(tvDevices.widthProperty().divide(columncount));
+=======
+        Button btnRstPasword = new Button("Reset");
+        btnRstPasword.setOnAction(e -> {
+            //@TODO Make the functionality to reset the text
+        });
 
-        tvDevices.getColumns().addAll(tcID, tcLocatie, tcStatus);
 
+>>>>>>> parent of c409198 (Change new user dialog UI, Table Views functionality)
+
+
+<<<<<<< HEAD
 
         tvDevices.setItems(flRegDev);
+=======
+>>>>>>> parent of c409198 (Change new user dialog UI, Table Views functionality)
 
-
-        // Password validation
-        /*
-        Label lblCurPass = new Label("Huidig wachtwoord: ");
-        PasswordField tbxPassword = new PasswordField();
-        HBox passwordBox = new HBox(lblCurPass, tbxPassword);
-        wrapperBox.getChildren().addAll(gp, passwordBox);
-         */
-
-        wrapperBox.getChildren().addAll(gp);
+        titleBox.getChildren().addAll(lblTitle);
+        gp.getChildren().addAll();
+        wrapperBox.getChildren().addAll(titleBox ,gp);
 
         wrapperBox.setSpacing(5);
         wrapperBox.setPadding(new Insets(20));
 
+        wrapperBox.prefWidthProperty().bind(borderPane.widthProperty());
+        wrapperBox.prefHeightProperty().bind(borderPane.heightProperty());
 
-        dialog.getDialogPane().setContent(wrapperBox);
-
-
-        // Convert the result to a username-password-pair when the login button is clicked.
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == loginButtonType) {
-                //return ChangePassController.ChangePassword(ogUser, tbxOldPass.getText(), tbxNewPass.getText());
-            }
-            return false;
-        });
-
-        dialog.showAndWait();
-
-        return dialog.getResult();
+        borderPane.setLeft(wrapperBox);
     }
+<<<<<<< HEAD
 
 
 
@@ -207,4 +233,6 @@ public class NewUserDial {
 
     }
 
+=======
+>>>>>>> parent of c409198 (Change new user dialog UI, Table Views functionality)
 }
