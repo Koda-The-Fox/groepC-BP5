@@ -35,7 +35,10 @@ public class SensorOverview {
 
 
 
+<<<<<<< HEAD
     private final TableView tvContent = new TableView();
+=======
+>>>>>>> parent of c409198 (Change new user dialog UI, Table Views functionality)
 
     BorderPane borderPane = new BorderPane();
     //GridPane borderPane = new GridPane();
@@ -89,6 +92,7 @@ public class SensorOverview {
         lblLocatie.setPadding(new Insets(0, 0, 0, ICON_SIZE[1]/2));
         lblLocatie.setAlignment(Pos.CENTER_RIGHT);
 
+<<<<<<< HEAD
 
         // Setup and add the columns to the table
         // Also use setCellValueFactory's to get the right value from the onject 'sensorRegistratie'.
@@ -122,8 +126,44 @@ public class SensorOverview {
         tcLuTmp.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
         TableColumn<sensorRegistratie, Double> tcLuVht = new TableColumn<sensorRegistratie, Double>("LuchtVocht");
         tcLuVht.setCellValueFactory(cellData -> cellData.getValue().luchtVochtProperty());
+=======
+        int columncount = 7;
+        TableView tvContent = new TableView();
+        TableColumn<sensorRegistratie, Integer> tcKas = new TableColumn<>("Arduino");
+        tcKas.setCellValueFactory(new PropertyValueFactory<>("Arduino"));
+        tcKas.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
+        TableColumn<sensorRegistratie, String> tcDate = new TableColumn<>("Datum & Tijd");
+        tcDate.setCellValueFactory(new PropertyValueFactory<>("Datum"));
+        tcDate.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
+
+        // Water
+        TableColumn<sensorRegistratie, String> tcWater = new TableColumn<>("Water");
+        TableColumn<sensorRegistratie, Double> tcPhVal = new TableColumn<>("PHwaarde");
+        tcPhVal.setCellValueFactory(new PropertyValueFactory<>("PHwaarde"));
+        tcPhVal.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
+        tcWater.getColumns().add(tcPhVal);
+        // Grond
+        TableColumn<sensorRegistratie, Double> tcGrond = new TableColumn<>("Grond");
+        TableColumn<sensorRegistratie, Double> tcGrTmp = new TableColumn<>("GrondTemp");
+        tcGrTmp.setCellValueFactory(new PropertyValueFactory<>("GrondTemp"));
+        tcGrTmp.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
+        TableColumn<sensorRegistratie, Double> tcGrVht = new TableColumn<>("GrondVocht");
+        tcGrVht.setCellValueFactory(new PropertyValueFactory<>("GrondVocht"));
+        tcGrVht.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
+        tcGrond.getColumns().addAll(tcGrTmp, tcGrVht);
+        // Lucht
+        TableColumn<sensorRegistratie, Date> tcLucht = new TableColumn<>("Lucht");
+        TableColumn<sensorRegistratie, Double> tcLuTmp = new TableColumn<>("LuchtTemp");
+        tcLuTmp.setCellValueFactory(new PropertyValueFactory<>("LuchtTemp"));
+        tcLuTmp.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
+        TableColumn<sensorRegistratie, Double> tcLuVht = new TableColumn<>("LuchtVocht");
+        tcLuVht.setCellValueFactory(new PropertyValueFactory<>("LuchtVocht"));
+>>>>>>> parent of c409198 (Change new user dialog UI, Table Views functionality)
         tcLuVht.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
         tcLucht.getColumns().addAll(tcLuTmp, tcLuVht);
+
+
+
 
         // set the table width and height dynamically
         tvContent.prefWidthProperty().bind(gp.widthProperty());
@@ -132,13 +172,15 @@ public class SensorOverview {
 
         tvContent.setPlaceholder(new Label("Geen data gevonden, probeer later nog eens."));
 
-        // Setup the table
         tvContent.getColumns().addAll(tcKas, tcDate, tcWater, tcGrond, tcLucht);
 
+<<<<<<< HEAD
         ArrayList<sensorRegistratie> alSenReg = new ArrayList<>();
         ObservableList<sensorRegistratie> olSenReg = FXCollections.observableArrayList();
+        olSenReg.setAll(alSenReg);
         FilteredList<sensorRegistratie> flSenReg = new FilteredList<>(olSenReg);
 
+        tvContent.setItems(flSenReg);
 
         // Setup the data lists for the table
         // @TODO Retrieve the data & make it in such a way that it loads in an observable list.
@@ -148,11 +190,27 @@ public class SensorOverview {
         alSenReg.add(new sensorRegistratie(1, "2020-01-01", 5, 12, 10, 60, 50));
         alSenReg.add(new sensorRegistratie(2, "2020-02-01", 7, 15, 13, 75, 60));
         alSenReg.add(new sensorRegistratie(3, "2020-03-01", 8 ,18 ,16 ,85, 90));
-        olSenReg.setAll(alSenReg);
+=======
+        System.out.println(new sensorRegistratie(1, "2020-01-01", 5, 12, 9, 60, 50));
+        System.out.println(new sensorRegistratie(2, "2020-02-01", 7, 15, 13, 75, 60));
+        System.out.println(new sensorRegistratie(3, "2020-03-01", 8 ,18 ,16 ,85, 90));
+>>>>>>> parent of c409198 (Change new user dialog UI, Table Views functionality)
 
-        tvContent.setItems(flSenReg);
         refreshTable(); // refresh the table after editing the list, (Delete, Add, Change) !!!!!Important!!!!!
         System.out.println("alSenReg.size(): " + alSenReg.size());
+
+        // @TODO Retrieve the data & make it in such a way that it loads in an observable list.
+        /*
+        tvContent.getItems().add( new sensorRegistratie(1, "2020-01-01", 5, 12, 9, 60, 50) );
+        tvContent.getItems().add( new sensorRegistratie(2, "2020-02-01", 7, 15, 13, 75, 60) );
+        tvContent.getItems().add( new sensorRegistratie(3, "2020-03-01", 8 ,18 ,16 ,85, 90) );
+
+        tvContent.getItems().addAll(
+               new SensorReg("Kas 1", "2020-01-01", "09:30:00", 12),
+               new SensorReg("Kas 1", "2020-02-01", "10:30:00", 15),
+               new SensorReg("Kas 2", "2020-03-01", "11:30:00", 18)
+        );
+         */
 
 
         GridPane.setConstraints(tvContent, 1, 3); // node, column, row
@@ -199,10 +257,5 @@ public class SensorOverview {
 
         borderPane.setLeft(wrapperBox);
         //borderPane.setBackground(new Background(new BackgroundFill(backgroundColor, null, null)));
-    }
-
-
-    protected void refreshTable() {
-        tvContent.refresh();
     }
 }

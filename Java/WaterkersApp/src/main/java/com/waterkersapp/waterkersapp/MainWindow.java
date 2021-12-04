@@ -1,6 +1,5 @@
 package com.waterkersapp.waterkersapp;
 
-import com.waterkersapp.waterkersapp.model.ArduinoLocatie;
 import com.waterkersapp.waterkersapp.model.Gebruiker;
 import com.waterkersapp.waterkersapp.view.*;
 import javafx.application.Application;
@@ -28,8 +27,8 @@ public class MainWindow extends Application {
 //        Menu.create(menu);
 
         // Sensor overzicht
-        SensorOverview sensorOverview = new SensorOverview(new ArduinoLocatie(1, "Test Locatie", "Uit" ));
-        SensorOverview.create(sensorOverview);
+//        SensorOverview sensorOverview = new SensorOverview("Grondvochtigheid");
+//        SensorOverview.create(sensorOverview, "Grondvochtigheid");
 
         // Beheer
 //        Beheer beheer = new Beheer();
@@ -37,11 +36,7 @@ public class MainWindow extends Application {
 
 
         // change password dialog
-//        ChangePassDial.create(new Gebruiker("JorVV"));
-
-        // change/new user  dialog
-//        NewUserDial.create(new Gebruiker("JorVV")); // Change user
-//        NewUserDial.create(null); // New user
+        ChangePassDial.create(new Gebruiker("JorVV"));
     }
 
     /*
