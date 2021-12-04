@@ -137,10 +137,8 @@ public class SensorOverview {
 
         ArrayList<sensorRegistratie> alSenReg = new ArrayList<>();
         ObservableList<sensorRegistratie> olSenReg = FXCollections.observableArrayList();
-        olSenReg.setAll(alSenReg);
         FilteredList<sensorRegistratie> flSenReg = new FilteredList<>(olSenReg);
 
-        tvContent.setItems(flSenReg);
 
         // Setup the data lists for the table
         // @TODO Retrieve the data & make it in such a way that it loads in an observable list.
@@ -150,7 +148,9 @@ public class SensorOverview {
         alSenReg.add(new sensorRegistratie(1, "2020-01-01", 5, 12, 10, 60, 50));
         alSenReg.add(new sensorRegistratie(2, "2020-02-01", 7, 15, 13, 75, 60));
         alSenReg.add(new sensorRegistratie(3, "2020-03-01", 8 ,18 ,16 ,85, 90));
+        olSenReg.setAll(alSenReg);
 
+        tvContent.setItems(flSenReg);
         refreshTable(); // refresh the table after editing the list, (Delete, Add, Change) !!!!!Important!!!!!
         System.out.println("alSenReg.size(): " + alSenReg.size());
 
