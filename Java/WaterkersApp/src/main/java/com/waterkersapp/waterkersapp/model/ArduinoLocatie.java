@@ -1,13 +1,10 @@
 package com.waterkersapp.waterkersapp.model;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-
 public class ArduinoLocatie {
 
-    final private ObjectProperty<Integer> ArduinoID = new SimpleObjectProperty<>();
-    final private ObjectProperty<String> Locatie = new SimpleObjectProperty<>();
-    final private ObjectProperty<String> Status = new SimpleObjectProperty<>();
+    Integer ArduinoID;
+    String Locatie;
+    String Status = null;
 
     /**
      * Creates an empty ArduinoLocatie Object
@@ -16,55 +13,43 @@ public class ArduinoLocatie {
 
 
     public ArduinoLocatie(Integer arduinoID, String locatie) {
-        this.ArduinoID.set(arduinoID);
-        this.Locatie.set(locatie);
+        ArduinoID = arduinoID;
+        Locatie = locatie;
     }
     public ArduinoLocatie(Integer arduinoID, String locatie, String status) {
-        this.ArduinoID.set(arduinoID);
-        this.Locatie.set(locatie);
-        this.Status.set(status);
+        ArduinoID = arduinoID;
+        Locatie = locatie;
+        Status = status;
     }
 
-    public Integer getArduinoID() {
-        return ArduinoID.get();
-    }
-
-    public ObjectProperty<Integer> arduinoIDProperty() {
+    public int getArduinoID() {
         return ArduinoID;
     }
 
     public void setArduinoID(Integer arduinoID) {
-        this.ArduinoID.set(arduinoID);
+        ArduinoID = arduinoID;
     }
 
     public String getLocatie() {
-        return Locatie.get();
-    }
-
-    public ObjectProperty<String> locatieProperty() {
         return Locatie;
     }
 
     public void setLocatie(String locatie) {
-        this.Locatie.set(locatie);
+        Locatie = locatie;
     }
 
     public String getStatus() {
-        return Status.get();
-    }
-
-    public ObjectProperty<String> statusProperty() {
         return Status;
     }
 
     public void setStatus(String status) {
-        this.Status.set(status);
+        Status = status;
     }
 
     @Override
     public String toString() {
         if (this.Status == null){
-            return Locatie.get();
+            return Locatie;
         }
         else {
             return Locatie.get() + " (" + Status.get() + ")";
