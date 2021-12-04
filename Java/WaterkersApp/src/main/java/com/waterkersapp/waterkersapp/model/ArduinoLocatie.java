@@ -67,7 +67,7 @@ public class ArduinoLocatie {
             return Locatie.get();
         }
         else {
-            return Locatie + " (" + Status + ")";
+            return Locatie.get() + " (" + Status.get() + ")";
         }
     }
 }

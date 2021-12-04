@@ -123,13 +123,13 @@ public class sensorRegistratie {
     @Override
     public String toString() {
         return "Registratie{" +
-                "ArduinoID=" + ArduinoID +
-                ", DatumTijd='" + DatumTijd + '\'' +
-                ", PHwaarde=" + PHwaarde +
-                ", GrondTemp=" + GrondTemp +
-                ", LuchtTemp=" + LuchtTemp +
-                ", GrondVocht=" + GrondVocht +
-                ", LuchtVocht=" + LuchtVocht +
+                "ArduinoID=" + ArduinoID.get() +
+                ", DatumTijd='" + DatumTijd.get() + '\'' +
+                ", PHwaarde=" + PHwaarde.get() +
+                ", GrondTemp=" + GrondTemp.get() +
+                ", LuchtTemp=" + LuchtTemp.get() +
+                ", GrondVocht=" + GrondVocht.get() +
+                ", LuchtVocht=" + LuchtVocht.get() +
                 '}';
     }
 }

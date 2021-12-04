@@ -5,6 +5,9 @@ import com.waterkersapp.waterkersapp.model.ArduinoLocatie;
 import com.waterkersapp.waterkersapp.model.Gebruiker;
 import com.waterkersapp.waterkersapp.model.sensorRegistratie;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -22,9 +25,17 @@ import javafx.stage.Stage;
 
 import javax.security.auth.callback.Callback;
 
+import java.util.ArrayList;
+
 import static com.waterkersapp.waterkersapp.MainWindow.ICON;
 
 public class NewUserDial {
+
+
+
+
+    private static  final ComboBox<ArduinoLocatie> cbxDevAdd = new ComboBox<>();
+    private static  final TableView tvDevices = new TableView();
 
     public static Boolean create(Gebruiker ogUser) {// Create the custom dialog.
         Dialog<Boolean> dialog = new Dialog<>();
@@ -86,12 +97,6 @@ public class NewUserDial {
         }
         gp.add(txtSystemMsgPssword, 1, 3, 3, 1);
 
-        /* redundant, if not needed after a couple of days remove the code - 01-12-2021
-        Button btnRstPasword = new Button("Reset");
-        btnRstPasword.setOnAction(e -> {
-            //@TODO remove code
-        });
-        */
 
         if (ogUser != null){
             tbxUsername.setText(ogUser.getLoginNaam());
@@ -104,42 +109,65 @@ public class NewUserDial {
         gp.add(lblTableDevices, 1, 4, 1, 1);
 
         int buttonWidth = 80; // default 80
+
+        // Full list of all devices
+        ArrayList<ArduinoLocatie> alAltDev = new ArrayList<>();
+        ObservableList<ArduinoLocatie> olAltDev = FXCollections.observableArrayList();
+        olAltDev.setAll(alAltDev);
+        FilteredList<ArduinoLocatie> flAltDev = new FilteredList<>(olAltDev);
+        // @TODO Get all the devices from the database and put them in 'flAltDev'
+
+        ArrayList<ArduinoLocatie> alRegDev = new ArrayList<>();
+        ObservableList<ArduinoLocatie> olRegDev = FXCollections.observableArrayList();
+        olRegDev.setAll(alRegDev);
+        FilteredList<ArduinoLocatie> flRegDev = new FilteredList<>(olRegDev);
+        alRegDev.add(new ArduinoLocatie(1, "Locatie 1", "Defect")); // @TODO Remove when the TODO beneath is done. :3
+        // @TODO remove the registered devices from 'flAltDev' and put them in 'flRegDev'
+
+        refreshData(); // refresh the table after editing the list, (Delete, Add, Change) !!!!!Important!!!!!
+
+
+        cbxDevAdd.setEditable(false);
+        cbxDevAdd.setPrefWidth(buttonWidth);
+        cbxDevAdd.setItems(flAltDev);
+        gp.add(cbxDevAdd, 1, 5, 1, 1);
+
+
         Button btnAddDev = new Button("Toevoegen");
         btnAddDev.setPrefWidth(buttonWidth);
         btnAddDev.setOnAction(e -> {
-            // @TODO Make an add device dialog or some other mechanic;
+            // @TODO Make an add device dialog or some other mechanic, remove the selected devices from 'flAltDev' and put them in 'flRegDev'
         });
-        gp.add(btnAddDev, 1, 5, 1, 1);
+        gp.add(btnAddDev, 1, 6, 1, 1);
         Button btnRemDev = new Button("Verwijderen");
         btnRemDev.setPrefWidth(buttonWidth);
         btnRemDev.setOnAction(e -> {
-            // @TODO remove the selected device, if one is selected;
+            // @TODO remove the selected device from 'flRegDev' and add it to 'flAltDev', if one is selected;
         });
-        gp.add(btnRemDev, 1, 6, 1, 1);
+        gp.add(btnRemDev, 1, 7, 1, 1);
 
 
-        TableView tvDevices = new TableView();
         tvDevices.setPrefHeight(100);
-        gp.add(tvDevices, 2, 4, 2, 4);
+        gp.add(tvDevices, 2, 4, 2, 5);
 
         // ArduinoID
         TableColumn<ArduinoLocatie, Integer> tcID = new TableColumn<ArduinoLocatie, Integer>("ID");
-        tcID.setCellValueFactory(new PropertyValueFactory<ArduinoLocatie, Integer>("arduinoID"));
+        tcID.setCellValueFactory(cellData -> cellData.getValue().arduinoIDProperty());
         tcID.prefWidthProperty().bind(tvDevices.widthProperty().divide(columncount));
-
 
         // Locatie
         TableColumn<ArduinoLocatie, String> tcLocatie = new TableColumn<ArduinoLocatie, String>("Locatie");
-        tcLocatie.setCellValueFactory(new PropertyValueFactory<ArduinoLocatie, String>("locatie"));
+        tcLocatie.setCellValueFactory(cellData -> cellData.getValue().locatieProperty());
         tcLocatie.prefWidthProperty().bind(tvDevices.widthProperty().divide(columncount));
         // Status
         TableColumn<ArduinoLocatie, String> tcStatus = new TableColumn<ArduinoLocatie, String>("Status");
-        tcStatus.setCellValueFactory(new PropertyValueFactory<ArduinoLocatie, String>("status"));
+        tcStatus.setCellValueFactory(cellData -> cellData.getValue().statusProperty());
         tcStatus.prefWidthProperty().bind(tvDevices.widthProperty().divide(columncount));
 
         tvDevices.getColumns().addAll(tcID, tcLocatie, tcStatus);
 
-        tvDevices.getItems().add(new ArduinoLocatie(1, "Locatie 1", "Defect"));
+
+        tvDevices.setItems(flRegDev);
 
 
         // Password validation
@@ -173,5 +201,10 @@ public class NewUserDial {
     }
 
 
+
+    protected static void refreshData() {
+        tvDevices.refresh();
+
+    }
 
 }

@@ -80,10 +80,10 @@ public class Menu {
         imgLogo.setFitWidth(ICON_SIZE[1]);
         GridPane.setConstraints(imgLogo, 0, 0); // node, column, row
 
-        Button btnLogin = new Button("Log-uit");
-//        btnLogin.getStyleClass().add("global-button-style");
-        btnLogin.styleProperty().bind(Bindings.concat( "-fx-font-size: ", fontSize.divide(2).asString(), ";"));
-        btnLogin.setOnAction(event -> {
+        Button btnLogout = new Button("Log-uit");
+//        btnLogout.getStyleClass().add("global-button-style");
+        btnLogout.styleProperty().bind(Bindings.concat( "-fx-font-size: ", fontSize.divide(2).asString(), ";"));
+        btnLogout.setOnAction(event -> {
             stage.close();
             // optional Clear all data before actually changing windows;
             Login login = new Login();
@@ -101,13 +101,9 @@ public class Menu {
             getArduinoLocaties(cbLocatie, alController);
         });
 
-
-
-        HBox logoBox = new HBox(imgLogo, btnLogin, cbLocatie, btnRefresh);
+        HBox logoBox = new HBox(imgLogo, btnLogout, cbLocatie, btnRefresh);
         logoBox.setPadding(new Insets(0, 0, 10, -ICON_SIZE[1]));
         logoBox.setSpacing(5);
-
-
 
         Button btnSensorOverzicht = new Button("Sensor Overzicht");
         btnSensorOverzicht.disableProperty().bind(cbLocatie.disableProperty());
