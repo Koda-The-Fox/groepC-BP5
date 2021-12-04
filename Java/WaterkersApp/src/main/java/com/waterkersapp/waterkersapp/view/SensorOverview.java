@@ -34,7 +34,6 @@ public class SensorOverview {
 
 
 
-
     private final TableView tvContent = new TableView();
 
     BorderPane borderPane = new BorderPane();
