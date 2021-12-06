@@ -1,5 +1,6 @@
 package com.waterkersapp.waterkersapp;
 
+import com.waterkersapp.waterkersapp.model.ArduinoLocatie;
 import com.waterkersapp.waterkersapp.model.Gebruiker;
 import com.waterkersapp.waterkersapp.view.*;
 import javafx.application.Application;
@@ -36,7 +37,20 @@ public class MainWindow extends Application {
 
 
         // change password dialog
-        ChangePassDial.create(new Gebruiker("JorVV"));
+//        ChangePassDial.create(new Gebruiker("JorVV"));
+
+        // change/create user device
+//        NewDeviceDial.create(new ArduinoLocatie(0, "TestLocatie", "Testing")); // change device
+//        NewDeviceDial.create(null); // new device
+
+        // change/create user dialog
+//        NewUserDial.create(new Gebruiker("JorVV")); // change user
+//        NewUserDial.create(null); // new user
+
+
+        // about page
+        AboutPage ap = new AboutPage();
+        AboutPage.create(ap);
     }
 
     /*
