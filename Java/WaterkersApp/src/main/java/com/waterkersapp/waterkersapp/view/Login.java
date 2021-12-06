@@ -69,7 +69,7 @@ public class Login {
 
         Scene scene = new Scene(login.getParent(), (WINDOW_SIZE[0]), (WINDOW_SIZE[1]));
         // set the styles for the scene
-        scene.getStylesheets().addAll(Login.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString(), SensorOverview.class.getResource("/com/waterkersapp/css/LoginStyle.css").toString());
+        scene.getStylesheets().addAll(Login.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString(), Login.class.getResource("/com/waterkersapp/css/LoginStyle.css").toString());
 
         stage.setScene(scene);
         stage.setMinWidth(Min_width);

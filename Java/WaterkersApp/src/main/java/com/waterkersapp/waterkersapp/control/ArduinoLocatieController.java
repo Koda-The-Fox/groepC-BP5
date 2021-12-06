@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class ArduinoLocatieController {
 
 
-    public ArrayList<ArduinoLocatie> getAllArduinoLocaties(Gebruiker user){
+    public static ArrayList<ArduinoLocatie> getAllArduinoLocaties(Gebruiker user){
         ArrayList<ArduinoLocatie> alLocaties = new ArrayList();
 
         Connection con = null; // @TODO SQL Command, possibly changes once the API works
@@ -22,9 +22,15 @@ public class ArduinoLocatieController {
             Statement stat = con.createStatement();
 
             // ResultSet result = stat.executeQuery("select * from ArduinoLocatie;"); // Old code, its outdated and doesnt do user specific requests
-            ResultSet result = stat.executeQuery("SELECT al.* FROM `arduinolocatie` as al \n" +
-                    "inner join beheerdarduino as ba on ba.ArduinoID = al.ArduinoID\n" +
-                    "where ba.LoginNaam = '" + user.getLoginNaam() + "';");
+
+            String Querry =
+                    "SELECT al.* FROM `arduinolocatie` as al \n";
+            if (user != null){ // if the user is not null get all the device connected to the user
+                Querry += "inner join beheerdarduino as ba on ba.ArduinoID = al.ArduinoID\n"+
+                            "where ba.LoginNaam = '" + user.getLoginNaam() + "';";
+            }
+
+            ResultSet result = stat.executeQuery(Querry);
 
             while (result.next()) {
                 ArduinoLocatie Locatie = new ArduinoLocatie(result.getInt("ArduinoID"), result.getString("Locatie"), result.getString("Status"));

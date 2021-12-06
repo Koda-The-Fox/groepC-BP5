@@ -1,102 +1,76 @@
 package com.waterkersapp.waterkersapp.view;
 
-import com.waterkersapp.waterkersapp.model.Gebruiker;
-<<<<<<< HEAD
-import com.waterkersapp.waterkersapp.model.sensorRegistratie;
+import com.waterkersapp.waterkersapp.control.ArduinoLocatieController;
+import com.waterkersapp.waterkersapp.control.ArrayListExtended;
+import com.waterkersapp.waterkersapp.control.ChangeUserController;
+import com.waterkersapp.waterkersapp.model.*;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-=======
->>>>>>> parent of c409198 (Change new user dialog UI, Table Views functionality)
 import javafx.geometry.Insets;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.stage.Modality;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
-<<<<<<< HEAD
-import javax.security.auth.callback.Callback;
-
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.xml.transform.Result;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
-=======
->>>>>>> parent of c409198 (Change new user dialog UI, Table Views functionality)
 import static com.waterkersapp.waterkersapp.MainWindow.ICON;
 
 public class NewUserDial {
 
-<<<<<<< HEAD
-
-
-
     private static  final ComboBox<ArduinoLocatie> cbxDevAdd = new ComboBox<>();
-    private static  final TableView tvDevices = new TableView();
 
-    public static Boolean create(Gebruiker ogUser) {// Create the custom dialog.
+    private static ArrayList<ArduinoLocatie> alAltDev = new ArrayList<>();
+    private static ObservableList<ArduinoLocatie> olAltDev;
+    private static FilteredList<ArduinoLocatie> flAltDev;
+
+    private static  final TableView<ArduinoLocatie> tvDevices = new TableView();
+    private static ArrayList<ArduinoLocatie> alRegDev = new ArrayList<>();
+    private static ObservableList<ArduinoLocatie> olRegDev;
+    private static FilteredList<ArduinoLocatie> flRegDev;
+
+    private static String ACTION = "maken";
+
+    private static Gebruiker newUser;
+
+    public static void create(Gebruiker ogUser, Gebruiker editor) {// Create the custom dialog.// Create the custom dialog.
         Dialog<Boolean> dialog = new Dialog<>();
+        Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(ICON);
+
+
+
+        // Set the title for the page.
+        // if the variable ogUser == null the page is meant to create a user not edit one.
         dialog.setTitle("Gebruiker aanmaken.");
         dialog.setHeaderText("Gebruiker aanmaken.");
         if (ogUser != null){
             dialog.setTitle("Gebruiker '" + ogUser.getLoginNaam() + "' bewerken.");
             dialog.setHeaderText("Gegevens veranderen voor gebruiker: " + ogUser.getLoginNaam());
+            ACTION = "bewerken";
         }
-=======
-    // Variables
-    ///////////////////////[Window]\\\\\\\\\\\\\\\\\\\\\
-    private static final double[] WINDOW_SIZE = {750, 450}; // Default: 800 * 450;
-    Color backgroundColor = Color.web("#BADC8F");
-
-    ///////////////////////[Logo]\\\\\\\\\\\\\\\\\\\\\
-    private static final double[] ICON_SIZE = {75, 75}; //Default: 100;
 
 
+        // Set the button types.
+        ButtonType okButtonType;
+        if (ogUser != null) {
+            okButtonType = new ButtonType("Opslaan", ButtonBar.ButtonData.OK_DONE);
+        }else{
+            okButtonType = new ButtonType("Aanmaken", ButtonBar.ButtonData.OK_DONE);
+        }
+        ButtonType CancelButtonType = new ButtonType("Annuleren", ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(okButtonType, CancelButtonType);
 
 
-
-    BorderPane borderPane = new BorderPane();
-
-    public static Stage stage;
-
-    public static void create(NewUserDial newUser) {
-        stage = new Stage();
-        stage.setTitle("Beheer/Instellingen");
-        stage.getIcons().add(ICON);
->>>>>>> parent of c409198 (Change new user dialog UI, Table Views functionality)
-
-        Scene scene = new Scene(newUser.getParent(), (WINDOW_SIZE[0]), (WINDOW_SIZE[1]));
-        // set the styles for the scene
-        scene.getStylesheets().addAll(NewUserDial.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString());
-        stage.setScene(scene);
-        // set the window to be resizable
-        stage.setResizable(true); // default: true
-
-        stage.setOnCloseRequest(e -> stage.close());
-
-        stage.initModality(Modality.APPLICATION_MODAL);
-
-
-//        stage.show();
-        stage.showAndWait(); // show and stay focussed on window
-    }
-    public Parent getParent() {
-        return borderPane;
-    }
-
-
-    /**
-     * Leave ogUser null to create a new user.
-     * @param ogUser The user to edit.
-     */
-    public NewUserDial(Gebruiker ogUser) {
         HBox titleBox = new HBox();
         GridPane gp = new GridPane();
         VBox wrapperBox = new VBox();
@@ -108,32 +82,67 @@ public class NewUserDial {
             lblTitle.setText("Gebruiker '" + ogUser.getLoginNaam() + "' bewerken.");
         }
 
+        Node ndecngeUser = dialog.getDialogPane().lookupButton(okButtonType);
+        ndecngeUser.setDisable(true);
+
+
         Label lblUsername = new Label("Gebruikersnaam: ");
+        gp.add(lblUsername, 1, 1, 1, 1);
+
+        // @TODO Regex out any illegal characters
         TextField tbxUsername = new TextField("");
+        if (ogUser != null){
+            tbxUsername.setText(ogUser.getLoginNaam());
+            ndecngeUser.setDisable(false);
+        }
+        tbxUsername.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (tbxUsername.getText().isEmpty()){
+                ndecngeUser.setDisable(true);
+            }
+            else {
+                ndecngeUser.setDisable(false);
+                //@TODO Make validation that the username doesn't already exist
+            }
+        });
+        gp.add(tbxUsername, 2, 1, 1, 1);
         Button btnRstUsername = new Button("Reset");
         btnRstUsername.setOnAction(e -> {
-            //@TODO Make the functionality to reset the text
+            if (ogUser != null){
+                tbxUsername.setText(ogUser.getLoginNaam());
+            }
+            else {
+                tbxUsername.setText("");
+            }
         });
+        gp.add(btnRstUsername, 3, 1, 1, 1);
         Label lblPassword = new Label("Wachtwoord: ");
-        Button btnChngePasword = new Button("Verander wachtwoord");
-        btnChngePasword.setOnAction(e -> {
-            //@TODO Direct tot the change password dialog
-        });
-<<<<<<< HEAD
         gp.add(lblPassword, 1, 2, 1, 1);
+        Button btnChngePasword = new Button("Verander wachtwoord");
 
+        Text txtSystemMsgPassword = new Text("");
+        gp.add(txtSystemMsgPassword, 2, 3, 2, 1);
+        btnChngePasword.setOnAction(e -> {
+            txtSystemMsgPassword.setText("");
+            if (ChangePassDial.create(ogUser)){
+                txtSystemMsgPassword.setFill(Color.GREEN);
+                txtSystemMsgPassword.setText("Wachtwoord " + ACTION + "  gelukt.");
+            }
+            else{
+                txtSystemMsgPassword.setFill(Color.RED);
+                txtSystemMsgPassword.setText("Wachtwoord " + ACTION + " mislukt of geannuleerd.");
+            }
+        });
+
+        // @TODO Regex out any illegal characters
+        PasswordField tbxcrtePass = new PasswordField();
         if (ogUser == null){
             gp.add(tbxcrtePass, 2, 2, 1, 1);
         }
         else {
             gp.add(btnChngePasword, 2, 2, 1, 1);
         }
-        gp.add(txtSystemMsgPssword, 1, 3, 3, 1);
 
 
-        if (ogUser != null){
-            tbxUsername.setText(ogUser.getLoginNaam());
-        }
 
         // Devices
 
@@ -144,44 +153,69 @@ public class NewUserDial {
         int buttonWidth = 80; // default 80
 
         // Full list of all devices
-        ArrayList<ArduinoLocatie> alAltDev = new ArrayList<>();
-        ObservableList<ArduinoLocatie> olAltDev = FXCollections.observableArrayList();
-        olAltDev.setAll(alAltDev);
-        FilteredList<ArduinoLocatie> flAltDev = new FilteredList<>(olAltDev);
-        // @TODO Get all the devices from the database and put them in 'flAltDev'
+        olAltDev = FXCollections.observableArrayList();
+        olAltDev.addAll(ArduinoLocatieController.getAllArduinoLocaties(null));
 
-        ArrayList<ArduinoLocatie> alRegDev = new ArrayList<>();
-        ObservableList<ArduinoLocatie> olRegDev = FXCollections.observableArrayList();
-        olRegDev.setAll(alRegDev);
-        FilteredList<ArduinoLocatie> flRegDev = new FilteredList<>(olRegDev);
-        alRegDev.add(new ArduinoLocatie(1, "Locatie 1", "Defect")); // @TODO Remove when the TODO beneath is done. :3
-        // @TODO remove the registered devices from 'flAltDev' and put them in 'flRegDev'
+        olRegDev = FXCollections.observableArrayList();
 
+        for ( ArduinoLocatie alReg: ArduinoLocatieController.getAllArduinoLocaties(ogUser)) {
+            for ( ArduinoLocatie olAlt: olAltDev) {
+                if (alReg.getArduinoID().equals(olAlt.getArduinoID())){
+                    olRegDev.add(olAlt);
+                }
+
+            }
+
+        }
+        olAltDev.removeAll(olRegDev); // re move the already registered devices
+
+        flAltDev = new FilteredList<>(olAltDev);
+        flRegDev = new FilteredList<>(olRegDev);
+
+        tvDevices.setItems(flRegDev);
+        cbxDevAdd.setItems(flAltDev);
         refreshData(); // refresh the table after editing the list, (Delete, Add, Change) !!!!!Important!!!!!
-
 
         cbxDevAdd.setEditable(false);
         cbxDevAdd.setPrefWidth(buttonWidth);
-        cbxDevAdd.setItems(flAltDev);
-        gp.add(cbxDevAdd, 1, 5, 1, 1);
 
+
+        // select the first item if  it exists
+        if (cbxDevAdd.getItems().size() > 0)
+            cbxDevAdd.getSelectionModel().select(0);
+
+        gp.add(cbxDevAdd, 1, 5, 1, 1);
 
         Button btnAddDev = new Button("Toevoegen");
         btnAddDev.setPrefWidth(buttonWidth);
         btnAddDev.setOnAction(e -> {
-            // @TODO Make an add device dialog or some other mechanic, remove the selected devices from 'flAltDev' and put them in 'flRegDev'
+            if (!cbxDevAdd.getSelectionModel().isEmpty()){
+                olRegDev.add(cbxDevAdd.getSelectionModel().getSelectedItem());
+                olAltDev.remove(cbxDevAdd.getSelectionModel().getSelectedItem());
+
+                // select the first item if  it exists
+                if (cbxDevAdd.getItems().size() > 0)
+                    cbxDevAdd.getSelectionModel().select(0);
+            }
+            refreshData(); // refresh the table after editing the list, (Delete, Add, Change) !!!!!Important!!!!!
         });
         gp.add(btnAddDev, 1, 6, 1, 1);
         Button btnRemDev = new Button("Verwijderen");
         btnRemDev.setPrefWidth(buttonWidth);
         btnRemDev.setOnAction(e -> {
-            // @TODO remove the selected device from 'flRegDev' and add it to 'flAltDev', if one is selected;
+            if (!tvDevices.getSelectionModel().isEmpty()){
+                olAltDev.add(tvDevices.getSelectionModel().getSelectedItem());
+                olRegDev.remove(tvDevices.getSelectionModel().getSelectedItem());
+
+                // set the first item to be selected if it's the only item
+                if (cbxDevAdd.getItems().size() == 1)
+                    cbxDevAdd.getSelectionModel().select(0);
+        }
+            refreshData(); // refresh the table after editing the list, (Delete, Add, Change) !!!!!Important!!!!!
         });
         gp.add(btnRemDev, 1, 7, 1, 1);
 
 
-        tvDevices.setPrefHeight(100);
-        gp.add(tvDevices, 2, 4, 2, 5);
 
         // ArduinoID
         TableColumn<ArduinoLocatie, Integer> tcID = new TableColumn<ArduinoLocatie, Integer>("ID");
@@ -196,43 +230,123 @@ public class NewUserDial {
         TableColumn<ArduinoLocatie, String> tcStatus = new TableColumn<ArduinoLocatie, String>("Status");
         tcStatus.setCellValueFactory(cellData -> cellData.getValue().statusProperty());
         tcStatus.prefWidthProperty().bind(tvDevices.widthProperty().divide(columncount));
-=======
+
+        tvDevices.getColumns().addAll(tcID, tcLocatie, tcStatus);
+
+        tvDevices.setPrefHeight(100);
+        gp.add(tvDevices, 2, 4, 2, 5);
+
+
+        Label lblAdmin = new Label("Is admin: ");
+        CheckBox chxAdmin = new CheckBox();
+        chxAdmin.setSelected(editor.getAdmin());
+        chxAdmin.setOnAction(e -> {
+            System.out.println();
+            if (ogUser != null && ogUser.equals(editor)){
+                if (!chxAdmin.isSelected()){
+                    new Alert(Alert.AlertType.WARNING,"Opgelet\nU staat op het punt uw admin rechten te verwijderen.\nDit betekent dat U zelf dit niet meer kan veranderen.", ButtonType.OK).showAndWait();
+                }
+            }
+        });
+
+        if (editor.getAdmin()) {
+            gp.add(lblAdmin, 1, 9, 1, 1);
+            gp.add(chxAdmin, 2, 9, 1, 1);
+        }
+
+
+        // @TODO Regex out any illegal characters
+        PasswordField tbxCurPass = new PasswordField();
+        gp.add(tbxCurPass, 2, 10, 1, 1);
+
+        Text txtSystemMsg = new Text("");
+        txtSystemMsg.setFill(Color.RED);
+        gp.add(txtSystemMsg, 2, 11, 2, 1);
+
+
+
         Button btnRstPasword = new Button("Reset");
         btnRstPasword.setOnAction(e -> {
-            //@TODO Make the functionality to reset the text
+            //@TODO Make the functionality to reset the text... or not. might be a bit unnecessary to 'reset' the password.
         });
 
 
->>>>>>> parent of c409198 (Change new user dialog UI, Table Views functionality)
-
-
-<<<<<<< HEAD
-
-        tvDevices.setItems(flRegDev);
-=======
->>>>>>> parent of c409198 (Change new user dialog UI, Table Views functionality)
-
         titleBox.getChildren().addAll(lblTitle);
         gp.getChildren().addAll();
-        wrapperBox.getChildren().addAll(titleBox ,gp);
+
+        wrapperBox.getChildren().addAll(gp);
 
         wrapperBox.setSpacing(5);
         wrapperBox.setPadding(new Insets(20));
 
-        wrapperBox.prefWidthProperty().bind(borderPane.widthProperty());
-        wrapperBox.prefHeightProperty().bind(borderPane.heightProperty());
 
-        borderPane.setLeft(wrapperBox);
+
+        dialog.getDialogPane().setContent(wrapperBox);
+
+
+        AtomicReference<Pair<Boolean, String>> result = new AtomicReference<>(new Pair<>(false, "No result yet"));
+        dialog.setResultConverter(dialogButton -> {
+            txtSystemMsg.setText("");
+            if (dialogButton == CancelButtonType) {
+                result.set(new Pair<>(true, "gebruiker " + ACTION + " geannuleerd."));
+                txtSystemMsg.setText(result.get().getValue());
+                return result.get().getKey(); // return the key which is the Boolean
+            }
+            else if (tbxUsername.getText().isEmpty()){
+                result.set(new Pair<>(false, "Gebruikersnaam mag niet leeg zijn."));
+                txtSystemMsg.setText(result.get().getValue());
+                return result.get().getKey(); // return the key which is the Boolean
+            }
+            else if (ogUser == null && tbxcrtePass.getText().isEmpty()){
+                result.set(new Pair<>(false, "Vul aub een wachtwoord in."));
+                txtSystemMsg.setText(result.get().getValue());
+                return result.get().getKey(); // return the key which is the Boolean
+            }
+            else if (tbxCurPass.getText().isEmpty()){
+                result.set(new Pair<>(false, "Vul aub het huidige wachtwoord in."));
+                txtSystemMsg.setText(result.get().getValue());
+                return result.get().getKey(); // return the key which is the Boolean
+            }
+
+            newUser = new Gebruiker(tbxUsername.getText(), tbxcrtePass.getText(), chxAdmin.isSelected());
+
+            if (ogUser != null && !ChangeUserController.CheckUsername(newUser.getLoginNaam())){
+                result.set(new Pair<>(false, "Gebruikersnaam bestaat al."));
+                txtSystemMsg.setText(result.get().getValue());
+                return result.get().getKey(); // return the key which is the Boolean
+            }
+            else {
+                if (dialogButton == okButtonType) {
+                    if (ogUser == null) {
+                        result.set(ChangeUserController.CreateUser(newUser));
+                    } else {
+                        ogUser.setLoginPass(tbxCurPass.getText());
+                        result.set(ChangeUserController.ChangeUser(ogUser, newUser));
+                    }
+                    txtSystemMsg.setText(result.get().getValue()); // set the error message to the text
+                    return result.get().getKey(); // return the key which is the Boolean
+                }
+            }
+            result.set(new Pair<>(false, "empty result"));
+            return result.get().getKey(); // return the key which is the Boolean
+        });
+
+
+        dialog.setOnCloseRequest(e ->{
+            if(!dialog.getResult()) {
+                e.consume();
+            }
+        });
+
+        dialog.showAndWait();
     }
-<<<<<<< HEAD
-
 
 
     protected static void refreshData() {
+//        tvDevices.setItems(flRegDev);
         tvDevices.refresh();
 
     }
 
-=======
->>>>>>> parent of c409198 (Change new user dialog UI, Table Views functionality)
+
 }

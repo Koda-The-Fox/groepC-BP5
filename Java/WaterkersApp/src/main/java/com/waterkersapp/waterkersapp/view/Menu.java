@@ -122,15 +122,16 @@ public class Menu {
         btnSettings.styleProperty().bind(Bindings.concat( "-fx-font-size: ", fontSize.asString(), ";"));
         GridPane.setConstraints(btnSettings, 1, 2); // node, column, row
         btnSettings.setOnAction(event -> {
+            Beheer beheer;
             if (cbLocatie.getValue().toString() == "Geen locaties"){
                 // no clocations, open empty device
-                Beheer beheer = new Beheer(new ArduinoLocatie());
-                Beheer.create(beheer);
+                beheer = new Beheer(new ArduinoLocatie(), user);
             }
             else {
-                Beheer beheer = new Beheer(cbLocatie.getValue());
-                Beheer.create(beheer);
+                beheer = new Beheer(cbLocatie.getValue(), user);
             }
+            Beheer.create(beheer);
+            stage.close();
         });
 
 

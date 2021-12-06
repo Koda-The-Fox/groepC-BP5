@@ -2,6 +2,7 @@ package com.waterkersapp.waterkersapp.view;
 
 import com.waterkersapp.waterkersapp.control.MinMaxWaardesController;
 import com.waterkersapp.waterkersapp.model.ArduinoLocatie;
+import com.waterkersapp.waterkersapp.model.Gebruiker;
 import com.waterkersapp.waterkersapp.model.MinMaxWaardes;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -32,7 +33,7 @@ public class Beheer {
     private static final double[] ICON_SIZE = {75, 75}; //Default: 100;
 
 
-
+    private static Gebruiker user;
 
 
     BorderPane borderPane = new BorderPane();
@@ -51,7 +52,6 @@ public class Beheer {
         // set the window to be resizable
         stage.setResizable(true); // default: true
 
-        stage.setOnCloseRequest(e -> stage.close());
 
         stage.initModality(Modality.APPLICATION_MODAL);
 
@@ -76,12 +76,19 @@ public class Beheer {
     Spinner<Double> numMinLV;
     Spinner<Double> numMaxLV;
 
-    public Beheer(ArduinoLocatie ArduinoLocatie) {
+    public Beheer(ArduinoLocatie ArduinoLocatie, Gebruiker user) {
+
         if (ArduinoLocatie.equals(new ArduinoLocatie())){
             // AL is a new object so no device is selected
             // disable all buttons but the new device button
             // @TODO add a new device button and add the functionality
         }
+
+        stage.setOnCloseRequest(e -> {
+            stage.close();
+            Menu menu = new Menu(user);
+            Menu.create(menu);
+        });
 
         AtomicReference<MinMaxWaardes> currentWaardes = new AtomicReference<>(LoadData(ArduinoLocatie));
 

@@ -43,14 +43,15 @@ public class MainWindow extends Application {
 //        NewDeviceDial.create(new ArduinoLocatie(0, "TestLocatie", "Testing")); // change device
 //        NewDeviceDial.create(null); // new device
 
-        // change/create user dialog
-//        NewUserDial.create(new Gebruiker("JorVV")); // change user
-//        NewUserDial.create(null); // new user
+//         change/create user dialog
+        Gebruiker Jordy = new Gebruiker("JorVV", true);
+//        NewUserDial.create(Jordy, Jordy); // change user
+        NewUserDial.create(null, Jordy); // new user
 
 
         // about page
-        AboutPage ap = new AboutPage();
-        AboutPage.create(ap);
+//        AboutPage ap = new AboutPage();
+//        AboutPage.create(ap);
     }
 
     /*

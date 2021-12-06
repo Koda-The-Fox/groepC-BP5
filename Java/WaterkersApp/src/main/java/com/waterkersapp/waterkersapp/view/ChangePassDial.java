@@ -2,25 +2,18 @@ package com.waterkersapp.waterkersapp.view;
 
 import com.waterkersapp.waterkersapp.control.ChangePassController;
 import com.waterkersapp.waterkersapp.model.Gebruiker;
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import static com.waterkersapp.waterkersapp.MainWindow.ICON;
 
@@ -29,6 +22,8 @@ public class ChangePassDial {
     public static boolean create(Gebruiker ogUser) {
         // Create the custom dialog.
         Dialog<Boolean> dialog = new Dialog<>();
+        Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(ICON);
         dialog.setTitle("Change Password Dialog");
         dialog.setHeaderText("Wachtwoord veranderen voor gebruiker: " + ogUser.getLoginNaam());
 
@@ -43,30 +38,36 @@ public class ChangePassDial {
 
         Label lblNewPass = new Label("New wachtwoord: ");
         gp.add(lblNewPass, 1, 1, 1, 1);
+
+        // @TODO Regex out any illegal characters
         PasswordField tbxNewPass = new PasswordField();
         gp.add(tbxNewPass, 2, 1, 1, 1);
         Label lblNewPassVal = new Label("New wachtwoord nogmaals: ");
         gp.add(lblNewPassVal, 1, 2, 1, 1);
+
+        // @TODO Regex out any illegal characters
         PasswordField tbxNewPassVal = new PasswordField();
         gp.add(tbxNewPassVal, 2, 2, 1, 1);
         Text lblNewPassValErr = new Text("");
         gp.add(lblNewPassValErr, 1, 3, 2, 1);
         Label lblOldPass = new Label("Vorig wachtwoord: ");
         gp.add(lblOldPass, 1, 4, 1, 1);
+
+        // @TODO Regex out any illegal characters
         PasswordField tbxOldPass = new PasswordField();
         gp.add(tbxOldPass, 2, 4, 1, 1);
         Text lblOldPassValErr = new Text("\r\n");
         gp.add(lblOldPassValErr, 1, 3, 2, 1);
 
         // Enable/Disable login button depending on whether a username was entered.
-        Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
-        loginButton.setDisable(true);
+        Node ndeChgePass = dialog.getDialogPane().lookupButton(loginButtonType);
+        ndeChgePass.setDisable(true);
 
         // Do some validation (using the Java 8 lambda syntax).
         tbxNewPass.textProperty().addListener((observable, oldValue, newValue) -> {
             lblNewPassValErr.setText("");
             lblOldPassValErr.setText("");
-            loginButton.setDisable(true);
+            ndeChgePass.setDisable(true);
             if (!Objects.equals(tbxNewPass.getText(), tbxNewPassVal.getText())) {
                 lblNewPassValErr.setFill(Color.RED);
                 lblNewPassValErr.setText("Wachtwoord komt niet overeen.");
@@ -84,13 +85,13 @@ public class ChangePassDial {
             else{
                 lblNewPassValErr.setText("");
                 lblOldPassValErr.setText("");
-                loginButton.setDisable(false);
+                ndeChgePass.setDisable(false);
             }
         });
         tbxNewPassVal.textProperty().addListener((observable, oldValue, newValue) -> {
             lblNewPassValErr.setText("");
             lblOldPassValErr.setText("");
-            loginButton.setDisable(true);
+            ndeChgePass.setDisable(true);
             if (!Objects.equals(tbxNewPass.getText(), tbxNewPassVal.getText())) {
                 lblNewPassValErr.setFill(Color.RED);
                 lblNewPassValErr.setText("Wachtwoord komt niet overeen.");
@@ -108,13 +109,13 @@ public class ChangePassDial {
             else{
                 lblNewPassValErr.setText("");
                 lblOldPassValErr.setText("");
-                loginButton.setDisable(false);
+                ndeChgePass.setDisable(false);
             }
         });
         tbxOldPass.textProperty().addListener((observable, oldValue, newValue) -> {
             lblNewPassValErr.setText("");
             lblOldPassValErr.setText("");
-            loginButton.setDisable(true);
+            ndeChgePass.setDisable(true);
             if (!Objects.equals(tbxNewPass.getText(), tbxNewPassVal.getText())) {
                 // Do nothing
             } else if (tbxNewPass.getText().isEmpty()){
@@ -131,7 +132,7 @@ public class ChangePassDial {
             else{
                 lblNewPassValErr.setText("");
                 lblOldPassValErr.setText("");
-                loginButton.setDisable(false);
+                ndeChgePass.setDisable(false);
             }
         });
 
@@ -151,7 +152,6 @@ public class ChangePassDial {
         dialog.getDialogPane().setContent(wrapperBox);
 
 
-        // Convert the result to a username-password-pair when the login button is clicked.
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == loginButtonType) {
                 return ChangePassController.ChangePassword(ogUser, tbxOldPass.getText(), tbxNewPass.getText());

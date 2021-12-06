@@ -3,9 +3,11 @@ module com.waterkersapp.waterkersapp {
     requires javafx.fxml;
     requires java.sql;
     requires commons.dbcp2;
-    requires java.management; // Important, if not specified causes 'java: cannot access javax.management.MBeanRegistration'
+    requires java.management;
+    requires java.desktop; // Important, if not specified causes 'java: cannot access javax.management.MBeanRegistration'
 
 
     opens com.waterkersapp.waterkersapp to javafx.fxml;
     exports com.waterkersapp.waterkersapp;
+
 }
