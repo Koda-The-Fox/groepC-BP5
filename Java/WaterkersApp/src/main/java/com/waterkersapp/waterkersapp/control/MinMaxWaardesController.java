@@ -16,15 +16,16 @@ public class MinMaxWaardesController {
     public MinMaxWaardes getSpecificMinMaxWaardes(ArduinoLocatie al){
         MinMaxWaardes alWaardes = new MinMaxWaardes();
 
-        Connection con = null; // @TODO SQL Command, possibly changes once the API works
+        Connection con = null;
         try {
             con = DBCPDataSource.getConnection();
             Statement stat = con.createStatement();
 
-            ResultSet result = stat.executeQuery("select * from MinMaxWaardes where locatie = '" + al.getLocatie() + "';");
+            ResultSet result = stat.executeQuery("select al.ArduinoID, al.Locatie as 'alLocatie', al.Status, mmw.* from `MinMaxWaardes` as mmw join `ArduinoLocatie` as al on mmw.Locatie = al.ArduinoID where mmw.Locatie = " + al.getArduinoID() + ";");
             while (result.next()) {
-                MinMaxWaardes Waardes = new MinMaxWaardes(result.getString("Locatie"), result.getDouble("MinPH"), result.getDouble("MaxPH"), result.getDouble("MinGT"), result.getDouble("MaxGT"), result.getDouble("MinLT"), result.getDouble("MaxLT"), result.getDouble("MinGV"), result.getDouble("MaxGV"), result.getDouble("MinLV"), result.getDouble("MaxLV"));
-                alWaardes = Waardes;
+
+                    MinMaxWaardes Waardes = new MinMaxWaardes(new ArduinoLocatie(result.getInt("ArduinoID"), result.getString("alLocatie"), result.getString("Status")), result.getDouble("MinPH"), result.getDouble("MaxPH"), result.getDouble("MinGT"), result.getDouble("MaxGT"), result.getDouble("MinLT"), result.getDouble("MaxLT"), result.getDouble("MinGV"), result.getDouble("MaxGV"), result.getDouble("MinLV"), result.getDouble("MaxLV"));
+                    alWaardes = Waardes;
             }
             return alWaardes;
         } catch (SQLException se) {
@@ -38,22 +39,22 @@ public class MinMaxWaardesController {
             }
         }
     }
-    private String valueStencil = "`Locatie` = '%s', `MinPH` = %f, `MaxPH` = %f, `MinGT` = %f, `MaxGT` = %f, `MinLT` = %f, `MaxLT` = %f, `MinGV` = %f, `MaxGV` = %f, `MinLV` = %f, `MaxLV` = %f";
+    private String valueStencil = "`Locatie` = %s, `MinPH` = %f, `MaxPH` = %f, `MinGT` = %f, `MaxGT` = %f, `MinLT` = %f, `MaxLT` = %f, `MinGV` = %f, `MaxGV` = %f, `MinLV` = %f, `MaxLV` = %f";
     public boolean updateMinMaxWaardes(MinMaxWaardes original, MinMaxWaardes MinMax){
         String query = "update `MinMaxWaardes` set " + String.format(valueStencil,
-                MinMax.getLocatie(),
+                MinMax.getLocatie().getArduinoID(),
                 MinMax.getMinPH(), MinMax.getMaxPH(),
                 MinMax.getMinGT(), MinMax.getMaxGT(), MinMax.getMinLT(), MinMax.getMaxLT(),
                 MinMax.getMinGV(), MinMax.getMaxGV(), MinMax.getMinLV(), MinMax.getMaxLV()
                 ) + " where " + String.format(valueStencil.replaceAll(",", " and"),
-                original.getLocatie(),
+                original.getLocatie().getArduinoID(),
                 original.getMinPH(), original.getMaxPH(),
                 original.getMinGT(), original.getMaxGT(), original.getMinLT(), original.getMaxLT(),
                 original.getMinGV(), original.getMaxGV(), original.getMinLV(), original.getMaxLV()
         );
         System.out.println(query);
 
-        Connection con = null; // @TODO SQL Command, possibly changes once the API works
+        Connection con = null;
         int result = 0;
         try {
             con = DBCPDataSource.getConnection();

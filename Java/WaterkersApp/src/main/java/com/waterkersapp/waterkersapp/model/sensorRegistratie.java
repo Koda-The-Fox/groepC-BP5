@@ -5,7 +5,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 public class sensorRegistratie {
-    final private ObjectProperty<Integer> ArduinoID = new SimpleObjectProperty<>();
+    final private ObjectProperty<ArduinoLocatie> ArduinoID = new SimpleObjectProperty<>();
     final private ObjectProperty<String> DatumTijd = new SimpleObjectProperty<>();
     final private ObjectProperty<Double> PHwaarde = new SimpleObjectProperty<>();
     final private ObjectProperty<Double> GrondTemp = new SimpleObjectProperty<>();
@@ -17,7 +17,7 @@ public class sensorRegistratie {
     }
 
     public sensorRegistratie(sensorRegistratie reg) {
-        this.ArduinoID.set(reg.getArduinoID());
+        this.ArduinoID.set(reg.getArduino());
         this.DatumTijd.set(reg.getDatumTijd());
         this.PHwaarde.set(reg.getPHwaarde());
         this.GrondTemp.set(reg.getGrondTemp());
@@ -26,7 +26,7 @@ public class sensorRegistratie {
         this.LuchtVocht.set(reg.getLuchtVocht());
     }
 
-    public sensorRegistratie(Integer arduinoID, String datumTijd, double PHwaarde, double grondTemp, double luchtTemp, double grondVocht, double luchtVocht) {
+    public sensorRegistratie(ArduinoLocatie arduinoID, String datumTijd, double PHwaarde, double grondTemp, double luchtTemp, double grondVocht, double luchtVocht) {
         this.ArduinoID.set(arduinoID);
         this.DatumTijd.set(datumTijd);
         this.PHwaarde.set(PHwaarde);
@@ -36,16 +36,16 @@ public class sensorRegistratie {
         this.LuchtVocht.set(luchtVocht);
     }
 
-    public Integer getArduinoID() {
+    public ArduinoLocatie getArduino() {
         return ArduinoID.get();
     }
 
-    public ObjectProperty<Integer> arduinoIDProperty() {
+    public ObjectProperty<ArduinoLocatie> arduinoProperty() {
         return ArduinoID;
     }
 
-    public void setArduinoID(Integer arduinoID) {
-        this.ArduinoID.set(arduinoID);
+    public void setArduino(ArduinoLocatie arduino) {
+        this.ArduinoID.set(arduino);
     }
 
     public String getDatumTijd() {

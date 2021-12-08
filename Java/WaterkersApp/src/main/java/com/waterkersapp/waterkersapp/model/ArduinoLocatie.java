@@ -14,11 +14,15 @@ public class ArduinoLocatie {
      */
     public ArduinoLocatie() {}
 
-
+    public ArduinoLocatie(String locatie) {
+        // ID is autoincrement
+        this.Locatie.set(locatie);
+        this.Status.set("Uit"); // Default  = "Uit"
+    }
     public ArduinoLocatie(Integer arduinoID, String locatie) {
         this.ArduinoID.set(arduinoID);
         this.Locatie.set(locatie);
-        this.Status.set(null);
+        this.Status.set("Uit"); // Default  = "Uit"
     }
     public ArduinoLocatie(Integer arduinoID, String locatie, String status) {
         this.ArduinoID.set(arduinoID);

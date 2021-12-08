@@ -19,20 +19,32 @@ public class MainWindow extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        // #TODO Uncomment when done debugging
+//        Login login = new Login();
+//        Login.create(login);
+
+
+
+        Gebruiker Jordy = new Gebruiker("JorVV", false);
+        Gebruiker Admin = new Gebruiker("Admin", true);
+        ArduinoLocatie al = new ArduinoLocatie(10, "TestLocatie", "Testing");
+        ArduinoLocatie Kas1 = new ArduinoLocatie(1, "Kas1", "Uit");
+
         // LOGIN
 //        Login login = new Login();
 //        Login.create(login);
 
         // MENU
-//        Menu menu = new Menu(new Gebruiker("JorVV"));
-//        Menu.create(menu);
+        Menu menu = new Menu(Jordy);
+//        Menu menu = new Menu(Admin);
+        Menu.create(menu);
 
         // Sensor overzicht
-//        SensorOverview sensorOverview = new SensorOverview("Grondvochtigheid");
-//        SensorOverview.create(sensorOverview, "Grondvochtigheid");
+        SensorOverview sensorOverview = new SensorOverview(Kas1);
+//        SensorOverview.create(sensorOverview);
 
         // Beheer
-//        Beheer beheer = new Beheer();
+        Beheer beheer = new Beheer(Kas1, Jordy);
 //        Beheer.create(beheer);
 
 
@@ -40,17 +52,17 @@ public class MainWindow extends Application {
 //        ChangePassDial.create(new Gebruiker("JorVV"));
 
         // change/create user device
-//        NewDeviceDial.create(new ArduinoLocatie(0, "TestLocatie", "Testing")); // change device
+//        NewDeviceDial.create(al); // change device
+//        NewDeviceDial.create(Kas1); // change Kas1 device
 //        NewDeviceDial.create(null); // new device
 
 //         change/create user dialog
-        Gebruiker Jordy = new Gebruiker("JorVV", true);
 //        NewUserDial.create(Jordy, Jordy); // change user
-        NewUserDial.create(null, Jordy); // new user
+//        NewUserDial.create(null, Jordy); // new user
 
 
         // about page
-//        AboutPage ap = new AboutPage();
+        AboutPage ap = new AboutPage();
 //        AboutPage.create(ap);
     }
 

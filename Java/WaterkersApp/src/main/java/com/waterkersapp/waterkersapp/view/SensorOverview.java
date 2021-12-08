@@ -1,5 +1,6 @@
 package com.waterkersapp.waterkersapp.view;
 
+import com.waterkersapp.waterkersapp.control.RegistratieController;
 import com.waterkersapp.waterkersapp.model.ArduinoLocatie;
 import com.waterkersapp.waterkersapp.model.sensorRegistratie;
 import javafx.collections.FXCollections;
@@ -54,6 +55,9 @@ public class SensorOverview {
         // set the window to be resizable
         stage.setResizable(true); // default: true
 
+        stage.setMinWidth(WINDOW_SIZE[0]);
+        stage.setMinHeight(WINDOW_SIZE[1]);
+
         stage.setOnCloseRequest(e -> stage.close());
 
         stage.initModality(Modality.APPLICATION_MODAL);
@@ -89,40 +93,54 @@ public class SensorOverview {
         lblLocatie.setAlignment(Pos.CENTER_RIGHT);
 
 
+        Button btnRefresh = new Button("Ververs \uD83D\uDDD8");
+        GridPane.setConstraints(btnRefresh, 1, 2); // node, column, row
+
         // Setup and add the columns to the table
         // Also use setCellValueFactory's to get the right value from the onject 'sensorRegistratie'.
         int columncount = 7; // the amount of columns spreads over the entire table.
-        TableColumn<sensorRegistratie, Integer> tcKas = new TableColumn<sensorRegistratie, Integer>("Arduino");
-        tcKas.setCellValueFactory(cellData -> cellData.getValue().arduinoIDProperty());
-        tcKas.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
-        TableColumn<sensorRegistratie, String> tcDate = new TableColumn<sensorRegistratie, String>("Datum &\nTijd");
+        double first2ColumnsResize = 1.5;
+        TableColumn<sensorRegistratie, String> tcKas = new TableColumn<sensorRegistratie, String>("Arduino");
+        tcKas.setCellValueFactory(cellData -> cellData.getValue().getArduino().locatieProperty());
+        tcKas.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount*first2ColumnsResize));
+        tcKas.setResizable(false);
+        TableColumn<sensorRegistratie, String> tcDate = new TableColumn<sensorRegistratie, String>("Datum & Tijd");
         tcDate.setCellValueFactory(cellData -> cellData.getValue().datumTijdProperty());
-        tcDate.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
+        tcDate.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount/first2ColumnsResize));
+        tcDate.setResizable(false);
 
         // Water
         TableColumn<sensorRegistratie, String> tcWater = new TableColumn<sensorRegistratie, String>("Water");
         TableColumn<sensorRegistratie, Double> tcPhVal = new TableColumn<sensorRegistratie, Double>("PHwaarde");
         tcPhVal.setCellValueFactory(cellData -> cellData.getValue().PHwaardeProperty());
-        tcPhVal.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
+        tcPhVal.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount*1.25)); // 1.25 is the perfect value for 800x450 and 1920x1080 size
+        tcPhVal.setResizable(false);
         tcWater.getColumns().add(tcPhVal);
+        tcWater.setResizable(false);
         // Grond
         TableColumn<sensorRegistratie, Double> tcGrond = new TableColumn<sensorRegistratie, Double>("Grond");
         TableColumn<sensorRegistratie, Double> tcGrTmp = new TableColumn<sensorRegistratie, Double>("GrondTemp");
         tcGrTmp.setCellValueFactory(cellData -> cellData.getValue().grondTempProperty());
         tcGrTmp.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
+        tcGrTmp.setResizable(false);
         TableColumn<sensorRegistratie, Double> tcGrVht = new TableColumn<sensorRegistratie, Double>("GrondVocht");
         tcGrVht.setCellValueFactory(cellData -> cellData.getValue().grondVochtProperty());
         tcGrVht.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
+        tcGrVht.setResizable(false);
         tcGrond.getColumns().addAll(tcGrTmp, tcGrVht);
+        tcGrond.setResizable(false);
         // Lucht
         TableColumn<sensorRegistratie, Double> tcLucht = new TableColumn<sensorRegistratie, Double>("Lucht");
         TableColumn<sensorRegistratie, Double> tcLuTmp = new TableColumn<sensorRegistratie, Double>("LuchtTemp");
         tcLuTmp.setCellValueFactory(cellData -> cellData.getValue().luchtTempProperty());
         tcLuTmp.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
+        tcLuTmp.setResizable(false);
         TableColumn<sensorRegistratie, Double> tcLuVht = new TableColumn<sensorRegistratie, Double>("LuchtVocht");
         tcLuVht.setCellValueFactory(cellData -> cellData.getValue().luchtVochtProperty());
         tcLuVht.prefWidthProperty().bind(tvContent.widthProperty().divide(columncount));
+        tcLuVht.setResizable(false);
         tcLucht.getColumns().addAll(tcLuTmp, tcLuVht);
+        tcLucht.setResizable(false);
 
         // set the table width and height dynamically
         tvContent.prefWidthProperty().bind(gp.widthProperty());
@@ -134,24 +152,15 @@ public class SensorOverview {
         // Setup the table
         tvContent.getColumns().addAll(tcKas, tcDate, tcWater, tcGrond, tcLucht);
 
-        ArrayList<sensorRegistratie> alSenReg = new ArrayList<>();
+        // Setup the data lists for the table
         ObservableList<sensorRegistratie> olSenReg = FXCollections.observableArrayList();
         FilteredList<sensorRegistratie> flSenReg = new FilteredList<>(olSenReg);
-
-
-        // Setup the data lists for the table
-        // @TODO Retrieve the data & make it in such a way that it loads in an observable list.
-        System.out.println(new sensorRegistratie(1, "2020-01-01", 5, 12, 10, 60, 50));
-        System.out.println(new sensorRegistratie(2, "2020-02-01", 7, 15, 13, 75, 60));
-        System.out.println(new sensorRegistratie(3, "2020-03-01", 8 ,18 ,16 ,85, 90));
-        alSenReg.add(new sensorRegistratie(1, "2020-01-01", 5, 12, 10, 60, 50));
-        alSenReg.add(new sensorRegistratie(2, "2020-02-01", 7, 15, 13, 75, 60));
-        alSenReg.add(new sensorRegistratie(3, "2020-03-01", 8 ,18 ,16 ,85, 90));
-        olSenReg.setAll(alSenReg);
+        // Fill the list with the data from the database
+        olSenReg.setAll(RegistratieController.GetRegFromDevice(al));
 
         tvContent.setItems(flSenReg);
         refreshTable(); // refresh the table after editing the list, (Delete, Add, Change) !!!!!Important!!!!!
-        System.out.println("alSenReg.size(): " + alSenReg.size());
+        System.out.println("alSenReg.size(): " + olSenReg.size());
 
 
         GridPane.setConstraints(tvContent, 1, 3); // node, column, row

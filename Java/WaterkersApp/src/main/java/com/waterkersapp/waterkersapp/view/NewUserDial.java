@@ -70,8 +70,6 @@ public class NewUserDial {
         ButtonType CancelButtonType = new ButtonType("Annuleren", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().addAll(okButtonType, CancelButtonType);
 
-
-        HBox titleBox = new HBox();
         GridPane gp = new GridPane();
         VBox wrapperBox = new VBox();
 
@@ -270,19 +268,12 @@ public class NewUserDial {
             //@TODO Make the functionality to reset the text... or not. might be a bit unnecessary to 'reset' the password.
         });
 
-
-        titleBox.getChildren().addAll(lblTitle);
-        gp.getChildren().addAll();
-
         wrapperBox.getChildren().addAll(gp);
 
         wrapperBox.setSpacing(5);
         wrapperBox.setPadding(new Insets(20));
 
-
-
         dialog.getDialogPane().setContent(wrapperBox);
-
 
         AtomicReference<Pair<Boolean, String>> result = new AtomicReference<>(new Pair<>(false, "No result yet"));
         dialog.setResultConverter(dialogButton -> {

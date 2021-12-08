@@ -1,7 +1,7 @@
 package com.waterkersapp.waterkersapp.model;
 
 public class MinMaxWaardes {
-    private String Locatie;
+    private ArduinoLocatie Locatie;
     private double MinPH = 6; // value source : https://www.nrcs.usda.gov/Internet/FSE_DOCUMENTS/nrcs142p2_052208.pdf
     private double MaxPH = 7; // value source : https://www.nrcs.usda.gov/Internet/FSE_DOCUMENTS/nrcs142p2_052208.pdf
     private double MinGT = 15; // value source: https://www.houseplantsexpert.com/indoor-plants-temperature-guide.html
@@ -19,11 +19,11 @@ public class MinMaxWaardes {
      * Creates a default setings object with the researched ideal values
      * @param locatie The location of the new values
      */
-    public MinMaxWaardes(String locatie) {
+    public MinMaxWaardes(ArduinoLocatie locatie) {
         Locatie = locatie;
     }
 
-    public MinMaxWaardes(String locatie, double minPH, double maxPH, double minGT, double maxGT, double minLT, double maxLT, double minGV, double maxGV, double minLV, double maxLV) {
+    public MinMaxWaardes(ArduinoLocatie locatie, double minPH, double maxPH, double minGT, double maxGT, double minLT, double maxLT, double minGV, double maxGV, double minLV, double maxLV) {
         Locatie = locatie;
         MinPH = minPH;
         MaxPH = maxPH;
@@ -37,13 +37,9 @@ public class MinMaxWaardes {
         MaxLV = maxLV;
     }
 
-    public String getLocatie() {
-        return Locatie;
-    }
+    public ArduinoLocatie getLocatie() { return Locatie; }
 
-    public void setLocatie(String locatie) {
-        Locatie = locatie;
-    }
+    public void setLocatie(ArduinoLocatie locatie) { Locatie = locatie; }
 
     public double getMinPH() {
         return MinPH;
@@ -124,8 +120,6 @@ public class MinMaxWaardes {
     public void setMaxLV(double maxLV) {
         MaxLV = maxLV;
     }
-
-
 
     public MinMaxWaardes copy(){
         return new MinMaxWaardes(

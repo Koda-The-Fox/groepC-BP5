@@ -64,6 +64,7 @@ public class Beheer {
     }
 
     TextField tbxLocatie;
+    ArduinoLocatie al;
 
     Spinner<Double> numMinPH;
     Spinner<Double> numMaxPH;
@@ -76,21 +77,25 @@ public class Beheer {
     Spinner<Double> numMinLV;
     Spinner<Double> numMaxLV;
 
-    public Beheer(ArduinoLocatie ArduinoLocatie, Gebruiker user) {
 
-        if (ArduinoLocatie.equals(new ArduinoLocatie())){
+    public Beheer(ArduinoLocatie al, Gebruiker user) {
+        this.al = al;
+
+        if (al.equals(new ArduinoLocatie())){
             // AL is a new object so no device is selected
             // disable all buttons but the new device button
             // @TODO add a new device button and add the functionality
         }
 
+        /* // @TODO  Create a working on close event
         stage.setOnCloseRequest(e -> {
             stage.close();
             Menu menu = new Menu(user);
             Menu.create(menu);
         });
+        */
 
-        AtomicReference<MinMaxWaardes> currentWaardes = new AtomicReference<>(LoadData(ArduinoLocatie));
+        AtomicReference<MinMaxWaardes> currentWaardes = new AtomicReference<>(LoadData(al));
 
         HBox logoTitleBox = new HBox();
         GridPane gp = new GridPane();
@@ -117,19 +122,11 @@ public class Beheer {
         btnNewDevice.setDisable(true); //@TODO remove when testing or if new device script is done
 
 
-        Label lblLocatie = new Label("Locatie: ");
-        gp.add(lblLocatie, 1, 2, 1, 1);
+        Label lblLocatieRO = new Label("Locatie: ");
+        gp.add(lblLocatieRO, 1, 2, 1, 1);
 
-        //@TODO maybe make this a combobox with the known locations and use the button 'Nieuw Aparaat' to create new devices, this causes a problem becouse the device isnt a name but a reference to a known device in a different table
-        tbxLocatie = new TextField(currentWaardes.get().getLocatie());
-        gp.add(tbxLocatie, 2, 2, 1, 1);
-        Button btnLocatie = new Button("Reset");
-        btnLocatie.setOnAction(e -> {
-            tbxLocatie.setText(currentWaardes.get().getLocatie());
-        });
-        gp.add(btnLocatie, 3, 2, 1, 1);
-
-
+        Label lblLocatie = new Label(currentWaardes.get().getLocatie().getLocatie());
+        gp.add(lblLocatie, 2, 2, 1, 1);
 
 
         Label lblWater = new Label("WATER");
@@ -274,10 +271,10 @@ public class Beheer {
         Button btnSave = new Button("Opslaan");
         btnSave.setOnAction(e -> {
             MinMaxWaardesController MMC = new MinMaxWaardesController();
-            if (MMC.updateMinMaxWaardes(currentWaardes.get(), getInserinNewObject())){
+            if (MMC.updateMinMaxWaardes(currentWaardes.get(), getInsertinNewObject())){
                 txtSysMessage.setFill(Color.GREEN);
                 txtSysMessage.setText("Succesvol opgeslagen, u kunt dit scherm afsluiten.");
-                currentWaardes.set(getInserinNewObject());
+                currentWaardes.set(getInsertinNewObject());
             }
             else{
                 txtSysMessage.setFill(Color.RED);
@@ -289,15 +286,6 @@ public class Beheer {
         b.setSpacing(5);
         VBox a = new VBox(gp, txtSysMessage, b);
         a.setSpacing(20);
-
-
-
-
-
-
-
-
-
 
 
         // Initialising
@@ -328,9 +316,9 @@ public class Beheer {
      * Converts the current values in the spinners and text field into an object
      * @return
      */
-    private MinMaxWaardes getInserinNewObject(){
+    private MinMaxWaardes getInsertinNewObject(){
         return new MinMaxWaardes(
-                tbxLocatie.getText(),
+                al,
 
                 numMinPH.getValue(),
                 numMaxPH.getValue(),

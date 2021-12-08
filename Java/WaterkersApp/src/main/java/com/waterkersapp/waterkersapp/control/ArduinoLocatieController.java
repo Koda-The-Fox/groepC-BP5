@@ -3,6 +3,7 @@ package com.waterkersapp.waterkersapp.control;
 import com.waterkersapp.waterkersapp.model.ArduinoLocatie;
 import com.waterkersapp.waterkersapp.model.Gebruiker;
 import com.waterkersapp.waterkersapp.util.DBCPDataSource;
+import javafx.util.Pair;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -16,18 +17,21 @@ public class ArduinoLocatieController {
     public static ArrayList<ArduinoLocatie> getAllArduinoLocaties(Gebruiker user){
         ArrayList<ArduinoLocatie> alLocaties = new ArrayList();
 
-        Connection con = null; // @TODO SQL Command, possibly changes once the API works
+        Connection con = null;
         try {
             con = DBCPDataSource.getConnection();
             Statement stat = con.createStatement();
 
-            // ResultSet result = stat.executeQuery("select * from ArduinoLocatie;"); // Old code, its outdated and doesnt do user specific requests
-
             String Querry =
                     "SELECT al.* FROM `arduinolocatie` as al \n";
             if (user != null){ // if the user is not null get all the device connected to the user
-                Querry += "inner join beheerdarduino as ba on ba.ArduinoID = al.ArduinoID\n"+
+                if (user.getAdmin()) {
+                    Querry += ";";
+                }
+                else{
+                    Querry += "inner join beheerdarduino as ba on ba.ArduinoID = al.ArduinoID\n" +
                             "where ba.LoginNaam = '" + user.getLoginNaam() + "';";
+                }
             }
 
             ResultSet result = stat.executeQuery(Querry);
@@ -48,4 +52,102 @@ public class ArduinoLocatieController {
             }
         }
     }
+
+    public static boolean CheckDevicename(String locatie) {
+        Connection con = null;
+        String Querry =
+                String.format("SELECT * FROM `arduinolocatie` where `Locatie` = '%s';", locatie);
+
+        try {
+            con = DBCPDataSource.getConnection();
+            Statement stat = con.createStatement();
+
+            ResultSet result = stat.executeQuery(Querry);
+            int i = 0;
+            while (result.next()) {
+                i++;
+            }
+            if (i != 0){
+                return false;
+            }
+            else{
+                return true;
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+            return false;
+        } finally {
+            try {
+                con.close();
+            } catch (Exception se) { // No 'SQLException' the 'Exception' catches this too.
+                se.printStackTrace();
+            }
+        }
+    }
+
+    public static Pair<Boolean, String> CreateDevice(ArduinoLocatie newDevice) {
+        Connection con = null;
+        String err = "";
+        try {
+            con = DBCPDataSource.getConnection();
+            Statement stat = con.createStatement();
+            String Querry = String.format("insert into `ArduinoLocatie` (`Locatie`, `Status`) values ('%s',  '%s');", newDevice.getLocatie(), newDevice.getStatus());
+
+            int result = stat.executeUpdate(Querry);
+            if (result != 1){
+                System.out.println(Querry);
+                return new Pair<>(false, "Er ging its fout, probeer het later nog eens.");
+            }
+            else{
+                return new Pair<>(true, "Device met success gemaakt.");
+            }
+
+        } catch (SQLException se) {
+            se.printStackTrace();
+            err += se.getMessage() + "\n";
+        } finally {
+            try {
+                con.close();
+            } catch (Exception se) { // No 'SQLException' the 'Exception' catches this too.
+                se.printStackTrace();
+                err += se.getMessage() + "\n";
+            }
+        }
+        return new Pair<>(false, err);
+    }
+    public static Pair<Boolean, String> ChangeDevice(ArduinoLocatie al, ArduinoLocatie newDevice) {
+        Connection con = null;
+        String err = "";
+        int result = 0;
+        try {
+            con = DBCPDataSource.getConnection();
+            Statement stat = con.createStatement();
+
+            String Query = "update `ArduinoLocatie` " +
+                    String.format("set `ArduinoID` = %s, `Locatie` = '%s', `Status` = '%s' ", al.getArduinoID(), newDevice.getLocatie(), newDevice.getStatus()) +
+                    String.format("where `ArduinoID` = %s and `Locatie` = '%s' and `Status` = '%s';", al.getArduinoID(), al.getLocatie(), al.getStatus());
+
+            result = stat.executeUpdate(Query);
+            if (result == 1){
+                return new Pair<>(true, "Device met success bewerkt.");
+            }
+            else {
+                System.out.println(Query);
+                return new Pair<>(false, "Er ging its fout, probeer het later nog eens.");
+            }
+
+        } catch (SQLException se) {
+            se.printStackTrace();
+            err += se.getMessage() + "\n";
+        } finally {
+            try {
+                con.close();
+            } catch (Exception se) { // No 'SQLException' the 'Exception' catches this too.
+                se.printStackTrace();
+                err += se.getMessage() + "\n";
+            }
+        }
+        return new Pair<>(false, err);
+    }
+
 }

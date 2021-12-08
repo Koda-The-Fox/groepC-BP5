@@ -13,7 +13,7 @@ import java.sql.Statement;
 public class ChangeUserController {
 
     public static Boolean CheckUsername(String Username){
-        Connection con = null; // @TODO SQL Command, possibly changes once the API works
+        Connection con = null;
         try {
             con = DBCPDataSource.getConnection();
             Statement stat = con.createStatement();
@@ -26,7 +26,7 @@ public class ChangeUserController {
             while (result.next()) {
                 i++;
             }
-            if (i <= 0 || i > 1){
+            if (i != 0){
                 return false;
             }
             else{
@@ -46,7 +46,7 @@ public class ChangeUserController {
 
 
     public static Pair<Boolean, String> CreateUser(Gebruiker user) {
-        Connection con = null; // @TODO SQL Command, possibly changes once the API works
+        Connection con = null;
         String err = "";
         try {
             con = DBCPDataSource.getConnection();
@@ -77,7 +77,7 @@ public class ChangeUserController {
     }
 
     public static Pair<Boolean, String> ChangeUser(Gebruiker previousUser, Gebruiker newUser) {
-        Connection con = null; // @TODO SQL Command, possibly changes once the API works
+        Connection con = null;
         String err = "";
         try {
             con = DBCPDataSource.getConnection();
@@ -89,7 +89,7 @@ public class ChangeUserController {
 
             int result = stat.executeUpdate(Querry);
             if (result == 1){
-                return new Pair<>(true, "Gebruiker met success gemaakt.");
+                return new Pair<>(true, "Gebruiker met success bewerkt.");
             }
             else {
                 System.out.println(Querry);
