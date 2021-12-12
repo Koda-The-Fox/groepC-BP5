@@ -1,5 +1,7 @@
 package com.waterkersapp.waterkersapp.model;
 
+import java.lang.reflect.Field;
+
 public class MinMaxWaardes {
     private ArduinoLocatie Locatie;
     private double MinPH = 6; // value source : https://www.nrcs.usda.gov/Internet/FSE_DOCUMENTS/nrcs142p2_052208.pdf
@@ -138,4 +140,18 @@ public class MinMaxWaardes {
     }
 
 
+    public boolean equals(MinMaxWaardes otherMMW){
+        return this.Locatie.getArduinoID() == otherMMW.Locatie.getArduinoID() &&
+                this.MinPH == otherMMW.MinPH &&
+                this.MaxPH == otherMMW.MaxPH &&
+                this.MinGT == otherMMW.MinGT &&
+                this.MaxGT == otherMMW.MaxGT &&
+                this.MinLT == otherMMW.MinLT &&
+                this.MaxLT == otherMMW.MaxLT &&
+                this.MinGV == otherMMW.MinGV &&
+                this.MaxGV == otherMMW.MaxGV &&
+                this.MinLV == otherMMW.MinLV &&
+                this.MaxLV == otherMMW.MaxLV;
+
+    }
 }

@@ -52,7 +52,7 @@ public class LoginController {
      * @return returns the list that was received, empty list if nothing was found, null if failed
      */
     private static List<Gebruiker> getUsers(String givenUserName, String givenPassword){
-        String query = String.format("SELECT LoginNaam FROM `Gebruiker` where `LoginNaam` = '%s' and `LoginPass` = sha2('%s', 256);", givenUserName, givenPassword);
+        String query = String.format("SELECT `LoginNaam`, `Admin` FROM `Gebruiker` where `LoginNaam` = '%s' and `LoginPass` = sha2('%s', 256);", givenUserName, givenPassword);
 
         List<Gebruiker> gebruikerList = new ArrayList<>();
 
@@ -65,8 +65,7 @@ public class LoginController {
             while (resultSet.next()) {
                 // Because there should only be one User with the given username and password we don't really need to loop through the resultSet, we still do in case multiple users are returned.
                 //Integer userID = getInteger(resultSet, "userID"); // Irrelevant, We don't need this inside the application;
-                String userName = resultSet.getString("LoginNaam");
-                gebruikerList.add(new Gebruiker(userName));
+                gebruikerList.add(new Gebruiker(resultSet.getString("LoginNaam"), resultSet.getBoolean("Admin")));
             }
         } catch (SQLSyntaxErrorException | SQLDataException datEX) {
             // Make something that tells the use there is no user with that username

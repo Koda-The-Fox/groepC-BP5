@@ -70,6 +70,11 @@ public class Menu {
         GridPane gridPane = new GridPane();
         VBox wrapperBox = new VBox();
 
+        HBox logoBox = new HBox();
+        logoBox.setAlignment(Pos.CENTER_LEFT);
+        logoBox.setPadding(new Insets(0, 0, 10, -ICON_SIZE[1]));
+        logoBox.setSpacing(5);
+
         // Set a value relative to the item width and height for the font size
         // source: https://easysavecode.com/66zhPWhD
         DoubleProperty fontSize = new SimpleDoubleProperty(24);
@@ -78,7 +83,7 @@ public class Menu {
         ImageView imgLogo = new ImageView(ICON);
         imgLogo.setFitHeight(ICON_SIZE[0]);
         imgLogo.setFitWidth(ICON_SIZE[1]);
-        GridPane.setConstraints(imgLogo, 0, 0); // node, column, row
+        logoBox.getChildren().add(imgLogo);
 
         Button btnLogout = new Button("Log-uit");
 //        btnLogout.getStyleClass().add("global-button-style");
@@ -89,21 +94,27 @@ public class Menu {
             Login login = new Login();
             Login.create(login);
         });
-
+        logoBox.getChildren().add(btnLogout);
 
         ComboBox<ArduinoLocatie> cbLocatie = new ComboBox<>();
-        ArduinoLocatieController alController = new ArduinoLocatieController();
+        logoBox.getChildren().add(cbLocatie);
 
+        ArduinoLocatieController alController = new ArduinoLocatieController();
         getArduinoLocaties(cbLocatie, alController);
 
         Button btnRefresh = new Button("\uD83D\uDD04");
         btnRefresh.setOnAction(event -> {
             getArduinoLocaties(cbLocatie, alController);
         });
+        logoBox.getChildren().add(btnRefresh);
 
-        HBox logoBox = new HBox(imgLogo, btnLogout, cbLocatie, btnRefresh);
-        logoBox.setPadding(new Insets(0, 0, 10, -ICON_SIZE[1]));
-        logoBox.setSpacing(5);
+        Button btnNewDevice = new Button("Nieuw Aparaat");
+        btnNewDevice.setOnAction(e -> {
+            //@TODO Make new device script, Maybe a new dialog where we can assign users to the device etc.
+            NewDeviceDial.create(null);
+        });
+        logoBox.getChildren().add(btnNewDevice);
+
 
         Button btnSensorOverzicht = new Button("Sensor Overzicht");
         btnSensorOverzicht.disableProperty().bind(cbLocatie.disableProperty());
@@ -130,7 +141,7 @@ public class Menu {
             else {
                 beheer = new Beheer(cbLocatie.getValue(), user);
             }
-            Beheer.create(beheer);
+            Beheer.create(beheer, user);
             stage.close();
         });
 

@@ -14,6 +14,33 @@ import java.util.ArrayList;
 public class ArduinoLocatieController {
 
 
+    public static ArduinoLocatie getAllArduinoLocatie(String ArduinoLocatieName){
+
+        Connection con = null;
+        try {
+            con = DBCPDataSource.getConnection();
+            Statement stat = con.createStatement();
+
+            String Querry = String.format("SELECT * FROM `ArduinoLocatie` where `Locatie` = '%s';", ArduinoLocatieName);
+
+            ResultSet result = stat.executeQuery(Querry);
+
+            while (result.next()) {
+                return new ArduinoLocatie(result.getInt("ArduinoID"), result.getString("Locatie"), result.getString("Status"));
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+            return null;
+        } finally {
+            try {
+                con.close();
+            } catch (Exception se) { // No 'SQLException' the 'Exception' catches this too.
+                se.printStackTrace();
+            }
+        }
+        return null;
+    }
+
     public static ArrayList<ArduinoLocatie> getAllArduinoLocaties(Gebruiker user){
         ArrayList<ArduinoLocatie> alLocaties = new ArrayList();
 

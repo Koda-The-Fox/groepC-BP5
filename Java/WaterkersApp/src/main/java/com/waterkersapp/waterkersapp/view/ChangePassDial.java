@@ -1,6 +1,6 @@
 package com.waterkersapp.waterkersapp.view;
 
-import com.waterkersapp.waterkersapp.control.ChangePassController;
+import com.waterkersapp.waterkersapp.control.PassController;
 import com.waterkersapp.waterkersapp.model.Gebruiker;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -154,7 +154,7 @@ public class ChangePassDial {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == loginButtonType) {
-                return ChangePassController.ChangePassword(ogUser, tbxOldPass.getText(), tbxNewPass.getText());
+                return PassController.ChangePassword(ogUser, tbxOldPass.getText(), tbxNewPass.getText());
             }
             return false;
         });

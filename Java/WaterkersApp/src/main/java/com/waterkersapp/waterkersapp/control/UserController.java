@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class ChangeUserController {
+public class UserController {
 
     public static Boolean CheckUsername(String Username){
         Connection con = null;

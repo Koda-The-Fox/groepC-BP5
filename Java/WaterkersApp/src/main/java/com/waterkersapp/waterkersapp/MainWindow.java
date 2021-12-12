@@ -28,24 +28,24 @@ public class MainWindow extends Application {
         Gebruiker Jordy = new Gebruiker("JorVV", false);
         Gebruiker Admin = new Gebruiker("Admin", true);
         ArduinoLocatie al = new ArduinoLocatie(10, "TestLocatie", "Testing");
-        ArduinoLocatie Kas1 = new ArduinoLocatie(1, "Kas1", "Uit");
+        ArduinoLocatie GroepC_Arduino = new ArduinoLocatie(1, "GroepC_Arduino3 ", "Uit");
 
         // LOGIN
 //        Login login = new Login();
 //        Login.create(login);
 
         // MENU
-        Menu menu = new Menu(Jordy);
+//        Menu menu = new Menu(Jordy);
 //        Menu menu = new Menu(Admin);
-        Menu.create(menu);
+//        Menu.create(menu);
 
         // Sensor overzicht
-        SensorOverview sensorOverview = new SensorOverview(Kas1);
+//        SensorOverview sensorOverview = new SensorOverview(Kas1);
 //        SensorOverview.create(sensorOverview);
 
         // Beheer
-        Beheer beheer = new Beheer(Kas1, Jordy);
-//        Beheer.create(beheer);
+//        Beheer beheer = new Beheer(GroepC_Arduino, Jordy);
+//        Beheer.create(beheer, Jordy);
 
 
         // change password dialog
@@ -53,7 +53,7 @@ public class MainWindow extends Application {
 
         // change/create user device
 //        NewDeviceDial.create(al); // change device
-//        NewDeviceDial.create(Kas1); // change Kas1 device
+        NewDeviceDial.create(GroepC_Arduino); // change GroepC_Arduino device
 //        NewDeviceDial.create(null); // new device
 
 //         change/create user dialog
@@ -62,7 +62,7 @@ public class MainWindow extends Application {
 
 
         // about page
-        AboutPage ap = new AboutPage();
+//        AboutPage ap = new AboutPage();
 //        AboutPage.create(ap);
     }
 

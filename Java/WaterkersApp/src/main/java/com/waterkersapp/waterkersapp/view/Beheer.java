@@ -34,16 +34,34 @@ public class Beheer {
 
 
     private static Gebruiker user;
+    private Boolean CloseOverride = false;
 
 
     BorderPane borderPane = new BorderPane();
 
     public static Stage stage;
 
-    public static void create(Beheer beheer) {
+    public static void create(Beheer beheer, Gebruiker user) {
         stage = new Stage();
         stage.setTitle("Beheer/Instellingen");
         stage.getIcons().add(ICON);
+
+        // onClose event
+        stage.setOnCloseRequest(e -> {
+            if (!beheer.CloseOverride) {
+                if (!beheer.getInsertinNewObject().equals(beheer.currentWaardes.get())){
+                    Alert alrt = new Alert(Alert.AlertType.WARNING, "Er zijn veranderingen die niet zijn opgeslagen.\nWilt u doorgaan zonder op te slaan?", ButtonType.YES, ButtonType.NO);
+                    alrt.showAndWait();
+                    if (alrt.getResult() == ButtonType.NO){
+                        e.consume();
+                        return;
+                    }
+                }
+            }
+            stage.close();
+            Menu menu = new Menu(user);
+            Menu.create(menu);
+        });
 
         Scene scene = new Scene(beheer.getParent(), (WINDOW_SIZE[0]), (WINDOW_SIZE[1]));
         // set the styles for the scene
@@ -59,11 +77,12 @@ public class Beheer {
 //        stage.show();
         stage.showAndWait(); // show and stay focussed on window
     }
+
+
     public Parent getParent() {
         return borderPane;
     }
 
-    TextField tbxLocatie;
     ArduinoLocatie al;
 
     Spinner<Double> numMinPH;
@@ -77,6 +96,7 @@ public class Beheer {
     Spinner<Double> numMinLV;
     Spinner<Double> numMaxLV;
 
+    AtomicReference<MinMaxWaardes> currentWaardes;
 
     public Beheer(ArduinoLocatie al, Gebruiker user) {
         this.al = al;
@@ -87,15 +107,7 @@ public class Beheer {
             // @TODO add a new device button and add the functionality
         }
 
-        /* // @TODO  Create a working on close event
-        stage.setOnCloseRequest(e -> {
-            stage.close();
-            Menu menu = new Menu(user);
-            Menu.create(menu);
-        });
-        */
-
-        AtomicReference<MinMaxWaardes> currentWaardes = new AtomicReference<>(LoadData(al));
+        currentWaardes = new AtomicReference<>(LoadData(al));
 
         HBox logoTitleBox = new HBox();
         GridPane gp = new GridPane();
@@ -114,13 +126,6 @@ public class Beheer {
         titleBox.setAlignment(Pos.CENTER_LEFT);
 
         /*--------------[Content]---------------*/
-        Button btnNewDevice = new Button("Nieuw Aparaat");
-        btnNewDevice.setOnAction(e -> {
-            //@TODO Make new device script, Maybe a new dialog where we can assign users to the device etc.
-        });
-        gp.add(btnNewDevice, 1, 1, 1, 1);
-        btnNewDevice.setDisable(true); //@TODO remove when testing or if new device script is done
-
 
         Label lblLocatieRO = new Label("Locatie: ");
         gp.add(lblLocatieRO, 1, 2, 1, 1);
@@ -270,15 +275,23 @@ public class Beheer {
 
         Button btnSave = new Button("Opslaan");
         btnSave.setOnAction(e -> {
-            MinMaxWaardesController MMC = new MinMaxWaardesController();
-            if (MMC.updateMinMaxWaardes(currentWaardes.get(), getInsertinNewObject())){
-                txtSysMessage.setFill(Color.GREEN);
-                txtSysMessage.setText("Succesvol opgeslagen, u kunt dit scherm afsluiten.");
-                currentWaardes.set(getInsertinNewObject());
+            MinMaxWaardes oldMinMax = currentWaardes.get();
+            MinMaxWaardes newMinMax = getInsertinNewObject();
+            if (!newMinMax.equals(oldMinMax)){
+                MinMaxWaardesController MMC = new MinMaxWaardesController();
+                if (MMC.updateMinMaxWaardes(oldMinMax, newMinMax)){
+                    txtSysMessage.setFill(Color.GREEN);
+                    txtSysMessage.setText("Succesvol opgeslagen, U kunt dit scherm afsluiten.");
+                    currentWaardes.set(getInsertinNewObject());
+                }
+                else{
+                    txtSysMessage.setFill(Color.RED);
+                    txtSysMessage.setText("Er ging iets fout, controleer alle waardes of probeer het later nog eens. Als dit vaker voor komt neem contact op met de customer Support.");
+                }
             }
             else{
-                txtSysMessage.setFill(Color.RED);
-                txtSysMessage.setText("Er ging iets fout, controleer alle waardes of probeer het later nog eens. Als dit vaker voor komt neem contact op met de customer Support.");
+                txtSysMessage.setFill(Color.YELLOW);
+                txtSysMessage.setText("Geen veranderingen gevonden.");
             }
         });
         Button btnCancel = new Button("Afbreken");
@@ -336,22 +349,6 @@ public class Beheer {
     private MinMaxWaardes LoadData(ArduinoLocatie al){
         MinMaxWaardesController mmController = new MinMaxWaardesController();
         return mmController.getSpecificMinMaxWaardes(al);
-
-        //@TODO Use listener instead so the value is dynamic to the object. in that case we need an 'originalObject' & 'currentObject' so we can revert the changes.
-        /*
-        numMinPH.getValueFactory().setValue(mmWaardes.getMinPH());
-        numMaxPH.getValueFactory().setValue(mmWaardes.getMaxPH());
-
-        numMinGT.getValueFactory().setValue(mmWaardes.getMinGT());
-        numMaxGT.getValueFactory().setValue(mmWaardes.getMaxGT());
-        numMinGV.getValueFactory().setValue(mmWaardes.getMinGV());
-        numMaxGV.getValueFactory().setValue(mmWaardes.getMaxGV());
-
-        numMinLT.getValueFactory().setValue(mmWaardes.getMinLT());
-        numMaxLT.getValueFactory().setValue(mmWaardes.getMaxLT());
-        numMinLV.getValueFactory().setValue(mmWaardes.getMinLV());
-        numMaxLV.getValueFactory().setValue(mmWaardes.getMaxLV());
-        */
     }
 
 }

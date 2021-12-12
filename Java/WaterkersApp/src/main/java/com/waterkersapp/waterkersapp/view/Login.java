@@ -167,15 +167,6 @@ public class Login {
         });
         btnLogin.setDefaultButton(true);
 
-
-
-
-
-
-
-
-
-
         VBox loginBox = new VBox(tbxUsername, tbxPassword);
         HBox buttonsBox = new HBox(btnLogin);
         VBox statusBox = new VBox(txtSysMessage);

@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChangePassController {
+public class PassController {
 
     public static boolean ChangePassword(Gebruiker user, String Password, String NewPassword){
 

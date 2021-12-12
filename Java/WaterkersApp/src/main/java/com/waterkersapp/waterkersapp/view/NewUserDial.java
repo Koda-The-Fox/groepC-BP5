@@ -1,10 +1,8 @@
 package com.waterkersapp.waterkersapp.view;
 
 import com.waterkersapp.waterkersapp.control.ArduinoLocatieController;
-import com.waterkersapp.waterkersapp.control.ArrayListExtended;
-import com.waterkersapp.waterkersapp.control.ChangeUserController;
+import com.waterkersapp.waterkersapp.control.UserController;
 import com.waterkersapp.waterkersapp.model.*;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -17,9 +15,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.xml.transform.Result;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -80,8 +75,8 @@ public class NewUserDial {
             lblTitle.setText("Gebruiker '" + ogUser.getLoginNaam() + "' bewerken.");
         }
 
-        Node ndecngeUser = dialog.getDialogPane().lookupButton(okButtonType);
-        ndecngeUser.setDisable(true);
+        Node ndeCngeUser = dialog.getDialogPane().lookupButton(okButtonType);
+        ndeCngeUser.setDisable(true);
 
 
         Label lblUsername = new Label("Gebruikersnaam: ");
@@ -91,15 +86,14 @@ public class NewUserDial {
         TextField tbxUsername = new TextField("");
         if (ogUser != null){
             tbxUsername.setText(ogUser.getLoginNaam());
-            ndecngeUser.setDisable(false);
+            ndeCngeUser.setDisable(false);
         }
         tbxUsername.textProperty().addListener((observable, oldValue, newValue) -> {
             if (tbxUsername.getText().isEmpty()){
-                ndecngeUser.setDisable(true);
+                ndeCngeUser.setDisable(true);
             }
             else {
-                ndecngeUser.setDisable(false);
-                //@TODO Make validation that the username doesn't already exist
+                ndeCngeUser.setDisable(false);
             }
         });
         gp.add(tbxUsername, 2, 1, 1, 1);
@@ -261,13 +255,6 @@ public class NewUserDial {
         txtSystemMsg.setFill(Color.RED);
         gp.add(txtSystemMsg, 2, 11, 2, 1);
 
-
-
-        Button btnRstPasword = new Button("Reset");
-        btnRstPasword.setOnAction(e -> {
-            //@TODO Make the functionality to reset the text... or not. might be a bit unnecessary to 'reset' the password.
-        });
-
         wrapperBox.getChildren().addAll(gp);
 
         wrapperBox.setSpacing(5);
@@ -301,7 +288,7 @@ public class NewUserDial {
 
             newUser = new Gebruiker(tbxUsername.getText(), tbxcrtePass.getText(), chxAdmin.isSelected());
 
-            if (ogUser != null && !ChangeUserController.CheckUsername(newUser.getLoginNaam())){
+            if (ogUser != null && !UserController.CheckUsername(newUser.getLoginNaam())){
                 result.set(new Pair<>(false, "Gebruikersnaam bestaat al."));
                 txtSystemMsg.setText(result.get().getValue());
                 return result.get().getKey(); // return the key which is the Boolean
@@ -309,10 +296,10 @@ public class NewUserDial {
             else {
                 if (dialogButton == okButtonType) {
                     if (ogUser == null) {
-                        result.set(ChangeUserController.CreateUser(newUser));
+                        result.set(UserController.CreateUser(newUser));
                     } else {
                         ogUser.setLoginPass(tbxCurPass.getText());
-                        result.set(ChangeUserController.ChangeUser(ogUser, newUser));
+                        result.set(UserController.ChangeUser(ogUser, newUser));
                     }
                     txtSystemMsg.setText(result.get().getValue()); // set the error message to the text
                     return result.get().getKey(); // return the key which is the Boolean

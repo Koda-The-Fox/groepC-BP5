@@ -75,4 +75,11 @@ public class ArduinoLocatie {
             return Locatie.get() + " (" + Status.get() + ")";
         }
     }
+
+
+    public boolean equals(ArduinoLocatie otherAL){
+        return this.getArduinoID() == otherAL.getArduinoID() &&
+                this.getLocatie() == otherAL.getLocatie();
+
+    }
 }
