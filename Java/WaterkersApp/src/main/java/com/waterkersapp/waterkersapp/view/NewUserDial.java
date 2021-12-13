@@ -88,7 +88,6 @@ public class NewUserDial {
         Label lblUsername = new Label("Gebruikersnaam: ");
         gp.add(lblUsername, 1, 1, 1, 1);
 
-        // @TODO Regex out any illegal characters
         TextField tbxUsername = new TextField("");
         if (ogUser != null){
             tbxUsername.setText(ogUser.getLoginNaam());
@@ -131,7 +130,6 @@ public class NewUserDial {
             }
         });
 
-        // @TODO Regex out any illegal characters
         PasswordField tbxcrtePass = new PasswordField();
         if (ogUser == null){
             gp.add(tbxcrtePass, 2, 2, 1, 1);
@@ -252,8 +250,6 @@ public class NewUserDial {
             gp.add(chxAdmin, 2, 9, 1, 1);
         }
 
-
-        // @TODO Regex out any illegal characters
         PasswordField tbxCurPass = new PasswordField();
         gp.add(tbxCurPass, 2, 10, 1, 1);
 
