@@ -3,6 +3,7 @@ package com.waterkersapp.waterkersapp.view;
 import com.waterkersapp.waterkersapp.control.RegistratieController;
 import com.waterkersapp.waterkersapp.model.ArduinoLocatie;
 import com.waterkersapp.waterkersapp.model.sensorRegistratie;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -11,16 +12,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.waterkersapp.waterkersapp.MainWindow.ICON;
 
@@ -50,7 +46,7 @@ public class SensorOverview {
 
         Scene scene = new Scene(sensorOverview.getParent(), (WINDOW_SIZE[0]), (WINDOW_SIZE[1]));
         // set the styles for the scene
-        scene.getStylesheets().addAll(SensorOverview.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString());
+        scene.getStylesheets().addAll(SensorOverview.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString(), SensorOverview.class.getResource("/com/waterkersapp/css/OverviewStyle.css").toString());
         stage.setScene(scene);
         // set the window to be resizable
         stage.setResizable(true); // default: true
@@ -71,11 +67,15 @@ public class SensorOverview {
     }
 
 
+    ObservableList<sensorRegistratie> olSenReg;
+    ArduinoLocatie currentAL;
     public SensorOverview(ArduinoLocatie al) {
+        this.currentAL = al;
 
         HBox logoTitleBox = new HBox();
 
         GridPane gp = new GridPane();
+        ScrollPane contentWindow = new ScrollPane();
 
         ImageView imgLogo = new ImageView(ICON);
         imgLogo.setFitHeight(ICON_SIZE[0]);
@@ -88,13 +88,18 @@ public class SensorOverview {
         HBox titleBox = new HBox(tbxTitle);
         titleBox.setAlignment(Pos.CENTER_LEFT);
 
+        HBox systemBox = new HBox();
         Label lblLocatie = new Label("Locatie: " + al.toString());
         lblLocatie.setPadding(new Insets(0, 0, 0, ICON_SIZE[1]/2));
-        lblLocatie.setAlignment(Pos.CENTER_RIGHT);
-
 
         Button btnRefresh = new Button("Ververs \uD83D\uDDD8");
-        GridPane.setConstraints(btnRefresh, 1, 2); // node, column, row
+        btnRefresh.setOnAction(e -> {
+            refreshTable();
+        });
+
+        systemBox.getChildren().addAll(lblLocatie, btnRefresh);
+        systemBox.setAlignment(Pos.BOTTOM_LEFT);
+        systemBox.setSpacing(50);
 
         // Setup and add the columns to the table
         // Also use setCellValueFactory's to get the right value from the onject 'sensorRegistratie'.
@@ -144,8 +149,8 @@ public class SensorOverview {
 
         // set the table width and height dynamically
         tvContent.prefWidthProperty().bind(gp.widthProperty());
-//        tvContent.prefHeightProperty().bind(gp.heightProperty()); // GP height isn't dynamically sized
-        tvContent.setMinHeight(100);
+        tvContent.prefHeightProperty().bind(contentWindow.heightProperty().subtract(12)); // 12 NO bar at all
+        tvContent.setMinHeight(200);
 
         tvContent.setPlaceholder(new Label("Geen data gevonden, probeer later nog eens."));
 
@@ -153,10 +158,10 @@ public class SensorOverview {
         tvContent.getColumns().addAll(tcKas, tcDate, tcWater, tcGrond, tcLucht);
 
         // Setup the data lists for the table
-        ObservableList<sensorRegistratie> olSenReg = FXCollections.observableArrayList();
+        olSenReg = FXCollections.observableArrayList();
         FilteredList<sensorRegistratie> flSenReg = new FilteredList<>(olSenReg);
         // Fill the list with the data from the database
-        olSenReg.setAll(RegistratieController.GetRegFromDevice(al));
+//        olSenReg.setAll(RegistratieController.GetRegFromDevice(al));
 
         tvContent.setItems(flSenReg);
         refreshTable(); // refresh the table after editing the list, (Delete, Add, Change) !!!!!Important!!!!!
@@ -171,16 +176,16 @@ public class SensorOverview {
 
         gp.getChildren().addAll(tvContent);
 
-        ScrollPane contentWindow = new ScrollPane(gp);
+        contentWindow.setContent(gp);
 
         contentWindow.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         contentWindow.getStyleClass().add("ContentWindow");
-        gp.setPadding(new Insets(50));
+        gp.setPadding(new Insets(0,50,0,50));
 
         HBox contentWrapper = new HBox(contentWindow);
         contentWrapper.setPadding(new Insets(0, ICON_SIZE[1]/2, 15, ICON_SIZE[1]/2));
 
-        VBox wrapperBox = new VBox(logoTitleBox, lblLocatie,contentWrapper);
+        VBox wrapperBox = new VBox(logoTitleBox, systemBox, contentWrapper);
 
         wrapperBox.setSpacing(5);
 //        wrapperBox.setPadding(new Insets(20));
@@ -191,15 +196,13 @@ public class SensorOverview {
         wrapperBox.setPadding(new Insets(5, 0,0,0));
 
 
-        // set the size of the grid pane dynamically to the wrapperBox
+        // set the size dynamically
         contentWindow.prefWidthProperty().bind(contentWrapper.widthProperty());
         contentWindow.prefHeightProperty().bind(contentWrapper.heightProperty());
 
-        // set the size of the grid pane dynamically to the wrapperBox
         contentWrapper.prefWidthProperty().bind(wrapperBox.widthProperty());
         contentWrapper.prefHeightProperty().bind(wrapperBox.heightProperty());
 
-        // set the size of the grid pane dynamically to the wrapperBox
         gp.prefWidthProperty().bind(contentWindow.widthProperty());
 //        gp.prefHeightProperty().bind(contentWindow.heightProperty());
 
@@ -211,6 +214,7 @@ public class SensorOverview {
 
 
     protected void refreshTable() {
+        olSenReg.setAll(RegistratieController.GetRegFromDevice(currentAL));
         tvContent.refresh();
     }
 }

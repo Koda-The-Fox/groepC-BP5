@@ -29,6 +29,7 @@ public class MainWindow extends Application {
         Gebruiker Admin = new Gebruiker("Admin", true);
         ArduinoLocatie al = new ArduinoLocatie(10, "TestLocatie", "Testing");
         ArduinoLocatie GroepC_Arduino = new ArduinoLocatie(1, "GroepC_Arduino3 ", "Uit");
+        ArduinoLocatie Kas2 = new ArduinoLocatie(2, "Kas2 ", "Uit");
 
         // LOGIN
 //        Login login = new Login();
@@ -40,11 +41,11 @@ public class MainWindow extends Application {
 //        Menu.create(menu);
 
         // Sensor overzicht
-//        SensorOverview sensorOverview = new SensorOverview(Kas1);
-//        SensorOverview.create(sensorOverview);
+        SensorOverview sensorOverview = new SensorOverview(Kas2);
+        SensorOverview.create(sensorOverview);
 
         // Beheer
-//        Beheer beheer = new Beheer(GroepC_Arduino, Jordy);
+//        Beheer beheer = new Beheer(Kas2, Jordy);
 //        Beheer.create(beheer, Jordy);
 
 
@@ -53,7 +54,7 @@ public class MainWindow extends Application {
 
         // change/create user device
 //        NewDeviceDial.create(al); // change device
-        NewDeviceDial.create(GroepC_Arduino); // change GroepC_Arduino device
+//        NewDeviceDial.create(GroepC_Arduino); // change GroepC_Arduino device
 //        NewDeviceDial.create(null); // new device
 
 //         change/create user dialog

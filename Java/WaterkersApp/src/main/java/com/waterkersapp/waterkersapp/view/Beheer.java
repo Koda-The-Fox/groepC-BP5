@@ -40,11 +40,22 @@ public class Beheer {
     BorderPane borderPane = new BorderPane();
 
     public static Stage stage;
+    public Stage stage2;
 
     public static void create(Beheer beheer, Gebruiker user) {
         stage = new Stage();
         stage.setTitle("Beheer/Instellingen");
         stage.getIcons().add(ICON);
+
+        Scene scene = new Scene(beheer.getParent(), (WINDOW_SIZE[0]), (WINDOW_SIZE[1]));
+        // set the styles for the scene
+        scene.getStylesheets().addAll(Beheer.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString(), SensorOverview.class.getResource("/com/waterkersapp/css/BeheerStyle.css").toString());
+        stage.setScene(scene);
+        // set the window to be resizable
+        stage.setResizable(true); // default: true
+
+
+        stage.initModality(Modality.APPLICATION_MODAL);
 
         // onClose event
         stage.setOnCloseRequest(e -> {
@@ -58,26 +69,15 @@ public class Beheer {
                     }
                 }
             }
-            stage.close();
             Menu menu = new Menu(user);
             Menu.create(menu);
         });
 
-        Scene scene = new Scene(beheer.getParent(), (WINDOW_SIZE[0]), (WINDOW_SIZE[1]));
-        // set the styles for the scene
-        scene.getStylesheets().addAll(Beheer.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString(), SensorOverview.class.getResource("/com/waterkersapp/css/BeheerStyle.css").toString());
-        stage.setScene(scene);
-        // set the window to be resizable
-        stage.setResizable(true); // default: true
-
-
-        stage.initModality(Modality.APPLICATION_MODAL);
-
 
 //        stage.show();
         stage.showAndWait(); // show and stay focussed on window
-    }
 
+    }
 
     public Parent getParent() {
         return borderPane;
@@ -105,6 +105,7 @@ public class Beheer {
             // AL is a new object so no device is selected
             // disable all buttons but the new device button
             // @TODO add a new device button and add the functionality
+            NewDeviceDial ndd = new NewDeviceDial();
         }
 
         currentWaardes = new AtomicReference<>(LoadData(al));
@@ -131,6 +132,14 @@ public class Beheer {
         gp.add(lblLocatieRO, 1, 2, 1, 1);
 
         Label lblLocatie = new Label(currentWaardes.get().getLocatie().getLocatie());
+        // @TODO FIX ERROR
+        /*
+         * It only happens with devices that are newly created, possibly because they don't have  Min/Max waardes.
+
+            Exception in thread "JavaFX Application Thread" java.lang.NullPointerException
+            at com.waterkersapp.waterkersapp/com.waterkersapp.waterkersapp.view.Beheer.<init>(Beheer.java:134)
+            at com.waterkersapp.waterkersapp/com.waterkersapp.waterkersapp.view.Menu.lambda$new$5(Menu.java:142)
+        */
         gp.add(lblLocatie, 2, 2, 1, 1);
 
 
@@ -263,11 +272,9 @@ public class Beheer {
         logoTitleBox.setSpacing(10);
         logoTitleBox.setAlignment(Pos.TOP_LEFT);
 
-//        gp.setGridLinesVisible(true);
         gp.setHgap(5);
         gp.setVgap(5);
         gp.prefWidthProperty().bind(wrapperBox.widthProperty());
-//        gp.prefHeightProperty().bind(wrapperBox.heightProperty());
 
 
         Text txtSysMessage = new Text (""); // set a new line so the label is visible by using an empty line./
@@ -283,6 +290,12 @@ public class Beheer {
                     txtSysMessage.setFill(Color.GREEN);
                     txtSysMessage.setText("Succesvol opgeslagen, U kunt dit scherm afsluiten.");
                     currentWaardes.set(getInsertinNewObject());
+
+                    // Close the window without checking for changes
+                    CloseOverride = true;
+                    Menu menu = new Menu(user);
+                    Menu.create(menu);
+                    stage.close();
                 }
                 else{
                     txtSysMessage.setFill(Color.RED);
@@ -295,6 +308,24 @@ public class Beheer {
             }
         });
         Button btnCancel = new Button("Afbreken");
+        btnCancel.setOnAction(e ->{
+            // Having trouble getting the onCloseRequest being triggered by this event.
+            // Its taking too much time trying to fix this, doing it the ugly way. ¯\_(ツ)_/¯
+            System.out.println("Close Requested");
+            if (!CloseOverride) {
+                if (!getInsertinNewObject().equals(currentWaardes.get())){
+                    Alert alrt = new Alert(Alert.AlertType.WARNING, "Er zijn veranderingen die niet zijn opgeslagen.\nWilt u doorgaan zonder op te slaan?", ButtonType.YES, ButtonType.NO);
+                    alrt.showAndWait();
+                    if (alrt.getResult() == ButtonType.NO){
+                        e.consume();
+                        return;
+                    }
+                }
+            }
+            Menu menu = new Menu(user);
+            Menu.create(menu);
+            stage.close();
+        });
         HBox b = new HBox( btnSave, btnCancel);
         b.setSpacing(5);
         VBox a = new VBox(gp, txtSysMessage, b);
@@ -305,7 +336,6 @@ public class Beheer {
         ScrollPane contentWindow = new ScrollPane(a);
         contentWindow.setPadding(new Insets(10));
 
-//        contentWindow.setVmax();
         contentWindow.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         contentWindow.getStyleClass().add("ContentWindow");
 
@@ -323,7 +353,11 @@ public class Beheer {
         wrapperBox.prefHeightProperty().bind(borderPane.heightProperty());
 
         borderPane.setLeft(wrapperBox);
+
     }
+
+
+
 
     /**
      * Converts the current values in the spinners and text field into an object
