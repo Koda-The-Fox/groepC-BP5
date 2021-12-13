@@ -165,7 +165,6 @@ public class SensorOverview {
 
         tvContent.setItems(flSenReg);
         refreshTable(); // refresh the table after editing the list, (Delete, Add, Change) !!!!!Important!!!!!
-        System.out.println("alSenReg.size(): " + olSenReg.size());
 
 
         GridPane.setConstraints(tvContent, 1, 3); // node, column, row
@@ -212,7 +211,9 @@ public class SensorOverview {
         //borderPane.setBackground(new Background(new BackgroundFill(backgroundColor, null, null)));
     }
 
-
+    /**
+     * Fill the item list and Reload the Table
+     */
     protected void refreshTable() {
         olSenReg.setAll(RegistratieController.GetRegFromDevice(currentAL));
         tvContent.refresh();

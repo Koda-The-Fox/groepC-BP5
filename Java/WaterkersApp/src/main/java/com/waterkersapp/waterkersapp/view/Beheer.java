@@ -20,6 +20,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 
 import static com.waterkersapp.waterkersapp.MainWindow.ICON;
 
@@ -40,7 +41,11 @@ public class Beheer {
     BorderPane borderPane = new BorderPane();
 
     public static Stage stage;
-    public Stage stage2;
+
+    /* REGULAR EXPRESSION */
+    // Disallow: ';\n\r\t
+    // Do not start or end with a space
+    private static final Pattern negativeREGEXSQLInput = Pattern.compile("^((.*[';\n\r\t].*).)*$|^ .*$|^.* $");
 
     public static void create(Beheer beheer, Gebruiker user) {
         stage = new Stage();
@@ -277,7 +282,7 @@ public class Beheer {
         gp.prefWidthProperty().bind(wrapperBox.widthProperty());
 
 
-        Text txtSysMessage = new Text (""); // set a new line so the label is visible by using an empty line./
+        Text txtSysMessage = new Text ("\n"); // set a new line so the label is visible by using an empty line./
         txtSysMessage.setFill(Color.RED);
 
         Button btnSave = new Button("Opslaan");
@@ -311,7 +316,6 @@ public class Beheer {
         btnCancel.setOnAction(e ->{
             // Having trouble getting the onCloseRequest being triggered by this event.
             // Its taking too much time trying to fix this, doing it the ugly way. ¯\_(ツ)_/¯
-            System.out.println("Close Requested");
             if (!CloseOverride) {
                 if (!getInsertinNewObject().equals(currentWaardes.get())){
                     Alert alrt = new Alert(Alert.AlertType.WARNING, "Er zijn veranderingen die niet zijn opgeslagen.\nWilt u doorgaan zonder op te slaan?", ButtonType.YES, ButtonType.NO);

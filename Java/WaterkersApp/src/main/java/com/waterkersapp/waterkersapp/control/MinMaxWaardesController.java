@@ -52,7 +52,6 @@ public class MinMaxWaardesController {
                 original.getMinGT(), original.getMaxGT(), original.getMinLT(), original.getMaxLT(),
                 original.getMinGV(), original.getMaxGV(), original.getMinLV(), original.getMaxLV()
         );
-        System.out.println(query);
 
         Connection con = null;
         int result = 0;

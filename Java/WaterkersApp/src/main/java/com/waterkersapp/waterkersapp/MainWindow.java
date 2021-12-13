@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class MainWindow extends Application {
 
@@ -24,16 +25,15 @@ public class MainWindow extends Application {
 //        Login.create(login);
 
 
-
         Gebruiker Jordy = new Gebruiker("JorVV", false);
         Gebruiker Admin = new Gebruiker("Admin", true);
         ArduinoLocatie al = new ArduinoLocatie(10, "TestLocatie", "Testing");
         ArduinoLocatie GroepC_Arduino = new ArduinoLocatie(1, "GroepC_Arduino3 ", "Uit");
-        ArduinoLocatie Kas2 = new ArduinoLocatie(2, "Kas2 ", "Uit");
+        ArduinoLocatie Kas2 = new ArduinoLocatie(2, "Kas2", "Uit");
 
         // LOGIN
-//        Login login = new Login();
-//        Login.create(login);
+        Login login = new Login();
+        Login.create(login);
 
         // MENU
 //        Menu menu = new Menu(Jordy);
@@ -41,8 +41,8 @@ public class MainWindow extends Application {
 //        Menu.create(menu);
 
         // Sensor overzicht
-        SensorOverview sensorOverview = new SensorOverview(Kas2);
-        SensorOverview.create(sensorOverview);
+//        SensorOverview sensorOverview = new SensorOverview(Kas2);
+//        SensorOverview.create(sensorOverview);
 
         // Beheer
 //        Beheer beheer = new Beheer(Kas2, Jordy);
@@ -50,10 +50,11 @@ public class MainWindow extends Application {
 
 
         // change password dialog
-//        ChangePassDial.create(new Gebruiker("JorVV"));
+//        ChangePassDial.create(Jordy);
 
         // change/create user device
 //        NewDeviceDial.create(al); // change device
+//        NewDeviceDial.create(Kas2); // change device
 //        NewDeviceDial.create(GroepC_Arduino); // change GroepC_Arduino device
 //        NewDeviceDial.create(null); // new device
 

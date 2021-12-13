@@ -17,6 +17,7 @@ import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 
 import static com.waterkersapp.waterkersapp.MainWindow.ICON;
 
@@ -36,6 +37,11 @@ public class NewUserDial {
     private static String ACTION = "maken";
 
     private static Gebruiker newUser;
+
+    /* REGULAR EXPRESSION */
+    // Disallow: ';\n\r\t
+    // Do not start or end with a space
+    private static final Pattern negativeREGEXSQLInput = Pattern.compile("^((.*[';\n\r\t].*).)*$|^ .*$|^.* $");
 
     public static void create(Gebruiker ogUser, Gebruiker editor) {// Create the custom dialog.// Create the custom dialog.
         Dialog<Boolean> dialog = new Dialog<>();
@@ -251,9 +257,31 @@ public class NewUserDial {
         PasswordField tbxCurPass = new PasswordField();
         gp.add(tbxCurPass, 2, 10, 1, 1);
 
-        Text txtSystemMsg = new Text("");
+        Text txtSystemMsg = new Text("\n");
         txtSystemMsg.setFill(Color.RED);
         gp.add(txtSystemMsg, 2, 11, 2, 1);
+
+        // Check name validity
+        String regexErr = "%s is niet toegestaan.\nDeze mag geen \\ ; of ' bevatten en niet beginnen of sluiten met een spatie.";
+        tbxUsername.textProperty().addListener((observable, oldValue, newValue) ->{
+            txtSystemMsg.setText("\n");
+            if (!negativeREGEXSQLInput.matcher(tbxUsername.getText()).matches()){
+                txtSystemMsg.setText(String.format(regexErr, "Gebruikersnaam"));
+            }
+        });
+        tbxcrtePass.textProperty().addListener((observable, oldValue, newValue) ->{
+            txtSystemMsg.setText("\n");
+            if (!negativeREGEXSQLInput.matcher(tbxcrtePass.getText()).matches()){
+                txtSystemMsg.setText(String.format(regexErr, "Wachtwoord"));
+            }
+        });
+        tbxCurPass.textProperty().addListener((observable, oldValue, newValue) ->{
+            txtSystemMsg.setText("\n");
+            if (!negativeREGEXSQLInput.matcher(tbxCurPass.getText()).matches()){
+                txtSystemMsg.setText(String.format(regexErr, "Huidig wachtwoord"));
+            }
+        });
+
 
         wrapperBox.getChildren().addAll(gp);
 
@@ -262,26 +290,41 @@ public class NewUserDial {
 
         dialog.getDialogPane().setContent(wrapperBox);
 
-        AtomicReference<Pair<Boolean, String>> result = new AtomicReference<>(new Pair<>(false, "No result yet"));
+
+        AtomicReference<Pair<Boolean, String>> result = new AtomicReference<>(new Pair<>(false, "No result yet\n"));
         dialog.setResultConverter(dialogButton -> {
             txtSystemMsg.setText("");
+
+            // Validation
+
+            if (!negativeREGEXSQLInput.matcher(tbxUsername.getText()).matches()){
+                txtSystemMsg.setText(String.format(regexErr, "Gebruikersnaam"));
+            }
+            else if (!negativeREGEXSQLInput.matcher(tbxcrtePass.getText()).matches()){
+                txtSystemMsg.setText(String.format(regexErr, "Wachtwoord"));
+            }
+            else if (!negativeREGEXSQLInput.matcher(tbxCurPass.getText()).matches()){
+                txtSystemMsg.setText(String.format(regexErr, "Huidig wachtwoord"));
+            }
+
+
             if (dialogButton == CancelButtonType) {
-                result.set(new Pair<>(true, "gebruiker " + ACTION + " geannuleerd."));
+                result.set(new Pair<>(true, "gebruiker " + ACTION + " geannuleerd.\n"));
                 txtSystemMsg.setText(result.get().getValue());
                 return result.get().getKey(); // return the key which is the Boolean
             }
             else if (tbxUsername.getText().isEmpty()){
-                result.set(new Pair<>(false, "Gebruikersnaam mag niet leeg zijn."));
+                result.set(new Pair<>(false, "Gebruikersnaam mag niet leeg zijn.\n"));
                 txtSystemMsg.setText(result.get().getValue());
                 return result.get().getKey(); // return the key which is the Boolean
             }
             else if (ogUser == null && tbxcrtePass.getText().isEmpty()){
-                result.set(new Pair<>(false, "Vul aub een wachtwoord in."));
+                result.set(new Pair<>(false, "Vul aub een wachtwoord in.\n"));
                 txtSystemMsg.setText(result.get().getValue());
                 return result.get().getKey(); // return the key which is the Boolean
             }
             else if (tbxCurPass.getText().isEmpty()){
-                result.set(new Pair<>(false, "Vul aub het huidige wachtwoord in."));
+                result.set(new Pair<>(false, "Vul aub het huidige wachtwoord in.\n"));
                 txtSystemMsg.setText(result.get().getValue());
                 return result.get().getKey(); // return the key which is the Boolean
             }
@@ -289,7 +332,7 @@ public class NewUserDial {
             newUser = new Gebruiker(tbxUsername.getText(), tbxcrtePass.getText(), chxAdmin.isSelected());
 
             if (ogUser != null && !UserController.CheckUsername(newUser.getLoginNaam())){
-                result.set(new Pair<>(false, "Gebruikersnaam bestaat al."));
+                result.set(new Pair<>(false, "Gebruikersnaam bestaat al.\n"));
                 txtSystemMsg.setText(result.get().getValue());
                 return result.get().getKey(); // return the key which is the Boolean
             }
@@ -305,7 +348,7 @@ public class NewUserDial {
                     return result.get().getKey(); // return the key which is the Boolean
                 }
             }
-            result.set(new Pair<>(false, "empty result"));
+            result.set(new Pair<>(false, "empty result\n"));
             return result.get().getKey(); // return the key which is the Boolean
         });
 

@@ -14,10 +14,17 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import static com.waterkersapp.waterkersapp.MainWindow.ICON;
 
+
 public class ChangePassDial {
+
+    /* REGULAR EXPRESSION */
+    // Disallow: ';\n\r\t
+    // Do not start or end with a space
+    private static final Pattern negativeREGEXSQLInput = Pattern.compile("^((.*[';\n\r\t].*).)*$|^ .*$|^.* $");
 
     public static boolean create(Gebruiker ogUser) {
         // Create the custom dialog.
@@ -39,13 +46,11 @@ public class ChangePassDial {
         Label lblNewPass = new Label("New wachtwoord: ");
         gp.add(lblNewPass, 1, 1, 1, 1);
 
-        // @TODO Regex out any illegal characters
         PasswordField tbxNewPass = new PasswordField();
         gp.add(tbxNewPass, 2, 1, 1, 1);
         Label lblNewPassVal = new Label("New wachtwoord nogmaals: ");
         gp.add(lblNewPassVal, 1, 2, 1, 1);
 
-        // @TODO Regex out any illegal characters
         PasswordField tbxNewPassVal = new PasswordField();
         gp.add(tbxNewPassVal, 2, 2, 1, 1);
         Text lblNewPassValErr = new Text("");
@@ -53,7 +58,6 @@ public class ChangePassDial {
         Label lblOldPass = new Label("Vorig wachtwoord: ");
         gp.add(lblOldPass, 1, 4, 1, 1);
 
-        // @TODO Regex out any illegal characters
         PasswordField tbxOldPass = new PasswordField();
         gp.add(tbxOldPass, 2, 4, 1, 1);
         Text lblOldPassValErr = new Text("\r\n");
@@ -63,12 +67,19 @@ public class ChangePassDial {
         Node ndeChgePass = dialog.getDialogPane().lookupButton(loginButtonType);
         ndeChgePass.setDisable(true);
 
+
         // Do some validation (using the Java 8 lambda syntax).
+        String regexErr = "%s is niet toegestaan.\nDeze mag geen \\ ; of ' bevatten en niet beginnen of sluiten met een spatie.";
+
         tbxNewPass.textProperty().addListener((observable, oldValue, newValue) -> {
             lblNewPassValErr.setText("");
             lblOldPassValErr.setText("");
             ndeChgePass.setDisable(true);
-            if (!Objects.equals(tbxNewPass.getText(), tbxNewPassVal.getText())) {
+            if (!negativeREGEXSQLInput.matcher(tbxNewPass.getText()).matches()){
+                lblOldPassValErr.setFill(Color.RED);
+                lblOldPassValErr.setText(String.format(regexErr, "Wachtwoord"));
+            }
+            else if (!Objects.equals(tbxNewPass.getText(), tbxNewPassVal.getText())) {
                 lblNewPassValErr.setFill(Color.RED);
                 lblNewPassValErr.setText("Wachtwoord komt niet overeen.");
             } else if (tbxNewPass.getText().isEmpty()){
@@ -92,6 +103,7 @@ public class ChangePassDial {
             lblNewPassValErr.setText("");
             lblOldPassValErr.setText("");
             ndeChgePass.setDisable(true);
+
             if (!Objects.equals(tbxNewPass.getText(), tbxNewPassVal.getText())) {
                 lblNewPassValErr.setFill(Color.RED);
                 lblNewPassValErr.setText("Wachtwoord komt niet overeen.");
@@ -116,7 +128,11 @@ public class ChangePassDial {
             lblNewPassValErr.setText("");
             lblOldPassValErr.setText("");
             ndeChgePass.setDisable(true);
-            if (!Objects.equals(tbxNewPass.getText(), tbxNewPassVal.getText())) {
+            if (!negativeREGEXSQLInput.matcher(tbxOldPass.getText()).matches()){
+                lblOldPassValErr.setFill(Color.RED);
+                lblOldPassValErr.setText(String.format(regexErr, "Wachtwoord"));
+            }
+            else if (!Objects.equals(tbxNewPass.getText(), tbxNewPassVal.getText())) {
                 // Do nothing
             } else if (tbxNewPass.getText().isEmpty()){
                 // Do nothing
@@ -154,6 +170,7 @@ public class ChangePassDial {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == loginButtonType) {
+
                 return PassController.ChangePassword(ogUser, tbxOldPass.getText(), tbxNewPass.getText());
             }
             return false;

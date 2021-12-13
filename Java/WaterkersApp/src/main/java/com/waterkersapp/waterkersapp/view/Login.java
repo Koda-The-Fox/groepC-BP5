@@ -17,6 +17,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Pair;
+
+import java.util.regex.Pattern;
 
 import static com.waterkersapp.waterkersapp.MainWindow.ICON;
 
@@ -27,35 +30,14 @@ public class Login {
     private static final double[] WINDOW_SIZE = {800, 450}; // Default: 800 * 450;
     Color backgroundColor = Color.web("#BADC8F");
 
-    ///////////////////////[Logo]\\\\\\\\\\\\\\\\\\\\\
-    private static final double[] ICON_SIZE = {100, 100}; //Default: 100;
-
-    ///////////////////////[Input fields]\\\\\\\\\\\\\\\\\\\\\
-    // Border
-    private static final Color TXTF_BRDR_CLR = Color.web("906B4E"); // RGB: 113, 156, 64
-    private static final double TXTF_BRDR_WDTH = 5;
-    private static final double TXTF_BRDR_RADIUS = 5;
-    // Background
-    private static final double TXTF_BCGND_RADIUS = TXTF_BRDR_RADIUS;
-
-    ///////////////////////[Login Button]\\\\\\\\\\\\\\\\\\\\\
-    // Font
-    private static final double BTN_FNT_SIZE = 16; // default: 14
-    private static final String BTN_FNT_WGHT = "bold";
-    private static final Color BTN_FNT_CLR = Color.web("#FFF"); // RGB: 255, 255, 255
-    private static final String BTN_FNT_FAM = "Arial";
-    // Border
-    private static final Color BTN_BRDR_CLR = Color.web("#719C40"); // RGB: 113, 156, 64
-    private static final double BTN_BRDR_RADIUS = 100;
-    private static final double BTN_BRDR_WDTH = TXTF_BRDR_WDTH;
-    // Background
-    private static final Color BTN_BCK_CLR = Color.web("#A07E63"); // RGB: 160, 126, 99
-    // Geometry
-    private static final double BTN_RADIUS = BTN_BRDR_RADIUS;
-    private static final double[] BTN_SIZE = {90, 90}; // Width x Height
-
-
     BorderPane borderPane = new BorderPane();
+
+
+    /* REGULAR EXPRESSION */
+    // Disallow: ';\n\r\t
+    // Do not start or end with a space
+    private static final Pattern negativeREGEXSQLInput = Pattern.compile("^((.*[';\n\r\t].*).)*$|^ .*$|^.* $");
+
 
     public static Stage stage;
 
@@ -123,29 +105,53 @@ public class Login {
         PasswordField tbxPassword = new PasswordField();
         tbxPassword.setPromptText("Wachtwoord"); //to set the hint text
         tbxPassword.setStyle(tbxUsername.getStyle());
-        System.out.println("TextFields: \n" + tbxPassword.getStyle().replace(";", ";\n")); // Preview the style parameters in the console
 
-        /*
-        Hyperlink hlPassword = new Hyperlink("Reset Password");
-        hlPassword.setOnAction(event -> Reset_Pass.create());
-         */
         Text txtSysMessage = new Text ("\n"); // set a new line so the label is visible by using an empty line./
         txtSysMessage.setFill(Color.RED);
+
+
+        // Check name validity
+        String regexErr = "%s is niet toegestaan.\nDeze mag geen \\ ; of ' bevatten en niet beginnen of sluiten met een spatie.";
+        tbxUsername.textProperty().addListener((observable, oldValue, newValue) ->{
+            txtSysMessage.setText("\n");
+            if (negativeREGEXSQLInput.matcher(tbxUsername.getText()).matches()){
+                txtSysMessage.setText(String.format(regexErr, "Gebruikersnaam"));
+                return;
+            }
+        });
+        tbxPassword.textProperty().addListener((observable, oldValue, newValue) ->{
+            txtSysMessage.setText("\n");
+            if (negativeREGEXSQLInput.matcher(tbxPassword.getText()).matches()){
+                txtSysMessage.setText(String.format(regexErr, "Wachtwoord"));
+                return;
+            }
+        });
 
 
         Button btnLogin = new Button("Login");
         btnLogin.requestFocus();
         btnLogin.setOnAction(event -> {
+            txtSysMessage.setText("\n");
+            // Check name validity
+            if (negativeREGEXSQLInput.matcher(tbxUsername.getText()).matches()){
+                txtSysMessage.setText(String.format(regexErr, "Gebruikersnaam"));
+                return;
+            }else if (negativeREGEXSQLInput.matcher(tbxPassword.getText()).matches()){
+                txtSysMessage.setText(String.format(regexErr, "Wachtwoord"));
+                return;
+            }
+
 
             if (tbxUsername.getText().isEmpty()){
                 txtSysMessage.setFill(Color.RED);
-                txtSysMessage.setText("Gebruikersnaam mag niet leeg zijn.");
+                txtSysMessage.setText("Gebruikersnaam mag niet leeg zijn.\n");
             }
             else if (tbxPassword.getText().isEmpty()){
                 txtSysMessage.setFill(Color.RED);
-                txtSysMessage.setText("Wachtwoord mag niet leeg zijn.");
+                txtSysMessage.setText("Wachtwoord mag niet leeg zijn.\n");
             }
             else {// If both fields are not empty continue with the validation.
+
                 if (!LoginController.validateLogin(tbxUsername.getText(), tbxPassword.getText())) {
                     setLoginAccepted(false);
 
