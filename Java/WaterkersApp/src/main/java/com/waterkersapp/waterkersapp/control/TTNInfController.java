@@ -56,8 +56,8 @@ public class TTNInfController {
             con = DBCPDataSource.getConnection();
             Statement stat = con.createStatement();
             String Querry = "update `TTN_Info` " +
-                    String.format("set `ArduinoID` = %s, `TTN_DeviceID` = '%s', `TTN_ApplicationID` = '%s', `TTN_ConnectionURL` = '%s', `TTN_Username` = '%s', `TTN_APIPassword` = sha2('%s', 256) ", newTTNI.getArduino().getArduinoID(), newTTNI.getTTN_DeviceID(), newTTNI.getTTN_ApplicationID(), newTTNI.getTTN_ConnectionURL(), newTTNI.getTTN_Username(), newTTNI.getTTN_APIPassword()) +
-                    String.format("where `ArduinoID` = %s and `TTN_DeviceID` = '%s' and `TTN_ApplicationID` = '%s' and `TTN_ConnectionURL` = '%s' and `TTN_Username` = '%s' and `TTN_APIPassword` = sha2('%s', 256);", currentTTNI.getArduino().getArduinoID(), currentTTNI.getTTN_DeviceID(), currentTTNI.getTTN_ApplicationID(), currentTTNI.getTTN_ConnectionURL(), currentTTNI.getTTN_Username(), currentTTNI.getTTN_APIPassword());
+                    String.format("set `ArduinoID` = %s, `TTN_DeviceID` = '%s', `TTN_ApplicationID` = '%s', `TTN_ConnectionURL` = '%s', `TTN_Username` = '%s', `TTN_APIPassword` = '%s' ", newTTNI.getArduino().getArduinoID(), newTTNI.getTTN_DeviceID(), newTTNI.getTTN_ApplicationID(), newTTNI.getTTN_ConnectionURL(), newTTNI.getTTN_Username(), newTTNI.getTTN_APIPassword()) +
+                    String.format("where `ArduinoID` = %s and `TTN_DeviceID` = '%s' and `TTN_ApplicationID` = '%s' and `TTN_ConnectionURL` = '%s' and `TTN_Username` = '%s' and `TTN_APIPassword` = '%s';", currentTTNI.getArduino().getArduinoID(), currentTTNI.getTTN_DeviceID(), currentTTNI.getTTN_ApplicationID(), currentTTNI.getTTN_ConnectionURL(), currentTTNI.getTTN_Username(), currentTTNI.getTTN_APIPassword());
 
 
             int result = stat.executeUpdate(Querry);

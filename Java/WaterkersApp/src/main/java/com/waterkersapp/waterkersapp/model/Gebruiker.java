@@ -1,5 +1,7 @@
 package com.waterkersapp.waterkersapp.model;
 
+import java.util.Objects;
+
 public class Gebruiker {
     String LoginNaam;
     String LoginPass;
@@ -43,4 +45,15 @@ public class Gebruiker {
     public Boolean getAdmin() { return Admin; }
 
     public void setAdmin(Boolean admin) { Admin = admin; }
+
+    @Override
+    public String toString() {
+        return LoginNaam;
+    }
+
+    public boolean equals(Gebruiker gebruiker){
+        return this.getLoginNaam().equals(gebruiker.getLoginNaam()) &&
+                Objects.equals(this.getLoginPass(), gebruiker.getLoginPass()) && // null safe Equals
+                this.getAdmin() == gebruiker.getAdmin();
+    }
 }

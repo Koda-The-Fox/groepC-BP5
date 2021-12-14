@@ -52,6 +52,10 @@ public class ArduinoLocatieController {
             String Querry =
                     "SELECT al.* FROM `arduinolocatie` as al \n";
             if (user != null){ // if the user is not null get all the device connected to the user
+                Querry += "inner join beheerdarduino as ba on ba.ArduinoID = al.ArduinoID\n" +
+                        "where ba.LoginNaam = '" + user.getLoginNaam() + "';";
+
+                /* admins can have devices assigned to them but all devices will be available for them
                 if (user.getAdmin()) {
                     Querry += ";";
                 }
@@ -59,6 +63,8 @@ public class ArduinoLocatieController {
                     Querry += "inner join beheerdarduino as ba on ba.ArduinoID = al.ArduinoID\n" +
                             "where ba.LoginNaam = '" + user.getLoginNaam() + "';";
                 }
+
+                 */
             }
 
             ResultSet result = stat.executeQuery(Querry);

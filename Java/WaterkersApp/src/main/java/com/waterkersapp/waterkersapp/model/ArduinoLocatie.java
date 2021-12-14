@@ -3,6 +3,8 @@ package com.waterkersapp.waterkersapp.model;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
+import java.util.Objects;
+
 public class ArduinoLocatie {
 
     final private ObjectProperty<Integer> ArduinoID = new SimpleObjectProperty<>();
@@ -78,8 +80,8 @@ public class ArduinoLocatie {
 
 
     public boolean equals(ArduinoLocatie otherAL){
-        return this.getArduinoID() == otherAL.getArduinoID() &&
-                this.getLocatie() == otherAL.getLocatie();
+        return Objects.equals(this.getArduinoID(), otherAL.getArduinoID()) &&
+                Objects.equals(this.getLocatie(), otherAL.getLocatie());
 
     }
 }

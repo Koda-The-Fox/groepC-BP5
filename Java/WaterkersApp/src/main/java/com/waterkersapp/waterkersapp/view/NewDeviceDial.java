@@ -74,7 +74,8 @@ public class NewDeviceDial {
         }
 
         GridPane gpTTN = new GridPane();
-        gpTTN.setDisable(currentTTNI == null); //@TODO Check if device has TTN Info on the database
+        gpTTN.setDisable(currentTTNI == null); //@TODO#3 Check if device has TTN Info on the database
+
         gp.add(gpTTN, 1, 3, 3, 1);
 
         CheckBox chbxTTN = new CheckBox("Link TTN Applicatie");
@@ -142,50 +143,45 @@ public class NewDeviceDial {
         String regexErr = "%s is niet toegestaan.\nDeze mag geen \\ ; of ' bevatten en niet beginnen of sluiten met een spatie.";
         tbxLocatieNaam.textProperty().addListener((observable, oldValue, newValue) ->{
             txtSystemMsg.setText("\n");
-            if (!negativeREGEXSQLInput.matcher(tbxLocatieNaam.getText()).matches()){
+            if (negativeREGEXSQLInput.matcher(tbxLocatieNaam.getText()).matches()){
                 txtSystemMsg.setText(String.format(regexErr, "Locatienaam"));
                 return;
             }
         });
         tbxDevID.textProperty().addListener((observable, oldValue, newValue) ->{
             txtSystemMsg.setText("\n");
-            if (!negativeREGEXSQLInput.matcher(tbxDevID.getText()).matches()){
+            if (negativeREGEXSQLInput.matcher(tbxDevID.getText()).matches()){
                 txtSystemMsg.setText(String.format(regexErr, "Device ID"));
                 return;
             }
         });
         tbxAppID.textProperty().addListener((observable, oldValue, newValue) ->{
             txtSystemMsg.setText("\n");
-            if (!negativeREGEXSQLInput.matcher(tbxAppID.getText()).matches()){
+            if (negativeREGEXSQLInput.matcher(tbxAppID.getText()).matches()){
                 txtSystemMsg.setText(String.format(regexErr, "Applicatie ID"));
                 return;
             }
         });
         tbxConURL.textProperty().addListener((observable, oldValue, newValue) ->{
             txtSystemMsg.setText("\n");
-            if (!negativeREGEXSQLInput.matcher(tbxConURL.getText()).matches()){
+            if (negativeREGEXSQLInput.matcher(tbxConURL.getText()).matches()){
                 txtSystemMsg.setText(String.format(regexErr, "Connectie URL"));
                 return;
             }
         });
         tbxUser.textProperty().addListener((observable, oldValue, newValue) ->{
             txtSystemMsg.setText("\n");
-            if (!negativeREGEXSQLInput.matcher(tbxUser.getText()).matches()){
+            if (negativeREGEXSQLInput.matcher(tbxUser.getText()).matches()){
                 txtSystemMsg.setText(String.format(regexErr, "Gebruikersnaam"));
                 return;
             }
         });
         tbxAPIPAss.textProperty().addListener((observable, oldValue, newValue) ->{
             txtSystemMsg.setText("\n");
-            if (!negativeREGEXSQLInput.matcher(tbxAPIPAss.getText()).matches()){
+            if (negativeREGEXSQLInput.matcher(tbxAPIPAss.getText()).matches()){
                 txtSystemMsg.setText(String.format(regexErr, "API Wachtwoord"));
-                return;
             }
         });
-
-
-
-
 
         wrapperBox.getChildren().addAll(gp);
 
@@ -198,60 +194,60 @@ public class NewDeviceDial {
         dialog.setResultConverter(dialogButton -> {
             txtSystemMsg.setText("\n");
 
+            if (chbxTTN.isSelected()) {
+                newTTNI = new TTN_Info(ArduinoLocatieController.getAllArduinoLocatie(al.getLocatie()), tbxDevID.getText(), tbxAppID.getText(), tbxConURL.getText(), tbxUser.getText(), tbxAPIPAss.getText());
+                newTTNI.getArduino().setLocatie(tbxLocatieNaam.getText()); // change the location.name to the new location otherwise it's the same as the old one
+            }
+
+            // Cancel button
+            if (dialogButton == CancelButtonType) {
+                result.set(new Pair<>(true, "Dialoog geannuleerd.\n"));
+                txtSystemMsg.setText(result.get().getValue());
+                return result.get().getKey(); // return the key which is the Boolean
+            }
+
+
             if (al == null) {
                 newDevice = new ArduinoLocatie(tbxLocatieNaam.getText());
             }else {
                 newDevice = new ArduinoLocatie(al.getArduinoID(), tbxLocatieNaam.getText());
             }
 
-            if (chbxTTN.isSelected()) {
-                newTTNI = new TTN_Info(ArduinoLocatieController.getAllArduinoLocatie(al.getLocatie()), tbxDevID.getText(), tbxAppID.getText(), tbxConURL.getText(), tbxUser.getText(), tbxAPIPAss.getText());
-                newTTNI.getArduino().setLocatie(tbxLocatieNaam.getText()); // change the location.name to the new location otherwise it's the same as the old one
-            }
 
             // Check name validity
             // tbxLocatieNaam
-            if (!negativeREGEXSQLInput.matcher(tbxLocatieNaam.getText()).matches()){
+            if (negativeREGEXSQLInput.matcher(tbxLocatieNaam.getText()).matches()){
                 result.set(new Pair<>(false, String.format(regexErr, "Locatienaam")));
                 txtSystemMsg.setText(result.get().getValue());
                 return result.get().getKey(); // return the key which is the Boolean
             }
             // tbxDevID
-            else if (chbxTTN.isSelected()&&!negativeREGEXSQLInput.matcher(tbxDevID.getText()).matches()){
+            else if (chbxTTN.isSelected()&&negativeREGEXSQLInput.matcher(tbxDevID.getText()).matches()){
                 result.set(new Pair<>(false, String.format(regexErr, "Device ID")));
                 txtSystemMsg.setText(result.get().getValue());
                 return result.get().getKey(); // return the key which is the Boolean
             }
             // tbxAppID
-            else if (chbxTTN.isSelected()&&!negativeREGEXSQLInput.matcher(tbxAppID.getText()).matches()){
+            else if (chbxTTN.isSelected()&&negativeREGEXSQLInput.matcher(tbxAppID.getText()).matches()){
                 result.set(new Pair<>(false, String.format(regexErr, "Applicatie ID")));
                 txtSystemMsg.setText(result.get().getValue());
                 return result.get().getKey(); // return the key which is the Boolean
             }
             // tbxConURL
-            else if (chbxTTN.isSelected()&&!negativeREGEXSQLInput.matcher(tbxConURL.getText()).matches()){
+            else if (chbxTTN.isSelected()&&negativeREGEXSQLInput.matcher(tbxConURL.getText()).matches()){
                 result.set(new Pair<>(false, String.format(regexErr, "Connectie URL")));
                 txtSystemMsg.setText(result.get().getValue());
                 return result.get().getKey(); // return the key which is the Boolean
             }
             // tbxUser
-            else if (chbxTTN.isSelected()&&!negativeREGEXSQLInput.matcher(tbxUser.getText()).matches()){
+            else if (chbxTTN.isSelected()&&negativeREGEXSQLInput.matcher(tbxUser.getText()).matches()){
                 result.set(new Pair<>(false, String.format(regexErr, "Gebruikersnaam")));
                 txtSystemMsg.setText(result.get().getValue());
                 return result.get().getKey(); // return the key which is the Boolean
             }
             // tbxAPIPAss
-            else if (chbxTTN.isSelected()&&!negativeREGEXSQLInput.matcher(tbxAPIPAss.getText()).matches()){
+            else if (chbxTTN.isSelected()&&negativeREGEXSQLInput.matcher(tbxAPIPAss.getText()).matches()){
                 result.set(new Pair<>(false, String.format(regexErr, "API Wachtwoord")));
-                txtSystemMsg.setText(result.get().getValue());
-                return result.get().getKey(); // return the key which is the Boolean
-            }
-
-
-
-            // Cancel button
-            if (dialogButton == CancelButtonType) {
-                result.set(new Pair<>(true, "Dialoog geannuleerd.\n"));
                 txtSystemMsg.setText(result.get().getValue());
                 return result.get().getKey(); // return the key which is the Boolean
             }
@@ -269,14 +265,9 @@ public class NewDeviceDial {
             }
 
             // Detect changes
-            // @TODO Fix the if statement underneath, it doesn't trigger correctly
-            else if (chbxTTN.isSelected() && (newTTNI != null && newTTNI.equals(currentTTNI))){
-                    txtSystemMsg.setFill(Color.YELLOW);
-                    txtSystemMsg.setText("Geen veranderingen gevonden.\n");
-            }
-            else if (al != null && al.equals(newDevice)) {
-                    txtSystemMsg.setFill(Color.YELLOW);
-                    txtSystemMsg.setText("Geen veranderingen gevonden.\n");
+            else if ((chbxTTN.isSelected() && (al != null && al.equals(newDevice)) && newTTNI.equals(currentTTNI)) || (!chbxTTN.isSelected() && (al != null && al.equals(newDevice)))){
+                txtSystemMsg.setFill(Color.YELLOW);
+                txtSystemMsg.setText("Geen veranderingen gevonden.\n");
             }
 
             // Check duplicate names
@@ -289,9 +280,6 @@ public class NewDeviceDial {
                 if (dialogButton == okButtonType) {
                     if (al == null) {
                         result.set(ArduinoLocatieController.CreateDevice(newDevice));
-                        if (chbxTTN.isSelected()) {
-                            newTTNI.setArduino(ArduinoLocatieController.getAllArduinoLocatie(newDevice.getLocatie()));
-                        }
                         if (result.get().getKey() && chbxTTN.isSelected()){
                             // We replace the result, because wel already established it was true
                             if (newTTNI.getArduino() == null) {
@@ -305,7 +293,9 @@ public class NewDeviceDial {
                         result.set(ArduinoLocatieController.ChangeDevice(al, newDevice));
                         if (result.get().getKey() && chbxTTN.isSelected()){
                             // We replace the result, because wel already established it was true
-                            result.set(TTNInfController.ChangeTTNI(currentTTNI, newTTNI));
+                            if (!currentTTNI.equals(newTTNI)) {
+                                result.set(TTNInfController.ChangeTTNI(currentTTNI, newTTNI));
+                            }
                         }
                     }
                     txtSystemMsg.setText(result.get().getValue()); // set the error message to the text
@@ -325,6 +315,11 @@ public class NewDeviceDial {
         dialog.showAndWait();
     }
 
+    /*
+    private TTN_Info GenereateNewTTNI(){
+
+    }
+    */
 
 
 

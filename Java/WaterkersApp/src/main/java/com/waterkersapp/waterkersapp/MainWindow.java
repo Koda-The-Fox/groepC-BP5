@@ -8,7 +8,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 public class MainWindow extends Application {
 
@@ -25,15 +24,15 @@ public class MainWindow extends Application {
 //        Login.create(login);
 
 
-        Gebruiker Jordy = new Gebruiker("JorVV", false);
+        Gebruiker Jordy = new Gebruiker("JorVV", true);
         Gebruiker Admin = new Gebruiker("Admin", true);
         ArduinoLocatie al = new ArduinoLocatie(10, "TestLocatie", "Testing");
-        ArduinoLocatie GroepC_Arduino = new ArduinoLocatie(1, "GroepC_Arduino3 ", "Uit");
+        ArduinoLocatie GroepC_Arduino = new ArduinoLocatie(1, "GroepC_Arduino", "Uit");
         ArduinoLocatie Kas2 = new ArduinoLocatie(2, "Kas2", "Uit");
 
         // LOGIN
-        Login login = new Login();
-        Login.create(login);
+//        Login login = new Login();
+//        Login.create(login);
 
         // MENU
 //        Menu menu = new Menu(Jordy);
@@ -55,7 +54,7 @@ public class MainWindow extends Application {
         // change/create user device
 //        NewDeviceDial.create(al); // change device
 //        NewDeviceDial.create(Kas2); // change device
-//        NewDeviceDial.create(GroepC_Arduino); // change GroepC_Arduino device
+        NewDeviceDial.create(GroepC_Arduino); // change GroepC_Arduino device
 //        NewDeviceDial.create(null); // new device
 
 //         change/create user dialog
@@ -77,7 +76,6 @@ public class MainWindow extends Application {
         stage.setScene(scene);
         stage.show();
     }
-
      */
 
 }

@@ -110,7 +110,6 @@ public class Menu {
 
         Button btnNewDevice = new Button("Nieuw Aparaat");
         btnNewDevice.setOnAction(e -> {
-            //@TODO Make new device script, Maybe a new dialog where we can assign users to the device etc.
             NewDeviceDial.create(null);
         });
         logoBox.getChildren().add(btnNewDevice);

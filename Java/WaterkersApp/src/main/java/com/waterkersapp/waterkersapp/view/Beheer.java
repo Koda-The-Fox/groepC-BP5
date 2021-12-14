@@ -1,9 +1,13 @@
 package com.waterkersapp.waterkersapp.view;
 
+import com.waterkersapp.waterkersapp.control.ArduinoLocatieController;
 import com.waterkersapp.waterkersapp.control.MinMaxWaardesController;
+import com.waterkersapp.waterkersapp.control.UserController;
 import com.waterkersapp.waterkersapp.model.ArduinoLocatie;
 import com.waterkersapp.waterkersapp.model.Gebruiker;
 import com.waterkersapp.waterkersapp.model.MinMaxWaardes;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -41,11 +45,6 @@ public class Beheer {
     BorderPane borderPane = new BorderPane();
 
     public static Stage stage;
-
-    /* REGULAR EXPRESSION */
-    // Disallow: ';\n\r\t
-    // Do not start or end with a space
-    private static final Pattern negativeREGEXSQLInput = Pattern.compile("^((.*[';\n\r\t].*).)*$|^ .*$|^.* $");
 
     public static void create(Beheer beheer, Gebruiker user) {
         stage = new Stage();
@@ -106,13 +105,6 @@ public class Beheer {
     public Beheer(ArduinoLocatie al, Gebruiker user) {
         this.al = al;
 
-        if (al.equals(new ArduinoLocatie())){
-            // AL is a new object so no device is selected
-            // disable all buttons but the new device button
-            // @TODO add a new device button and add the functionality
-            NewDeviceDial ndd = new NewDeviceDial();
-        }
-
         currentWaardes = new AtomicReference<>(LoadData(al));
 
         HBox logoTitleBox = new HBox();
@@ -137,7 +129,7 @@ public class Beheer {
         gp.add(lblLocatieRO, 1, 2, 1, 1);
 
         Label lblLocatie = new Label(currentWaardes.get().getLocatie().getLocatie());
-        // @TODO FIX ERROR
+        // @TODO#4 FIX ERROR - Should be fixed now, just need to test (14-12-2021 16:40)
         /*
          * It only happens with devices that are newly created, possibly because they don't have  Min/Max waardes.
 
@@ -146,6 +138,26 @@ public class Beheer {
             at com.waterkersapp.waterkersapp/com.waterkersapp.waterkersapp.view.Menu.lambda$new$5(Menu.java:142)
         */
         gp.add(lblLocatie, 2, 2, 1, 1);
+
+        Button btnEditDevice = new Button("Aparaat bewerken");
+        btnEditDevice.setOnAction(e->{
+            NewDeviceDial.create(al);
+        });
+
+        Button btnEditUser = new Button("Gebruiker bewerken");
+        ComboBox<Gebruiker> cbxUsers = new ComboBox<>();
+        btnEditUser.setOnAction(e->{
+            NewUserDial.create(cbxUsers.getValue(), user);
+        });
+        getUsers(cbxUsers,  user);
+
+        Button btnCreateUser = new Button("Gebruiker aanmaken");
+        btnCreateUser.setOnAction(e->{
+            NewUserDial.create(null, user);
+        });
+
+
+
 
 
         Label lblWater = new Label("WATER");
@@ -236,38 +248,57 @@ public class Beheer {
         });
 
 
-        gp.add(lblWater, 1, 3, 2, 1);
-        gp.add(lblMinPH, 1, 4);
-        gp.add(numMinPH, 2, 4);
-        gp.add(btnMinPH, 3, 4);
-        gp.add(lblMaxPH, 1, 5);
-        gp.add(numMaxPH, 2, 5);
-        gp.add(btnMaxPH, 3, 5);
+        gp.add(btnEditDevice, 1, 3);
 
-        gp.add(lblGrond, 1, 7, 2, 1);
-        gp.add(lblMinGT, 1, 8);
-        gp.add(numMinGT, 2, 8);
-        gp.add(btnMinGT, 3, 8);
-        gp.add(lblMaxGT, 1, 9);
-        gp.add(numMaxGT, 2, 9);
-        gp.add(btnMaxGT, 3, 9);
-        gp.add(lblMinGV, 1, 10);
-        gp.add(numMinGV, 2, 10);
-        gp.add(btnMinGV, 3, 10);
-        gp.add(lblMaxGV, 1, 11);
-        gp.add(numMaxGV, 2, 11);
-        gp.add(btnMaxGV, 3, 11);
+        gp.add(btnEditUser, 1, 4);
+
+        if (user.getAdmin()){
+            gp.add(cbxUsers, 2, 4);
+            gp.add(btnCreateUser, 3, 4);
+        }
+        
+        gp.add(lblWater, 1, 5, 2, 1);
+
+        gp.add(lblMinPH, 1, 6);
+        gp.add(numMinPH, 2, 6);
+        gp.add(btnMinPH, 3, 6);
+
+        gp.add(lblMaxPH, 1, 7);
+        gp.add(numMaxPH, 2, 7);
+        gp.add(btnMaxPH, 3, 7);
+
+        gp.add(lblGrond, 1, 8, 2, 1);
+
+        gp.add(lblMinGT, 1, 9);
+        gp.add(numMinGT, 2, 9);
+        gp.add(btnMinGT, 3, 9);
+
+        gp.add(lblMaxGT, 1, 10);
+        gp.add(numMaxGT, 2, 10);
+        gp.add(btnMaxGT, 3, 10);
+
+        gp.add(lblMinGV, 1, 11);
+        gp.add(numMinGV, 2, 11);
+        gp.add(btnMinGV, 3, 11);
+
+        gp.add(lblMaxGV, 1, 12);
+        gp.add(numMaxGV, 2, 12);
+        gp.add(btnMaxGV, 3, 12);
 
         gp.add(lblLucht, 1, 13, 2, 1);
+
         gp.add(lblMinLT, 1, 14);
         gp.add(numMinLT, 2, 14);
         gp.add(btnMinLT, 3, 14);
+
         gp.add(lblMaxLT, 1, 15);
         gp.add(numMaxLT, 2, 15);
         gp.add(btnMaxLT, 3, 15);
+
         gp.add(lblMinLV, 1, 16);
         gp.add(numMinLV, 2, 16);
         gp.add(btnMinLV, 3, 16);
+
         gp.add(lblMaxLV, 1, 17);
         gp.add(numMaxLV, 2, 17);
         gp.add(btnMaxLV, 3, 17);
@@ -360,9 +391,6 @@ public class Beheer {
 
     }
 
-
-
-
     /**
      * Converts the current values in the spinners and text field into an object
      * @return
@@ -370,7 +398,6 @@ public class Beheer {
     private MinMaxWaardes getInsertinNewObject(){
         return new MinMaxWaardes(
                 al,
-
                 numMinPH.getValue(),
                 numMaxPH.getValue(),
                 numMinGT.getValue(),
@@ -385,8 +412,34 @@ public class Beheer {
     }
 
     private MinMaxWaardes LoadData(ArduinoLocatie al){
-        MinMaxWaardesController mmController = new MinMaxWaardesController();
-        return mmController.getSpecificMinMaxWaardes(al);
+        return MinMaxWaardesController.getSpecificMinMaxWaardes(al);
+    }
+
+    private void getUsers(ComboBox<Gebruiker> cbxUser, Gebruiker ogUser){
+        // Clear the list in case old values still exist
+        cbxUser.getItems().clear();
+        // Load and add the items from the database
+        cbxUser.getItems().addAll(UserController.getAllUsers());
+
+        // If there are no arduino's registered list a 'no devices' object
+        if (cbxUser.getItems().isEmpty()){
+            cbxUser.getItems().add(user);
+            cbxUser.setDisable(true);
+        }
+        else {
+            cbxUser.setDisable(false);
+        }
+
+        // automatically select the first item
+        cbxUser.getSelectionModel().select(0);
+
+        // select the current user
+        for (Gebruiker user: cbxUser.getItems()
+        ) {
+            if (ogUser.equals(user)){
+                cbxUser.getSelectionModel().select(user);
+            }
+        }
     }
 
 }

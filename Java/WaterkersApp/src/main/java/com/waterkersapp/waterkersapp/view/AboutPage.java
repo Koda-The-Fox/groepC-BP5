@@ -96,7 +96,7 @@ public class AboutPage {
         gpSocials.setPadding(new Insets(0,0,0,-gpSocials.getHgap()));
         Alert dialOpnBroweser = new Alert(Alert.AlertType.INFORMATION, "Wilt u door gaan? ", ButtonType.YES, ButtonType.NO);
         dialOpnBroweser.setTitle("");
-        dialOpnBroweser.setHeaderText("Dit zal een webbrowser openen en je naar\nde GitHub pagina brengen van dit programma.");
+        dialOpnBroweser.setHeaderText("Dit zal een webbrowser openen\nde GitHub pagina brengen van dit programma.");
 
         Label lblTitleSocials = new Label("Socials");
         lblTitleSocials.getStyleClass().add("grid_title");

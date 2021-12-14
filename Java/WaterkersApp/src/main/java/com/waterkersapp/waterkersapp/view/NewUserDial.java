@@ -23,7 +23,9 @@ import static com.waterkersapp.waterkersapp.MainWindow.ICON;
 
 public class NewUserDial {
 
-    private static  final ComboBox<ArduinoLocatie> cbxDevAdd = new ComboBox<>();
+    private static final ComboBox<ArduinoLocatie> cbxDevAdd = new ComboBox<>();
+    private static Button btnAddDev = new Button("Toevoegen");
+    private static Button btnRemDev = new Button("Verwijderen");
 
     private static ArrayList<ArduinoLocatie> alAltDev = new ArrayList<>();
     private static ObservableList<ArduinoLocatie> olAltDev;
@@ -37,6 +39,7 @@ public class NewUserDial {
     private static String ACTION = "maken";
 
     private static Gebruiker newUser;
+    private static Gebruiker ogUser;
 
     /* REGULAR EXPRESSION */
     // Disallow: ';\n\r\t
@@ -44,10 +47,14 @@ public class NewUserDial {
     private static final Pattern negativeREGEXSQLInput = Pattern.compile("^((.*[';\n\r\t].*).)*$|^ .*$|^.* $");
 
     public static void create(Gebruiker ogUser, Gebruiker editor) {// Create the custom dialog.// Create the custom dialog.
+        NewUserDial.ogUser = ogUser;
+
         Dialog<Boolean> dialog = new Dialog<>();
         Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
         stage.getIcons().add(ICON);
-
+        dialog.getDialogPane().getStylesheets().addAll(SensorOverview.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString(), SensorOverview.class.getResource("/com/waterkersapp/css/TableStyle.css").toString());
+//        dialog.getDialogPane().setMaxWidth(500);
+//        dialog.getDialogPane().setMinWidth(500);
 
 
         // Set the title for the page.
@@ -72,6 +79,7 @@ public class NewUserDial {
         dialog.getDialogPane().getButtonTypes().addAll(okButtonType, CancelButtonType);
 
         GridPane gp = new GridPane();
+        gp.setVgap(5);
         VBox wrapperBox = new VBox();
 
         // Set the title for the page.
@@ -146,31 +154,9 @@ public class NewUserDial {
         Label lblTableDevices = new Label("Devices:");
         gp.add(lblTableDevices, 1, 4, 1, 1);
 
-        int buttonWidth = 80; // default 80
+        int buttonWidth = 100; // default 100
 
-        // Full list of all devices
-        olAltDev = FXCollections.observableArrayList();
-        olAltDev.addAll(ArduinoLocatieController.getAllArduinoLocaties(null));
-
-        olRegDev = FXCollections.observableArrayList();
-
-        for ( ArduinoLocatie alReg: ArduinoLocatieController.getAllArduinoLocaties(ogUser)) {
-            for ( ArduinoLocatie olAlt: olAltDev) {
-                if (alReg.getArduinoID().equals(olAlt.getArduinoID())){
-                    olRegDev.add(olAlt);
-                }
-
-            }
-
-        }
-        olAltDev.removeAll(olRegDev); // re move the already registered devices
-
-        flAltDev = new FilteredList<>(olAltDev);
-        flRegDev = new FilteredList<>(olRegDev);
-
-        tvDevices.setItems(flRegDev);
-        cbxDevAdd.setItems(flAltDev);
-        refreshData(); // refresh the table after editing the list, (Delete, Add, Change) !!!!!Important!!!!!
+        loadResetData(); //
 
         cbxDevAdd.setEditable(false);
         cbxDevAdd.setPrefWidth(buttonWidth);
@@ -182,7 +168,6 @@ public class NewUserDial {
 
         gp.add(cbxDevAdd, 1, 5, 1, 1);
 
-        Button btnAddDev = new Button("Toevoegen");
         btnAddDev.setPrefWidth(buttonWidth);
         btnAddDev.setOnAction(e -> {
             if (!cbxDevAdd.getSelectionModel().isEmpty()){
@@ -193,10 +178,10 @@ public class NewUserDial {
                 if (cbxDevAdd.getItems().size() > 0)
                     cbxDevAdd.getSelectionModel().select(0);
             }
-            refreshData(); // refresh the table after editing the list, (Delete, Add, Change) !!!!!Important!!!!!
+            tvDevices.refresh(); // refresh the table after editing the list, (Delete, Add, Change) !!!!!Important!!!!!
         });
         gp.add(btnAddDev, 1, 6, 1, 1);
-        Button btnRemDev = new Button("Verwijderen");
+
         btnRemDev.setPrefWidth(buttonWidth);
         btnRemDev.setOnAction(e -> {
             if (!tvDevices.getSelectionModel().isEmpty()){
@@ -204,10 +189,10 @@ public class NewUserDial {
                 olRegDev.remove(tvDevices.getSelectionModel().getSelectedItem());
 
                 // set the first item to be selected if it's the only item
-                if (cbxDevAdd.getItems().size() == 1)
+                if (cbxDevAdd.getItems().size() > 0)
                     cbxDevAdd.getSelectionModel().select(0);
         }
-            refreshData(); // refresh the table after editing the list, (Delete, Add, Change) !!!!!Important!!!!!
+            tvDevices.refresh(); // refresh the table after editing the list, (Delete, Add, Change) !!!!!Important!!!!!
         });
         gp.add(btnRemDev, 1, 7, 1, 1);
 
@@ -227,6 +212,8 @@ public class NewUserDial {
         tcStatus.setCellValueFactory(cellData -> cellData.getValue().statusProperty());
         tcStatus.prefWidthProperty().bind(tvDevices.widthProperty().divide(columncount));
 
+        tvDevices.setPlaceholder(new Label("Geen aparaten toegevoegd."));
+        tvDevices.getColumns().clear();
         tvDevices.getColumns().addAll(tcID, tcLocatie, tcStatus);
 
         tvDevices.setPrefHeight(100);
@@ -240,40 +227,51 @@ public class NewUserDial {
             System.out.println();
             if (ogUser != null && ogUser.equals(editor)){
                 if (!chxAdmin.isSelected()){
-                    new Alert(Alert.AlertType.WARNING,"Opgelet\nU staat op het punt uw admin rechten te verwijderen.\nDit betekent dat U zelf dit niet meer kan veranderen.", ButtonType.OK).showAndWait();
+                    Alert alrt = new Alert(Alert.AlertType.WARNING,"Opgelet\nU staat op het punt uw admin rechten te verwijderen.\nDit betekent dat U zelf dit niet meer kan veranderen.", ButtonType.OK);
+                    alrt.getDialogPane().getStylesheets().addAll(SensorOverview.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString());
+                    alrt.showAndWait();
                 }
             }
+
+            // Device assignment (dis/en)able
+            loadResetData();
         });
 
+
+        // Admin Tools
         if (editor.getAdmin()) {
             gp.add(lblAdmin, 1, 9, 1, 1);
             gp.add(chxAdmin, 2, 9, 1, 1);
         }
+        tvDevices.setVisible(editor.getAdmin());
+        btnAddDev.setVisible(editor.getAdmin());
+        cbxDevAdd.setVisible(editor.getAdmin());
+        btnRemDev.setVisible(editor.getAdmin());
 
         PasswordField tbxCurPass = new PasswordField();
         gp.add(tbxCurPass, 2, 10, 1, 1);
 
-        Text txtSystemMsg = new Text("\n");
+        Text txtSystemMsg = new Text("\n\n");
         txtSystemMsg.setFill(Color.RED);
         gp.add(txtSystemMsg, 2, 11, 2, 1);
 
         // Check name validity
-        String regexErr = "%s is niet toegestaan.\nDeze mag geen \\ ; of ' bevatten en niet beginnen of sluiten met een spatie.";
+        String regexErr = "%s is niet toegestaan.\nDeze mag geen \\ ; of ' bevatten\nen niet beginnen of sluiten met een spatie.";
         tbxUsername.textProperty().addListener((observable, oldValue, newValue) ->{
             txtSystemMsg.setText("\n");
-            if (!negativeREGEXSQLInput.matcher(tbxUsername.getText()).matches()){
+            if (negativeREGEXSQLInput.matcher(tbxUsername.getText()).matches()){
                 txtSystemMsg.setText(String.format(regexErr, "Gebruikersnaam"));
             }
         });
         tbxcrtePass.textProperty().addListener((observable, oldValue, newValue) ->{
             txtSystemMsg.setText("\n");
-            if (!negativeREGEXSQLInput.matcher(tbxcrtePass.getText()).matches()){
+            if (negativeREGEXSQLInput.matcher(tbxcrtePass.getText()).matches()){
                 txtSystemMsg.setText(String.format(regexErr, "Wachtwoord"));
             }
         });
         tbxCurPass.textProperty().addListener((observable, oldValue, newValue) ->{
             txtSystemMsg.setText("\n");
-            if (!negativeREGEXSQLInput.matcher(tbxCurPass.getText()).matches()){
+            if (negativeREGEXSQLInput.matcher(tbxCurPass.getText()).matches()){
                 txtSystemMsg.setText(String.format(regexErr, "Huidig wachtwoord"));
             }
         });
@@ -327,7 +325,7 @@ public class NewUserDial {
 
             newUser = new Gebruiker(tbxUsername.getText(), tbxcrtePass.getText(), chxAdmin.isSelected());
 
-            if (ogUser != null && !UserController.CheckUsername(newUser.getLoginNaam())){
+            if (ogUser == null && !UserController.CheckUsername(newUser.getLoginNaam())){
                 result.set(new Pair<>(false, "Gebruikersnaam bestaat al.\n"));
                 txtSystemMsg.setText(result.get().getValue());
                 return result.get().getKey(); // return the key which is the Boolean
@@ -339,6 +337,10 @@ public class NewUserDial {
                     } else {
                         ogUser.setLoginPass(tbxCurPass.getText());
                         result.set(UserController.ChangeUser(ogUser, newUser));
+                    }
+                    if (result.get().getKey()){
+//                        result.set(BeheerdArduino.CreateUser(newUser));
+                        // @TODO#1  Add the devices to the user
                     }
                     txtSystemMsg.setText(result.get().getValue()); // set the error message to the text
                     return result.get().getKey(); // return the key which is the Boolean
@@ -359,11 +361,38 @@ public class NewUserDial {
     }
 
 
-    protected static void refreshData() {
-//        tvDevices.setItems(flRegDev);
+    protected static void loadResetData() {
+
+        // Full list of all devices
+        olAltDev = FXCollections.observableArrayList();
+        olAltDev.addAll(ArduinoLocatieController.getAllArduinoLocaties(null));
+
+        olRegDev = FXCollections.observableArrayList();
+
+        if (ogUser != null) {
+            for (ArduinoLocatie alReg : ArduinoLocatieController.getAllArduinoLocaties(ogUser)) {
+                for (ArduinoLocatie olAlt : olAltDev) {
+                    if (alReg.getArduinoID().equals(olAlt.getArduinoID())) {
+                        olRegDev.add(olAlt);
+                    }
+                }
+            }
+        }
+        olAltDev.removeAll(olRegDev); // re move the already registered devices
+
+        flAltDev = new FilteredList<>(olAltDev);
+        flRegDev = new FilteredList<>(olRegDev);
+
+        tvDevices.setItems(flRegDev);
+        cbxDevAdd.setItems(flAltDev);
+
         tvDevices.refresh();
 
     }
+
+
+
+
 
 
 }

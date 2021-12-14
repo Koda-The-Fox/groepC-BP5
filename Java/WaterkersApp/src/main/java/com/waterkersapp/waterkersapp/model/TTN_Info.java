@@ -76,7 +76,7 @@ public class TTN_Info {
 
 
     public boolean equals(TTN_Info otherTTNI){
-        return Objects.equals(this.Arduino.getLocatie(), otherTTNI.Arduino.getLocatie()) &&
+        return //Objects.equals(this.Arduino.getLocatie(), otherTTNI.Arduino.getLocatie()) && // Do not validate arduino, this is not a value that is changed within the TTN Info
                 Objects.equals(this.TTN_DeviceID, otherTTNI.TTN_DeviceID) &&
                 Objects.equals(this.TTN_ApplicationID, otherTTNI.TTN_ApplicationID) &&
                 Objects.equals(this.TTN_ConnectionURL, otherTTNI.TTN_ConnectionURL) &&

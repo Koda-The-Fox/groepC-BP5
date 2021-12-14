@@ -3,7 +3,6 @@ package com.waterkersapp.waterkersapp.view;
 import com.waterkersapp.waterkersapp.control.RegistratieController;
 import com.waterkersapp.waterkersapp.model.ArduinoLocatie;
 import com.waterkersapp.waterkersapp.model.sensorRegistratie;
-import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -46,7 +45,7 @@ public class SensorOverview {
 
         Scene scene = new Scene(sensorOverview.getParent(), (WINDOW_SIZE[0]), (WINDOW_SIZE[1]));
         // set the styles for the scene
-        scene.getStylesheets().addAll(SensorOverview.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString(), SensorOverview.class.getResource("/com/waterkersapp/css/OverviewStyle.css").toString());
+        scene.getStylesheets().addAll(SensorOverview.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString(), SensorOverview.class.getResource("/com/waterkersapp/css/TableStyle.css").toString());
         stage.setScene(scene);
         // set the window to be resizable
         stage.setResizable(true); // default: true

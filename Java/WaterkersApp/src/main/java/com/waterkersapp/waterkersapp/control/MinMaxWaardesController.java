@@ -13,8 +13,8 @@ import java.sql.Statement;
 public class MinMaxWaardesController {
 
 
-    public MinMaxWaardes getSpecificMinMaxWaardes(ArduinoLocatie al){
-        MinMaxWaardes alWaardes = new MinMaxWaardes();
+    public static MinMaxWaardes getSpecificMinMaxWaardes(ArduinoLocatie al){
+        MinMaxWaardes alWaardes = new MinMaxWaardes(al);
 
         Connection con = null;
         try {

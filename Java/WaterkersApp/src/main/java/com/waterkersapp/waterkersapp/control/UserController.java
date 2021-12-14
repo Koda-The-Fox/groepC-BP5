@@ -9,8 +9,38 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class UserController {
+
+    public static ArrayList<Gebruiker> getAllUsers(){
+        ArrayList<Gebruiker> alUsers = new ArrayList();
+
+        Connection con = null;
+        try {
+            con = DBCPDataSource.getConnection();
+            Statement stat = con.createStatement();
+
+            String Querry ="SELECT * FROM `Gebruiker`;\n";
+            ResultSet result = stat.executeQuery(Querry);
+
+            while (result.next()) {
+                Gebruiker user = new Gebruiker(result.getString("LoginNaam"), result.getBoolean("Admin"));
+                alUsers.add(user);
+            }
+            return alUsers;
+        } catch (SQLException se) {
+            se.printStackTrace();
+            return null;
+        } finally {
+            try {
+                con.close();
+            } catch (Exception se) { // No 'SQLException' the 'Exception' catches this too.
+                se.printStackTrace();
+            }
+        }
+    }
+
 
     public static Boolean CheckUsername(String Username){
         Connection con = null;
@@ -79,12 +109,14 @@ public class UserController {
     public static Pair<Boolean, String> ChangeUser(Gebruiker previousUser, Gebruiker newUser) {
         Connection con = null;
         String err = "";
+
+
+        String Querry = "update `Gebruiker` " +
+                String.format("set `LoginNaam` = '%s', `admin` = %s ", newUser.getLoginNaam(), newUser.getAdmin()) +
+                String.format("where `LoginNaam` = '%s' and `LoginPass` = sha2('%s', 256);", previousUser.getLoginNaam(), previousUser.getLoginPass());
         try {
             con = DBCPDataSource.getConnection();
             Statement stat = con.createStatement();
-            String Querry = "update `Gebruiker` " +
-                    String.format("set `LoginNaam` = '%s', `admin` = %s", newUser.getLoginNaam(), newUser.getAdmin()) +
-                    String.format("where `LoginNaam` = '%s' and `LoginPass` = sha2('%s', 256)", previousUser.getLoginNaam(), previousUser.getLoginPass());
 
 
             int result = stat.executeUpdate(Querry);
@@ -97,6 +129,7 @@ public class UserController {
             }
 
         } catch (SQLException se) {
+            System.out.println(Querry);
             se.printStackTrace();
             err += se.getMessage() + "\n";
         } finally {

@@ -56,7 +56,8 @@ public class LoginController {
 
         List<Gebruiker> gebruikerList = new ArrayList<>();
 
-        try (Connection con = DBCPDataSource.getConnection()) {
+        try{
+            Connection con = DBCPDataSource.getConnection();
             // start the connection
             PreparedStatement ps = con.prepareStatement(query);
             // Execute Query
