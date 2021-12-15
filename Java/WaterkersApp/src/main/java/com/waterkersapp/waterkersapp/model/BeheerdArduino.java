@@ -1,5 +1,8 @@
 package com.waterkersapp.waterkersapp.model;
 
+import javafx.collections.ObservableList;
+import javafx.util.Pair;
+
 public class BeheerdArduino {
     String LoginNaam;
     Integer ArduinoID;

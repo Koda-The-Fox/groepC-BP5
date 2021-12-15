@@ -20,6 +20,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 import static com.waterkersapp.waterkersapp.MainWindow.ICON;
 
 public class Menu {
@@ -99,12 +101,11 @@ public class Menu {
         ComboBox<ArduinoLocatie> cbLocatie = new ComboBox<>();
         logoBox.getChildren().add(cbLocatie);
 
-        ArduinoLocatieController alController = new ArduinoLocatieController();
-        getArduinoLocaties(cbLocatie, alController);
+        getArduinoLocaties(cbLocatie);
 
         Button btnRefresh = new Button("\uD83D\uDD04");
         btnRefresh.setOnAction(event -> {
-            getArduinoLocaties(cbLocatie, alController);
+            getArduinoLocaties(cbLocatie);
         });
         logoBox.getChildren().add(btnRefresh);
 
@@ -185,11 +186,11 @@ public class Menu {
     }
 
 
-    private void getArduinoLocaties(ComboBox<ArduinoLocatie> cbLocatie, ArduinoLocatieController alController){
+    private void getArduinoLocaties(ComboBox<ArduinoLocatie> cbLocatie){
         // Clear the list in case old values still exist
         cbLocatie.getItems().clear();
         // Load and add the items from the database
-        cbLocatie.getItems().addAll(alController.getAllArduinoLocaties(User));
+        cbLocatie.getItems().addAll(Objects.requireNonNull(ArduinoLocatieController.getAllArduinoLocaties(User, true)));
 
         // If there are no arduino's registered list a 'no devices' object
         if (cbLocatie.getItems().isEmpty()){

@@ -13,6 +13,33 @@ import java.util.ArrayList;
 
 public class UserController {
 
+    public static boolean CheckPassword(Gebruiker user, String givenPass)
+    {
+        Connection con = null;
+        try {
+            con = DBCPDataSource.getConnection();
+            Statement stat = con.createStatement();
+
+            String Querry = String.format("SELECT * FROM `Gebruiker` where `LoginNaam` = '%s' and `LoginPass` = sha2('%s', 256);", user.getLoginNaam(), givenPass);
+            ResultSet result = stat.executeQuery(Querry);
+            int i = 0;
+            while (result.next()) {
+                i++;
+            }
+            return i == 1;
+        } catch (SQLException se) {
+            se.printStackTrace();
+            return false;
+        } finally {
+            try {
+                con.close();
+            } catch (Exception se) { // No 'SQLException' the 'Exception' catches this too.
+                se.printStackTrace();
+            }
+        }
+    }
+
+
     public static ArrayList<Gebruiker> getAllUsers(){
         ArrayList<Gebruiker> alUsers = new ArrayList();
 

@@ -89,7 +89,7 @@ public class TTNInfController {
         try {
             con = DBCPDataSource.getConnection();
             Statement stat = con.createStatement();
-            String Query = String.format("insert into `TTN_Info` (`ArduinoID`, `TTN_DeviceID`, `TTN_ApplicationID`, `TTN_ConnectionURL`, `TTN_Username`, `TTN_APIPassword`) values (%s, '%s', '%s', '%s', '%s', sha2('%s', 256));", newTTNI.getArduino().getArduinoID(), newTTNI.getTTN_DeviceID(), newTTNI.getTTN_ApplicationID(), newTTNI.getTTN_ConnectionURL(), newTTNI.getTTN_Username(), newTTNI.getTTN_APIPassword());
+            String Query = String.format("insert into `TTN_Info` (`ArduinoID`, `TTN_DeviceID`, `TTN_ApplicationID`, `TTN_ConnectionURL`, `TTN_Username`, `TTN_APIPassword`) values (%s, '%s', '%s', '%s', '%s', '%s');", newTTNI.getArduino().getArduinoID(), newTTNI.getTTN_DeviceID(), newTTNI.getTTN_ApplicationID(), newTTNI.getTTN_ConnectionURL(), newTTNI.getTTN_Username(), newTTNI.getTTN_APIPassword());
 
             int result = stat.executeUpdate(Query);
             if (result != 1){

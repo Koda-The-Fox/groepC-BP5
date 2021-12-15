@@ -35,6 +35,7 @@ public class NewDeviceDial {
         Dialog<Boolean> dialog = new Dialog<>();
         Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
         stage.getIcons().add(ICON);
+        dialog.getDialogPane().getStylesheets().addAll(SensorOverview.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString(), SensorOverview.class.getResource("/com/waterkersapp/css/TableStyle.css").toString());
 
         // Set the title for the page.
         // if the variable ogUser == null the page is meant to create a user not edit one.
@@ -58,8 +59,6 @@ public class NewDeviceDial {
         GridPane gp = new GridPane();
         VBox wrapperBox = new VBox();
 
-
-
         Label lblLocName = new Label("Locatie Naam: ");
         gp.add(lblLocName, 1, 1);
 
@@ -74,7 +73,6 @@ public class NewDeviceDial {
         }
 
         GridPane gpTTN = new GridPane();
-        gpTTN.setDisable(currentTTNI == null); //@TODO#3 Check if device has TTN Info on the database
 
         gp.add(gpTTN, 1, 3, 3, 1);
 
@@ -83,6 +81,8 @@ public class NewDeviceDial {
         chbxTTN.setOnAction(e -> {
             gpTTN.setDisable(!chbxTTN.isSelected());
         });
+        gpTTN.setDisable(!chbxTTN.isSelected());
+
         gp.add(chbxTTN, 1, 2);
 
 
@@ -134,7 +134,7 @@ public class NewDeviceDial {
             tbxAPIPAss.setText(currentTTNI.getTTN_APIPassword());
         }
 
-        Text txtSystemMsg = new Text("");
+        Text txtSystemMsg = new Text("\n");
         txtSystemMsg.setFill(Color.RED);
         gp.add(txtSystemMsg, 1, 4, 2, 1);
 
@@ -194,10 +194,6 @@ public class NewDeviceDial {
         dialog.setResultConverter(dialogButton -> {
             txtSystemMsg.setText("\n");
 
-            if (chbxTTN.isSelected()) {
-                newTTNI = new TTN_Info(ArduinoLocatieController.getAllArduinoLocatie(al.getLocatie()), tbxDevID.getText(), tbxAppID.getText(), tbxConURL.getText(), tbxUser.getText(), tbxAPIPAss.getText());
-                newTTNI.getArduino().setLocatie(tbxLocatieNaam.getText()); // change the location.name to the new location otherwise it's the same as the old one
-            }
 
             // Cancel button
             if (dialogButton == CancelButtonType) {
@@ -206,14 +202,12 @@ public class NewDeviceDial {
                 return result.get().getKey(); // return the key which is the Boolean
             }
 
-
             if (al == null) {
                 newDevice = new ArduinoLocatie(tbxLocatieNaam.getText());
             }else {
                 newDevice = new ArduinoLocatie(al.getArduinoID(), tbxLocatieNaam.getText());
+                newTTNI = new TTN_Info(ArduinoLocatieController.getAllArduinoLocatie(newDevice.getLocatie()), tbxDevID.getText(), tbxAppID.getText(), tbxConURL.getText(), tbxUser.getText(), tbxAPIPAss.getText());
             }
-
-
             // Check name validity
             // tbxLocatieNaam
             if (negativeREGEXSQLInput.matcher(tbxLocatieNaam.getText()).matches()){
@@ -264,7 +258,6 @@ public class NewDeviceDial {
                 return result.get().getKey(); // return the key which is the Boolean
             }
 
-            // Detect changes
             else if ((chbxTTN.isSelected() && (al != null && al.equals(newDevice)) && newTTNI.equals(currentTTNI)) || (!chbxTTN.isSelected() && (al != null && al.equals(newDevice)))){
                 txtSystemMsg.setFill(Color.YELLOW);
                 txtSystemMsg.setText("Geen veranderingen gevonden.\n");
@@ -281,6 +274,12 @@ public class NewDeviceDial {
                     if (al == null) {
                         result.set(ArduinoLocatieController.CreateDevice(newDevice));
                         if (result.get().getKey() && chbxTTN.isSelected()){
+
+                            newTTNI = new TTN_Info(ArduinoLocatieController.getAllArduinoLocatie(newDevice.getLocatie()), tbxDevID.getText(), tbxAppID.getText(), tbxConURL.getText(), tbxUser.getText(), tbxAPIPAss.getText());
+
+                            //newTTNI.getArduino().setLocatie(tbxLocatieNaam.getText()); // change the location.name to the new location otherwise it's the same as the old one
+
+
                             // We replace the result, because wel already established it was true
                             if (newTTNI.getArduino() == null) {
                                 result.set(new Pair<>(false, "Er ging iets fout met het opslaan van de TTN Informatie.\n"));
@@ -291,6 +290,9 @@ public class NewDeviceDial {
                         }
                     } else {
                         result.set(ArduinoLocatieController.ChangeDevice(al, newDevice));
+
+                        newTTNI = new TTN_Info(ArduinoLocatieController.getAllArduinoLocatie(newDevice.getLocatie()), tbxDevID.getText(), tbxAppID.getText(), tbxConURL.getText(), tbxUser.getText(), tbxAPIPAss.getText());
+
                         if (result.get().getKey() && chbxTTN.isSelected()){
                             // We replace the result, because wel already established it was true
                             if (!currentTTNI.equals(newTTNI)) {

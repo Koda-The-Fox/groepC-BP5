@@ -22,7 +22,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
@@ -129,14 +131,6 @@ public class Beheer {
         gp.add(lblLocatieRO, 1, 2, 1, 1);
 
         Label lblLocatie = new Label(currentWaardes.get().getLocatie().getLocatie());
-        // @TODO#4 FIX ERROR - Should be fixed now, just need to test (14-12-2021 16:40)
-        /*
-         * It only happens with devices that are newly created, possibly because they don't have  Min/Max waardes.
-
-            Exception in thread "JavaFX Application Thread" java.lang.NullPointerException
-            at com.waterkersapp.waterkersapp/com.waterkersapp.waterkersapp.view.Beheer.<init>(Beheer.java:134)
-            at com.waterkersapp.waterkersapp/com.waterkersapp.waterkersapp.view.Menu.lambda$new$5(Menu.java:142)
-        */
         gp.add(lblLocatie, 2, 2, 1, 1);
 
         Button btnEditDevice = new Button("Aparaat bewerken");
@@ -250,11 +244,11 @@ public class Beheer {
 
         gp.add(btnEditDevice, 1, 3);
 
-        gp.add(btnEditUser, 1, 4);
+        gp.add(btnEditUser, 1, 1);
 
         if (user.getAdmin()){
-            gp.add(cbxUsers, 2, 4);
-            gp.add(btnCreateUser, 3, 4);
+            gp.add(cbxUsers, 2, 1);
+            gp.add(btnCreateUser, 3, 1);
         }
         
         gp.add(lblWater, 1, 5, 2, 1);
@@ -313,37 +307,50 @@ public class Beheer {
         gp.prefWidthProperty().bind(wrapperBox.widthProperty());
 
 
-        Text txtSysMessage = new Text ("\n"); // set a new line so the label is visible by using an empty line./
+        Text txtSysMessage = new Text (""); // set a new line so the label is visible by using an empty line./
         txtSysMessage.setFill(Color.RED);
 
         Button btnSave = new Button("Opslaan");
         btnSave.setOnAction(e -> {
+            txtSysMessage.setFill(Color.GREEN);
+            txtSysMessage.setText("");
             MinMaxWaardes oldMinMax = currentWaardes.get();
             MinMaxWaardes newMinMax = getInsertinNewObject();
-            if (!newMinMax.equals(oldMinMax)){
-                MinMaxWaardesController MMC = new MinMaxWaardesController();
-                if (MMC.updateMinMaxWaardes(oldMinMax, newMinMax)){
-                    txtSysMessage.setFill(Color.GREEN);
-                    txtSysMessage.setText("Succesvol opgeslagen, U kunt dit scherm afsluiten.");
-                    currentWaardes.set(getInsertinNewObject());
+            if (oldMinMax.getFromDB()){
+                if (!newMinMax.equals(oldMinMax)){
+                    if (MinMaxWaardesController.updateMinMaxWaardes(oldMinMax, newMinMax)){
+                        txtSysMessage.setFill(Color.GREEN);
+                        txtSysMessage.setText("Succesvol opgeslagen.");
+                        currentWaardes = new AtomicReference<>(LoadData(al)); // update the old values
 
-                    // Close the window without checking for changes
-                    CloseOverride = true;
-                    Menu menu = new Menu(user);
-                    Menu.create(menu);
-                    stage.close();
+                    }
+                    else{
+                        txtSysMessage.setFill(Color.RED);
+                        txtSysMessage.setText("Er ging iets fout, controleer alle waardes of probeer het later nog eens.\nAls dit vaker voor komt neem contact op met de customer Support.");
+                    }
                 }
                 else{
-                    txtSysMessage.setFill(Color.RED);
-                    txtSysMessage.setText("Er ging iets fout, controleer alle waardes of probeer het later nog eens. Als dit vaker voor komt neem contact op met de customer Support.");
+                    txtSysMessage.setFill(Color.YELLOW);
+                    txtSysMessage.setText("Geen veranderingen gevonden.");
                 }
             }
             else{
-                txtSysMessage.setFill(Color.YELLOW);
-                txtSysMessage.setText("Geen veranderingen gevonden.");
+                Pair<Boolean, String> Result = MinMaxWaardesController.CreateMMW(newMinMax);
+                if (Result.getKey()){
+                    txtSysMessage.setFill(Color.GREEN);
+                    txtSysMessage.setText(Result.getValue());
+                    currentWaardes = new AtomicReference<>(LoadData(al)); // update the old values
+
+                }
+                else{
+                    txtSysMessage.setFill(Color.RED);
+                    txtSysMessage.setText("Er ging iets fout, controleer alle waardes of probeer het later nog eens.\nError: " + Result.getValue());
+                }
             }
         });
         Button btnCancel = new Button("Afbreken");
+
+
         btnCancel.setOnAction(e ->{
             // Having trouble getting the onCloseRequest being triggered by this event.
             // Its taking too much time trying to fix this, doing it the ugly way. ¯\_(ツ)_/¯
@@ -419,7 +426,7 @@ public class Beheer {
         // Clear the list in case old values still exist
         cbxUser.getItems().clear();
         // Load and add the items from the database
-        cbxUser.getItems().addAll(UserController.getAllUsers());
+        cbxUser.getItems().addAll(Objects.requireNonNull(UserController.getAllUsers()));
 
         // If there are no arduino's registered list a 'no devices' object
         if (cbxUser.getItems().isEmpty()){

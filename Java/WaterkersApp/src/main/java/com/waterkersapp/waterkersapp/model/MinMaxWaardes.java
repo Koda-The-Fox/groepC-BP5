@@ -1,6 +1,7 @@
 package com.waterkersapp.waterkersapp.model;
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 public class MinMaxWaardes {
     private ArduinoLocatie Locatie;
@@ -14,6 +15,8 @@ public class MinMaxWaardes {
     private double MaxGV = 24; // value source: https://www.houseplantsexpert.com/indoor-plants-temperature-guide.html
     private double MinLV = 50; // value source: https://greenupside.com/what-is-the-best-humidity-level-for-plants/
     private double MaxLV = 60; // value source: https://greenupside.com/what-is-the-best-humidity-level-for-plants/
+
+    public Boolean fromDB = false;
 
     public MinMaxWaardes() {}
 
@@ -121,6 +124,14 @@ public class MinMaxWaardes {
 
     public void setMaxLV(double maxLV) {
         MaxLV = maxLV;
+    }
+
+    public Boolean getFromDB() {
+        return fromDB;
+    }
+
+    public void setFromDB(Boolean fromDB) {
+        this.fromDB = fromDB;
     }
 
     public MinMaxWaardes copy(){

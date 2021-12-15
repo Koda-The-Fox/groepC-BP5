@@ -1,6 +1,7 @@
 package com.waterkersapp.waterkersapp.view;
 
 import com.waterkersapp.waterkersapp.control.ArduinoLocatieController;
+import com.waterkersapp.waterkersapp.control.BeheerdArduinoController;
 import com.waterkersapp.waterkersapp.control.UserController;
 import com.waterkersapp.waterkersapp.model.*;
 import javafx.collections.FXCollections;
@@ -16,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
@@ -152,7 +154,6 @@ public class NewUserDial {
 
         int columncount = 3;
         Label lblTableDevices = new Label("Devices:");
-        gp.add(lblTableDevices, 1, 4, 1, 1);
 
         int buttonWidth = 100; // default 100
 
@@ -166,7 +167,6 @@ public class NewUserDial {
         if (cbxDevAdd.getItems().size() > 0)
             cbxDevAdd.getSelectionModel().select(0);
 
-        gp.add(cbxDevAdd, 1, 5, 1, 1);
 
         btnAddDev.setPrefWidth(buttonWidth);
         btnAddDev.setOnAction(e -> {
@@ -180,7 +180,6 @@ public class NewUserDial {
             }
             tvDevices.refresh(); // refresh the table after editing the list, (Delete, Add, Change) !!!!!Important!!!!!
         });
-        gp.add(btnAddDev, 1, 6, 1, 1);
 
         btnRemDev.setPrefWidth(buttonWidth);
         btnRemDev.setOnAction(e -> {
@@ -194,7 +193,6 @@ public class NewUserDial {
         }
             tvDevices.refresh(); // refresh the table after editing the list, (Delete, Add, Change) !!!!!Important!!!!!
         });
-        gp.add(btnRemDev, 1, 7, 1, 1);
 
 
 
@@ -217,12 +215,12 @@ public class NewUserDial {
         tvDevices.getColumns().addAll(tcID, tcLocatie, tcStatus);
 
         tvDevices.setPrefHeight(100);
-        gp.add(tvDevices, 2, 4, 2, 5);
-
 
         Label lblAdmin = new Label("Is admin: ");
         CheckBox chxAdmin = new CheckBox();
-        chxAdmin.setSelected(editor.getAdmin());
+        if (ogUser != null)
+            chxAdmin.setSelected(ogUser.getAdmin());
+
         chxAdmin.setOnAction(e -> {
             System.out.println();
             if (ogUser != null && ogUser.equals(editor)){
@@ -237,16 +235,16 @@ public class NewUserDial {
             loadResetData();
         });
 
-
         // Admin Tools
         if (editor.getAdmin()) {
+            gp.add(lblTableDevices, 1, 4, 1, 1);
+            gp.add(cbxDevAdd, 1, 5, 1, 1);
+            gp.add(btnAddDev, 1, 6, 1, 1);
+            gp.add(btnRemDev, 1, 7, 1, 1);
+            gp.add(tvDevices, 2, 4, 2, 5);
             gp.add(lblAdmin, 1, 9, 1, 1);
             gp.add(chxAdmin, 2, 9, 1, 1);
         }
-        tvDevices.setVisible(editor.getAdmin());
-        btnAddDev.setVisible(editor.getAdmin());
-        cbxDevAdd.setVisible(editor.getAdmin());
-        btnRemDev.setVisible(editor.getAdmin());
 
         PasswordField tbxCurPass = new PasswordField();
         gp.add(tbxCurPass, 2, 10, 1, 1);
@@ -265,7 +263,7 @@ public class NewUserDial {
         });
         tbxcrtePass.textProperty().addListener((observable, oldValue, newValue) ->{
             txtSystemMsg.setText("\n");
-            if (negativeREGEXSQLInput.matcher(tbxcrtePass.getText()).matches()){
+            if (ogUser == null && negativeREGEXSQLInput.matcher(tbxcrtePass.getText()).matches()){
                 txtSystemMsg.setText(String.format(regexErr, "Wachtwoord"));
             }
         });
@@ -289,17 +287,8 @@ public class NewUserDial {
         dialog.setResultConverter(dialogButton -> {
             txtSystemMsg.setText("");
 
-            // Validation
+            newUser = new Gebruiker(tbxUsername.getText(), tbxcrtePass.getText(), chxAdmin.isSelected());
 
-            if (!negativeREGEXSQLInput.matcher(tbxUsername.getText()).matches()){
-                txtSystemMsg.setText(String.format(regexErr, "Gebruikersnaam"));
-            }
-            else if (!negativeREGEXSQLInput.matcher(tbxcrtePass.getText()).matches()){
-                txtSystemMsg.setText(String.format(regexErr, "Wachtwoord"));
-            }
-            else if (!negativeREGEXSQLInput.matcher(tbxCurPass.getText()).matches()){
-                txtSystemMsg.setText(String.format(regexErr, "Huidig wachtwoord"));
-            }
 
 
             if (dialogButton == CancelButtonType) {
@@ -307,6 +296,19 @@ public class NewUserDial {
                 txtSystemMsg.setText(result.get().getValue());
                 return result.get().getKey(); // return the key which is the Boolean
             }
+
+            // Validation
+            else if (negativeREGEXSQLInput.matcher(tbxUsername.getText()).matches()){
+                txtSystemMsg.setText(String.format(regexErr, "Gebruikersnaam"));
+            }
+            else if (ogUser == null && negativeREGEXSQLInput.matcher(tbxcrtePass.getText()).matches()){
+                txtSystemMsg.setText(String.format(regexErr, "Wachtwoord"));
+            }
+            else if (negativeREGEXSQLInput.matcher(tbxCurPass.getText()).matches()){
+                txtSystemMsg.setText(String.format(regexErr, "Huidig wachtwoord"));
+            }
+
+
             else if (tbxUsername.getText().isEmpty()){
                 result.set(new Pair<>(false, "Gebruikersnaam mag niet leeg zijn.\n"));
                 txtSystemMsg.setText(result.get().getValue());
@@ -322,10 +324,14 @@ public class NewUserDial {
                 txtSystemMsg.setText(result.get().getValue());
                 return result.get().getKey(); // return the key which is the Boolean
             }
+            else if (!UserController.CheckPassword(ogUser, tbxCurPass.getText())){
+                result.set(new Pair<>(false, "Het ingevulde huidige wachtwoord is verkeerd.\n"));
+                txtSystemMsg.setText(result.get().getValue());
+                return result.get().getKey(); // return the key which is the Boolean
+            }
 
-            newUser = new Gebruiker(tbxUsername.getText(), tbxcrtePass.getText(), chxAdmin.isSelected());
 
-            if (ogUser == null && !UserController.CheckUsername(newUser.getLoginNaam())){
+            else if (ogUser == null && !UserController.CheckUsername(newUser.getLoginNaam())){
                 result.set(new Pair<>(false, "Gebruikersnaam bestaat al.\n"));
                 txtSystemMsg.setText(result.get().getValue());
                 return result.get().getKey(); // return the key which is the Boolean
@@ -339,8 +345,7 @@ public class NewUserDial {
                         result.set(UserController.ChangeUser(ogUser, newUser));
                     }
                     if (result.get().getKey()){
-//                        result.set(BeheerdArduino.CreateUser(newUser));
-                        // @TODO#1  Add the devices to the user
+                        result.set(BeheerdArduinoController.CreateBeheerdRecord(newUser, tvDevices.getItems()));
                     }
                     txtSystemMsg.setText(result.get().getValue()); // set the error message to the text
                     return result.get().getKey(); // return the key which is the Boolean
@@ -365,12 +370,12 @@ public class NewUserDial {
 
         // Full list of all devices
         olAltDev = FXCollections.observableArrayList();
-        olAltDev.addAll(ArduinoLocatieController.getAllArduinoLocaties(null));
+        olAltDev.addAll(Objects.requireNonNull(ArduinoLocatieController.getAllArduinoLocaties(null, false)));
 
         olRegDev = FXCollections.observableArrayList();
 
         if (ogUser != null) {
-            for (ArduinoLocatie alReg : ArduinoLocatieController.getAllArduinoLocaties(ogUser)) {
+            for (ArduinoLocatie alReg : Objects.requireNonNull(ArduinoLocatieController.getAllArduinoLocaties(ogUser, false))) {
                 for (ArduinoLocatie olAlt : olAltDev) {
                     if (alReg.getArduinoID().equals(olAlt.getArduinoID())) {
                         olRegDev.add(olAlt);

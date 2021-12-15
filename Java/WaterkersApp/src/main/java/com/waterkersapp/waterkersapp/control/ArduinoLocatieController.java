@@ -5,6 +5,7 @@ import com.waterkersapp.waterkersapp.model.Gebruiker;
 import com.waterkersapp.waterkersapp.util.DBCPDataSource;
 import javafx.util.Pair;
 
+import javax.management.Query;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,33 +42,26 @@ public class ArduinoLocatieController {
         return null;
     }
 
-    public static ArrayList<ArduinoLocatie> getAllArduinoLocaties(Gebruiker user){
+    public static ArrayList<ArduinoLocatie> getAllArduinoLocaties(Gebruiker user, Boolean override) {
         ArrayList<ArduinoLocatie> alLocaties = new ArrayList();
 
         Connection con = null;
+        String Query = null;
         try {
             con = DBCPDataSource.getConnection();
             Statement stat = con.createStatement();
 
-            String Querry =
-                    "SELECT al.* FROM `arduinolocatie` as al \n";
-            if (user != null){ // if the user is not null get all the device connected to the user
-                Querry += "inner join beheerdarduino as ba on ba.ArduinoID = al.ArduinoID\n" +
-                        "where ba.LoginNaam = '" + user.getLoginNaam() + "';";
-
-                /* admins can have devices assigned to them but all devices will be available for them
-                if (user.getAdmin()) {
-                    Querry += ";";
-                }
-                else{
-                    Querry += "inner join beheerdarduino as ba on ba.ArduinoID = al.ArduinoID\n" +
+            Query = "SELECT al.* FROM `arduinolocatie` as al \n";
+            if (user != null) { // if the user is not null get all the device connected to the user
+                if (user.getAdmin() && override) {
+                    Query += ";";
+                } else {
+                    Query += "inner join beheerdarduino as ba on ba.ArduinoID = al.ArduinoID\n" +
                             "where ba.LoginNaam = '" + user.getLoginNaam() + "';";
                 }
-
-                 */
             }
 
-            ResultSet result = stat.executeQuery(Querry);
+            ResultSet result = stat.executeQuery(Query);
 
             while (result.next()) {
                 ArduinoLocatie Locatie = new ArduinoLocatie(result.getInt("ArduinoID"), result.getString("Locatie"), result.getString("Status"));
@@ -75,6 +69,7 @@ public class ArduinoLocatieController {
             }
             return alLocaties;
         } catch (SQLException se) {
+            System.out.println(Query);
             se.printStackTrace();
             return null;
         } finally {
