@@ -1,0 +1,19 @@
+
+
+
+
+* {
+    /*-fx-base2: #906B4E;*/
+}
+
+
+.root{
+    /*-fx-background-color:#1B8256; Secondary #1*/
+    /*-fx-background-color:#60A824; Primary*/
+    -fx-background-color:#60A824;
+}
+.Content_Window{
+    /*-fx-background-color:#53AC86; Secondary #1*/
+    /*-fx-background-color:#A0DF6C; Primary*/
+    -fx-background-color:#C0ED9A;
+}
