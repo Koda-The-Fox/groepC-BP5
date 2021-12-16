@@ -48,17 +48,17 @@ Wij willen aan de hand van ons product het verbruik van schon water verminderen 
 #### Backend
 - [X] Login;
 - [X] Menu;
-- [ ] Sensor overzicht;
-- [ ] Beheer & Instellingen;
-- [ ] New/Change Device Dialog;
-- [ ] New/Change User Dialog;
+- [X] Sensor overzicht;
+- [X] Beheer & Instellingen;
+- [X] New/Change Device Dialog;
+- [X] New/Change User Dialog;
 - [X] New/Change Password Dialog;
 
 ##### Database
-- [ ] library toevoegen;
+- [X] library toevoegen;
 - [X] Connecite(DBCP) maken & testen;
 - [ ] Connecite maken & testen;
-- [ ] Integratie van code en Database;  
+- [X] Integratie van code en Database;  
 
 # Design
 ### Java
