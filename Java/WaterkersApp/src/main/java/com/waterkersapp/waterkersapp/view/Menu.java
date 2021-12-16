@@ -6,7 +6,6 @@ import com.waterkersapp.waterkersapp.model.Gebruiker;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -16,7 +15,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -93,8 +91,8 @@ public class Menu {
         btnLogout.setOnAction(event -> {
             stage.close();
             // optional Clear all data before actually changing windows;
-            Login login = new Login();
-            Login.create(login);
+            Loogin login = new Loogin();
+            Loogin.create(login);
         });
         logoBox.getChildren().add(btnLogout);
 

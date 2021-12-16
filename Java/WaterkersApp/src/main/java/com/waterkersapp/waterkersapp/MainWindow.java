@@ -20,8 +20,8 @@ public class MainWindow extends Application {
     @Override
     public void start(Stage primaryStage) {
         // #TODO Uncomment when done debugging
-        Login login = new Login();
-        Login.create(login);
+        Loogin login = new Loogin();
+        Loogin.create(login);
 
 
         Gebruiker Jordy = new Gebruiker("JorVV", true);

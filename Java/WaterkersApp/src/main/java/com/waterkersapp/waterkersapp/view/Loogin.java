@@ -2,8 +2,6 @@ package com.waterkersapp.waterkersapp.view;
 
 import com.waterkersapp.waterkersapp.control.LoginController;
 import com.waterkersapp.waterkersapp.model.Gebruiker;
-import com.waterkersapp.waterkersapp.util.SQLFunctions;
-import javafx.css.Style;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -17,13 +15,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 
 import java.util.regex.Pattern;
 
 import static com.waterkersapp.waterkersapp.MainWindow.ICON;
 
-public class Login {
+public class Loogin {
 
     // Variables
     ///////////////////////[Window]\\\\\\\\\\\\\\\\\\\\\
@@ -41,7 +38,7 @@ public class Login {
 
     public static Stage stage;
 
-    public static void create(Login login) {
+    public static void create(Loogin login) {
         stage = new Stage();
         stage.setTitle("Login");
         stage.getIcons().add(ICON);
@@ -51,7 +48,7 @@ public class Login {
 
         Scene scene = new Scene(login.getParent(), (WINDOW_SIZE[0]), (WINDOW_SIZE[1]));
         // set the styles for the scene
-        scene.getStylesheets().addAll(Login.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString(), Login.class.getResource("/com/waterkersapp/css/LoginStyle.css").toString());
+        scene.getStylesheets().addAll(Loogin.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString(), Loogin.class.getResource("/com/waterkersapp/css/LoginStyle.css").toString());
 
         stage.setScene(scene);
         stage.setMinWidth(Min_width);
@@ -95,7 +92,7 @@ public class Login {
         return User;
     }
 
-    public Login() {
+    public Loogin() {
 
         ImageView imgLogo = new ImageView(ICON);
 
