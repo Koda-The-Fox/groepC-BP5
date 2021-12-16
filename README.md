@@ -41,8 +41,8 @@ Wij willen aan de hand van ons product het verbruik van schon water verminderen 
 - [X] Simpel UI;
 - [X] Volledig opgemaakte UI;
 - [X] Ge-optimaliseerd UI;
-- [ ] New/Change Device Dialog UI;
-- [ ] New/Change User Dialog UI;
+- [X] New/Change Device Dialog UI;
+- [X] New/Change User Dialog UI;
 - [X] New/Change Password Dialog UI;
 
 #### Backend
