@@ -65,6 +65,8 @@ public class Menu {
         return borderPane;
     }
 
+    ComboBox<ArduinoLocatie> cbLocatie = new ComboBox<>();
+
     public Menu(Gebruiker user) {
         this.User = user;
         GridPane gridPane = new GridPane();
@@ -91,25 +93,26 @@ public class Menu {
         btnLogout.setOnAction(event -> {
             stage.close();
             // optional Clear all data before actually changing windows;
-            Loogin login = new Loogin();
-            Loogin.create(login);
+            Login login = new Login();
+            Login.create(login);
         });
         logoBox.getChildren().add(btnLogout);
 
-        ComboBox<ArduinoLocatie> cbLocatie = new ComboBox<>();
+
         logoBox.getChildren().add(cbLocatie);
 
-        getArduinoLocaties(cbLocatie);
+        getArduinoLocaties();
 
         Button btnRefresh = new Button("\uD83D\uDD04");
         btnRefresh.setOnAction(event -> {
-            getArduinoLocaties(cbLocatie);
+            getArduinoLocaties();
         });
         logoBox.getChildren().add(btnRefresh);
 
         Button btnNewDevice = new Button("Nieuw Aparaat");
         btnNewDevice.setOnAction(e -> {
             NewDeviceDial.create(null);
+            getArduinoLocaties();
         });
         logoBox.getChildren().add(btnNewDevice);
 
@@ -124,6 +127,7 @@ public class Menu {
             // This action will need to add some data to get the right sensor values in the grid
             SensorOverview sensorOverGrTe = new SensorOverview(cbLocatie.getValue());
             SensorOverview.create(sensorOverGrTe);
+            getArduinoLocaties();
         });
 
         Button btnSettings = new Button("Beheer/Instellingen");
@@ -139,8 +143,8 @@ public class Menu {
             else {
                 beheer = new Beheer(cbLocatie.getValue(), user);
             }
-            Beheer.create(beheer, user);
             stage.close();
+            Beheer.create(beheer);
         });
 
 
@@ -184,7 +188,9 @@ public class Menu {
     }
 
 
-    private void getArduinoLocaties(ComboBox<ArduinoLocatie> cbLocatie){
+    public void getArduinoLocaties(){
+        ArduinoLocatie selected = cbLocatie.getSelectionModel().getSelectedItem();
+
         // Clear the list in case old values still exist
         cbLocatie.getItems().clear();
         // Load and add the items from the database
@@ -192,15 +198,22 @@ public class Menu {
 
         // If there are no arduino's registered list a 'no devices' object
         if (cbLocatie.getItems().isEmpty()){
-            cbLocatie.getItems().add(new ArduinoLocatie(0, "Geen locaties"));
+            cbLocatie.getItems().add(new ArduinoLocatie(0, "", "Geen locaties"));
             cbLocatie.setDisable(true);
+            cbLocatie.getSelectionModel().select(0); // automatically select the first item
         }
         else {
             cbLocatie.setDisable(false);
+            cbLocatie.getSelectionModel().select(0); // automatically select the first item
+            if (selected != null)
+                for (ArduinoLocatie item: cbLocatie.getItems()) {
+                    if (selected.equals(item)){
+                        cbLocatie.getSelectionModel().select(item);
+                    }
+                }
+
         }
 
 
-        // automatically select the first item
-        cbLocatie.getSelectionModel().select(0);
     }
 }

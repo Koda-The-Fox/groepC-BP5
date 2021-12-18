@@ -20,12 +20,11 @@ public class MainWindow extends Application {
     @Override
     public void start(Stage primaryStage) {
         // #TODO Uncomment when done debugging
-        Loogin login = new Loogin();
-        Loogin.create(login);
+        Login login = new Login();
+        Login.create(login);
 
-
-        Gebruiker Jordy = new Gebruiker("JorVV", true);
-        Gebruiker Admin = new Gebruiker("Admin", true);
+        Gebruiker Jordy = new Gebruiker("JorVV", false);
+        Gebruiker Admin = new Gebruiker("Admn", true);
         ArduinoLocatie al = new ArduinoLocatie(10, "TestLocatie", "Testing");
         ArduinoLocatie GroepC_Arduino = new ArduinoLocatie(1, "GroepC_Arduino", "Uit");
         ArduinoLocatie Kas2 = new ArduinoLocatie(2, "Kas2", "Uit");
@@ -45,11 +44,12 @@ public class MainWindow extends Application {
 
         // Beheer
 //        Beheer beheer = new Beheer(Kas2, Jordy);
-//        Beheer.create(beheer, Jordy);
+//        Beheer.create(beheer, menu);
 
 
         // change password dialog
-//        ChangePassDial.create(Jordy);
+//        ChangePassDial.create(Jordy, Jordy); // User changes its own password
+//        ChangePassDial.create(Jordy, Admin); // Admin changes userPassword
 
         // change/create user device
 //        NewDeviceDial.create(al); // change device
@@ -60,6 +60,8 @@ public class MainWindow extends Application {
 //         change/create user dialog
 //        NewUserDial.create(Jordy, Jordy); // change user
 //        NewUserDial.create(null, Jordy); // new user
+//        NewUserDial.create(null, Admin); // new user
+//        NewUserDial.create(Jordy, Admin); // Admin changes user
 
 
         // about page

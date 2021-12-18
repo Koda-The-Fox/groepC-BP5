@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 import static com.waterkersapp.waterkersapp.MainWindow.ICON;
 
-public class Loogin {
+public class Login {
 
     // Variables
     ///////////////////////[Window]\\\\\\\\\\\\\\\\\\\\\
@@ -28,6 +28,9 @@ public class Loogin {
     Color backgroundColor = Color.web("#BADC8F");
 
     BorderPane borderPane = new BorderPane();
+
+
+    int FieldsMaxWidth = 300;
 
 
     /* REGULAR EXPRESSION */
@@ -38,7 +41,7 @@ public class Loogin {
 
     public static Stage stage;
 
-    public static void create(Loogin login) {
+    public static void create(Login login) {
         stage = new Stage();
         stage.setTitle("Login");
         stage.getIcons().add(ICON);
@@ -48,7 +51,7 @@ public class Loogin {
 
         Scene scene = new Scene(login.getParent(), (WINDOW_SIZE[0]), (WINDOW_SIZE[1]));
         // set the styles for the scene
-        scene.getStylesheets().addAll(Loogin.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString(), Loogin.class.getResource("/com/waterkersapp/css/LoginStyle.css").toString());
+        scene.getStylesheets().addAll(Login.class.getResource("/com/waterkersapp/css/GlobalStyleSheet.css").toString(), Login.class.getResource("/com/waterkersapp/css/LoginStyle.css").toString());
 
         stage.setScene(scene);
         stage.setMinWidth(Min_width);
@@ -92,7 +95,7 @@ public class Loogin {
         return User;
     }
 
-    public Loogin() {
+    public Login() {
 
         ImageView imgLogo = new ImageView(ICON);
 
@@ -103,21 +106,22 @@ public class Loogin {
         tbxPassword.setPromptText("Wachtwoord"); //to set the hint text
         tbxPassword.setStyle(tbxUsername.getStyle());
 
-        Text txtSysMessage = new Text ("\n"); // set a new line so the label is visible by using an empty line./
+        Text txtSysMessage = new Text ("\n\n"); // set a new line so the label is visible by using an empty line./
         txtSysMessage.setFill(Color.RED);
+        txtSysMessage.setStyle("-fx-font-size: 11");
 
 
         // Check name validity
-        String regexErr = "%s is niet toegestaan.\nDeze mag geen \\ ; of ' bevatten en niet beginnen of sluiten met een spatie.";
+        String regexErr = "%s is niet toegestaan.\nDeze mag geen \\ ; of ' bevatten en\nniet beginnen of sluiten met een spatie.";
         tbxUsername.textProperty().addListener((observable, oldValue, newValue) ->{
-            txtSysMessage.setText("\n");
+            txtSysMessage.setText("\n\n");
             if (negativeREGEXSQLInput.matcher(tbxUsername.getText()).matches()){
                 txtSysMessage.setText(String.format(regexErr, "Gebruikersnaam"));
                 return;
             }
         });
         tbxPassword.textProperty().addListener((observable, oldValue, newValue) ->{
-            txtSysMessage.setText("\n");
+            txtSysMessage.setText("\n\n");
             if (negativeREGEXSQLInput.matcher(tbxPassword.getText()).matches()){
                 txtSysMessage.setText(String.format(regexErr, "Wachtwoord"));
                 return;
@@ -128,7 +132,7 @@ public class Loogin {
         Button btnLogin = new Button("Login");
         btnLogin.requestFocus();
         btnLogin.setOnAction(event -> {
-            txtSysMessage.setText("\n");
+            txtSysMessage.setText("\n\n");
             // Check name validity
             if (negativeREGEXSQLInput.matcher(tbxUsername.getText()).matches()){
                 txtSysMessage.setText(String.format(regexErr, "Gebruikersnaam"));
@@ -141,11 +145,11 @@ public class Loogin {
 
             if (tbxUsername.getText().isEmpty()){
                 txtSysMessage.setFill(Color.RED);
-                txtSysMessage.setText("Gebruikersnaam mag niet leeg zijn.\n");
+                txtSysMessage.setText("Gebruikersnaam mag niet leeg zijn.\n\n");
             }
             else if (tbxPassword.getText().isEmpty()){
                 txtSysMessage.setFill(Color.RED);
-                txtSysMessage.setText("Wachtwoord mag niet leeg zijn.\n");
+                txtSysMessage.setText("Wachtwoord mag niet leeg zijn.\n\n");
             }
             else {// If both fields are not empty continue with the validation.
 
@@ -153,12 +157,12 @@ public class Loogin {
                     setLoginAccepted(false);
 
                     txtSysMessage.setFill(Color.RED);
-                    txtSysMessage.setText("Login failed, check if the entered\ninformation is correct and try again.");
+                    txtSysMessage.setText("Login mislukt,\ncontroleer de ingevulde informatie\ncorrect is en probeer het opnieuw.");
                 } else {
                     setLoginAccepted(true);
 
                     txtSysMessage.setFill(Color.GREEN);
-                    txtSysMessage.setText("Login accepted, this window should\nexit automatically.");
+                    txtSysMessage.setText("Login gelukt,\nDit scherm zal automatisch sluiten.\n");
 
 
                     Menu menu = new Menu(LoginController.getUser(tbxUsername.getText(), tbxPassword.getText()));
@@ -180,18 +184,18 @@ public class Loogin {
 
 
         loginBox.setSpacing(10);
-        loginBox.setMaxWidth(400);
+        loginBox.setMaxWidth(FieldsMaxWidth);
         loginBox.setAlignment(Pos.CENTER);
         loginBox.prefWidthProperty().bind(wrapperBox.widthProperty().divide(50));
         loginBox.prefHeightProperty().bind(wrapperBox.heightProperty().divide(50));
 
-        statusBox.setMaxWidth(400);
+        statusBox.setMaxWidth(FieldsMaxWidth);
         statusBox.setAlignment(Pos.CENTER);
         statusBox.prefWidthProperty().bind(wrapperBox.widthProperty());
         statusBox.prefHeightProperty().bind(wrapperBox.heightProperty().divide(50));
 
         buttonsBox.setSpacing(10);
-        buttonsBox.setMaxWidth(400);
+        buttonsBox.setMaxWidth(FieldsMaxWidth);
         buttonsBox.setAlignment(Pos.TOP_CENTER);
         buttonsBox.prefWidthProperty().bind(wrapperBox.widthProperty());
         buttonsBox.prefHeightProperty().bind(wrapperBox.heightProperty().divide(50));

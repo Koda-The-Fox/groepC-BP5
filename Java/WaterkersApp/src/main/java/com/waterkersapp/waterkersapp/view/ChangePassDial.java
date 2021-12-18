@@ -1,5 +1,6 @@
 package com.waterkersapp.waterkersapp.view;
 
+import com.waterkersapp.waterkersapp.control.LoginController;
 import com.waterkersapp.waterkersapp.control.PassController;
 import com.waterkersapp.waterkersapp.model.Gebruiker;
 import javafx.geometry.Insets;
@@ -12,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -26,7 +28,7 @@ public class ChangePassDial {
     // Do not start or end with a space
     private static final Pattern negativeREGEXSQLInput = Pattern.compile("^((.*[';\n\r\t].*).)*$|^ .*$|^.* $");
 
-    public static boolean create(Gebruiker ogUser) {
+    public static boolean create(Gebruiker ogUser, Gebruiker editor) {
         // Create the custom dialog.
         Dialog<Boolean> dialog = new Dialog<>();
         Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
@@ -35,8 +37,8 @@ public class ChangePassDial {
         dialog.setHeaderText("Wachtwoord veranderen voor gebruiker: " + ogUser.getLoginNaam());
 
         // Set the button types.
-        ButtonType loginButtonType = new ButtonType("Opslaan", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, new ButtonType("Annuleren", ButtonBar.ButtonData.CANCEL_CLOSE));
+        ButtonType ChangePassButtonType = new ButtonType("Opslaan", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(ChangePassButtonType, new ButtonType("Annuleren", ButtonBar.ButtonData.CANCEL_CLOSE));
 
         // Create the username and password labels and fields.
         GridPane gp = new GridPane();
@@ -56,26 +58,33 @@ public class ChangePassDial {
         Text lblNewPassValErr = new Text("");
         gp.add(lblNewPassValErr, 1, 3, 2, 1);
         Label lblOldPass = new Label("Vorig wachtwoord: ");
+        if (editor.getAdmin())
+            lblOldPass.setText("Admin wachtwoord van '"+editor.getLoginNaam()+"':");
         gp.add(lblOldPass, 1, 4, 1, 1);
 
         PasswordField tbxOldPass = new PasswordField();
         gp.add(tbxOldPass, 2, 4, 1, 1);
-        Text lblOldPassValErr = new Text("\r\n");
+        Text lblOldPassValErr = new Text("\n\n");
         gp.add(lblOldPassValErr, 1, 3, 2, 1);
 
+
+        Text lblSysMsg = new Text("\n\n");
+        gp.add(lblSysMsg, 1, 5, 3, 1);
+
+
         // Enable/Disable login button depending on whether a username was entered.
-        Node ndeChgePass = dialog.getDialogPane().lookupButton(loginButtonType);
+        Node ndeChgePass = dialog.getDialogPane().lookupButton(ChangePassButtonType);
         ndeChgePass.setDisable(true);
 
 
         // Do some validation (using the Java 8 lambda syntax).
-        String regexErr = "%s is niet toegestaan.\nDeze mag geen \\ ; of ' bevatten en niet beginnen of sluiten met een spatie.";
+        String regexErr = "%s is niet toegestaan.\nDeze mag geen \\ ; of ' bevatten en niet beginnen\nof sluiten met een spatie.";
 
         tbxNewPass.textProperty().addListener((observable, oldValue, newValue) -> {
             lblNewPassValErr.setText("");
             lblOldPassValErr.setText("");
             ndeChgePass.setDisable(true);
-            if (!negativeREGEXSQLInput.matcher(tbxNewPass.getText()).matches()){
+            if (negativeREGEXSQLInput.matcher(tbxNewPass.getText()).matches()){
                 lblOldPassValErr.setFill(Color.RED);
                 lblOldPassValErr.setText(String.format(regexErr, "Wachtwoord"));
             }
@@ -86,7 +95,7 @@ public class ChangePassDial {
                 lblNewPassValErr.setFill(Color.RED);
                 lblNewPassValErr.setText("Vul aub een wachtwoord in.");
             }
-            else if (tbxOldPass.getText().equals(tbxNewPass.getText()) ){
+            else if (!editor.getAdmin() && tbxOldPass.getText().equals(tbxNewPass.getText()) ){
                 lblOldPassValErr.setFill(Color.RED);
                 lblOldPassValErr.setText("Het nieuwe wachtwoord mag niet hetzelfde zijn als het\nhuidige wachtwoord.");
             }
@@ -111,7 +120,7 @@ public class ChangePassDial {
                 lblNewPassValErr.setFill(Color.RED);
                 lblNewPassValErr.setText("Vul aub een wachtwoord in.");
             }
-            else if (tbxOldPass.getText().equals(tbxNewPass.getText()) ){
+            else if (!editor.getAdmin() && tbxOldPass.getText().equals(tbxNewPass.getText()) ){
                 lblOldPassValErr.setFill(Color.RED);
                 lblOldPassValErr.setText("Het nieuwe wachtwoord mag niet hetzelfde zijn als het\nhuidige wachtwoord.");
             }
@@ -128,7 +137,7 @@ public class ChangePassDial {
             lblNewPassValErr.setText("");
             lblOldPassValErr.setText("");
             ndeChgePass.setDisable(true);
-            if (!negativeREGEXSQLInput.matcher(tbxOldPass.getText()).matches()){
+            if (negativeREGEXSQLInput.matcher(tbxOldPass.getText()).matches()){
                 lblOldPassValErr.setFill(Color.RED);
                 lblOldPassValErr.setText(String.format(regexErr, "Wachtwoord"));
             }
@@ -137,7 +146,7 @@ public class ChangePassDial {
             } else if (tbxNewPass.getText().isEmpty()){
                 // Do nothing
             }
-            else if (tbxOldPass.getText().equals(tbxNewPass.getText()) ){
+            else if (!editor.getAdmin() && tbxOldPass.getText().equals(tbxNewPass.getText()) ){
                 lblOldPassValErr.setFill(Color.RED);
                 lblOldPassValErr.setText("Het nieuwe wachtwoord mag niet hetzelfde zijn als het\nhuidige wachtwoord.");
             }
@@ -169,11 +178,25 @@ public class ChangePassDial {
 
 
         dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == loginButtonType) {
+            if (dialogButton == ChangePassButtonType) {
+                Pair<Boolean, String> result = PassController.ChangePassword(ogUser, tbxOldPass.getText(), tbxNewPass.getText(), editor);
+                if (result.getKey()){
+                    lblSysMsg.setFill(Color.GREEN);
+                }
+                else{
+                    lblSysMsg.setFill(Color.RED);
+                }
+                lblSysMsg.setText(result.getValue());
+                return result.getKey();
 
-                return PassController.ChangePassword(ogUser, tbxOldPass.getText(), tbxNewPass.getText());
             }
             return false;
+        });
+
+        dialog.setOnCloseRequest(e ->{
+            if(!dialog.getResult()) {
+                e.consume();
+            }
         });
 
         dialog.showAndWait();

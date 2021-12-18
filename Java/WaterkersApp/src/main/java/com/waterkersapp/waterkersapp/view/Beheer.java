@@ -1,13 +1,11 @@
 package com.waterkersapp.waterkersapp.view;
 
-import com.waterkersapp.waterkersapp.control.ArduinoLocatieController;
 import com.waterkersapp.waterkersapp.control.MinMaxWaardesController;
 import com.waterkersapp.waterkersapp.control.UserController;
 import com.waterkersapp.waterkersapp.model.ArduinoLocatie;
 import com.waterkersapp.waterkersapp.model.Gebruiker;
 import com.waterkersapp.waterkersapp.model.MinMaxWaardes;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -22,11 +20,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.Pair;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.regex.Pattern;
 
 import static com.waterkersapp.waterkersapp.MainWindow.ICON;
 
@@ -44,11 +42,12 @@ public class Beheer {
     private Boolean CloseOverride = false;
 
 
-    BorderPane borderPane = new BorderPane();
+    private BorderPane borderPane = new BorderPane();
 
     public static Stage stage;
+    private Menu menu;
 
-    public static void create(Beheer beheer, Gebruiker user) {
+    public static void create(Beheer beheer) {
         stage = new Stage();
         stage.setTitle("Beheer/Instellingen");
         stage.getIcons().add(ICON);
@@ -75,7 +74,7 @@ public class Beheer {
                     }
                 }
             }
-            Menu menu = new Menu(user);
+            Menu menu = new Menu(beheer.OgUser);
             Menu.create(menu);
         });
 
@@ -89,25 +88,34 @@ public class Beheer {
         return borderPane;
     }
 
-    ArduinoLocatie al;
+    ArduinoLocatie OgDevice;
 
-    Spinner<Double> numMinPH;
-    Spinner<Double> numMaxPH;
-    Spinner<Double> numMinGT;
-    Spinner<Double> numMaxGT;
-    Spinner<Double> numMinGV;
-    Spinner<Double> numMaxGV;
-    Spinner<Double> numMinLT;
-    Spinner<Double> numMaxLT;
-    Spinner<Double> numMinLV;
-    Spinner<Double> numMaxLV;
+    Spinner<Double> numMinPH = new Spinner<> ();
+    Spinner<Double> numMaxPH = new Spinner<> ();
+    final Integer[] PHMargin = {1, 14}; // source: https://www.sciencefocus.com/science/could-a-ph-greater-than-14-exist/
+    Spinner<Double> numMinGT = new Spinner<> ();
+    Spinner<Double> numMaxGT = new Spinner<> ();
+    Spinner<Double> numMinLT = new Spinner<> ();
+    Spinner<Double> numMaxLT = new Spinner<> ();
+    final Integer[] TempMargin = {-20, 40}; // Min temp source: https://www.howplantswork.com/2010/01/07/how-plants-survive-the-cold-or-not/ , Max temp source: https://www.americanmeadows.com/how-hot-is-too-hot-for-plants
+    Spinner<Double> numMinGV = new Spinner<> ();
+    Spinner<Double> numMaxGV = new Spinner<> ();
+    Spinner<Double> numMinLV = new Spinner<> ();
+    Spinner<Double> numMaxLV = new Spinner<> ();
+    final Integer[] HumMargin = {0, 100}; // Moisture doesn't go below 0 or above 100 because it's a percentage.
 
     AtomicReference<MinMaxWaardes> currentWaardes;
 
-    public Beheer(ArduinoLocatie al, Gebruiker user) {
-        this.al = al;
+    Text txtSysMessage = new Text ("");
+    FadeTransition fadeout = new FadeTransition(Duration.seconds(5), txtSysMessage);
 
-        currentWaardes = new AtomicReference<>(LoadData(al));
+    ComboBox<Gebruiker> cbxUsers = new ComboBox<>();
+
+    Gebruiker OgUser = null;
+    Label lblLocatie = new Label();
+    public Beheer(ArduinoLocatie OgDevice, Gebruiker user) {
+        this.OgDevice = OgDevice;
+        OgUser = user;
 
         HBox logoTitleBox = new HBox();
         GridPane gp = new GridPane();
@@ -130,43 +138,38 @@ public class Beheer {
         Label lblLocatieRO = new Label("Locatie: ");
         gp.add(lblLocatieRO, 1, 2, 1, 1);
 
-        Label lblLocatie = new Label(currentWaardes.get().getLocatie().getLocatie());
         gp.add(lblLocatie, 2, 2, 1, 1);
 
         Button btnEditDevice = new Button("Aparaat bewerken");
         btnEditDevice.setOnAction(e->{
-            NewDeviceDial.create(al);
+            // @TODO ISSUE#11 Editing a device, Beheer/Instellingen doesn't update
+            AtomicReference<Pair<Pair<Boolean, String>, ArduinoLocatie>> result = NewDeviceDial.create(OgDevice);
+            this.OgDevice = result.get().getValue();
+            LoadData(this.OgDevice);
         });
 
         Button btnEditUser = new Button("Gebruiker bewerken");
-        ComboBox<Gebruiker> cbxUsers = new ComboBox<>();
         btnEditUser.setOnAction(e->{
-            NewUserDial.create(cbxUsers.getValue(), user);
+            AtomicReference<Pair<Pair<Boolean, String>, Gebruiker>> result = NewUserDial.create(cbxUsers.getValue(), user);
+            OgUser = result.get().getValue();
+            getUsers();
         });
-        getUsers(cbxUsers,  user);
+        getUsers();
 
         Button btnCreateUser = new Button("Gebruiker aanmaken");
         btnCreateUser.setOnAction(e->{
             NewUserDial.create(null, user);
         });
 
-
-
-
-
         Label lblWater = new Label("WATER");
         lblWater.getStyleClass().add("title");
         Label lblMinPH = new Label("Min-pH:");
-        numMinPH = new Spinner<> ();
-        numMinPH.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 10000, currentWaardes.get().getMinPH()));
         numMinPH.setEditable(true);
         Button btnMinPH = new Button("Reset");
         btnMinPH.setOnAction(e -> {
             numMinPH.getValueFactory().setValue(currentWaardes.get().getMinPH());
         });
         Label lblMaxPH = new Label("Max-pH:");
-        numMaxPH = new Spinner<> ();
-        numMaxPH.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 10000, currentWaardes.get().getMaxPH()));
         numMaxPH.setEditable(true);
         Button btnMaxPH = new Button("Reset");
         btnMaxPH.setOnAction(e -> {
@@ -175,32 +178,24 @@ public class Beheer {
         Label lblGrond = new Label("GROND");
         lblGrond.getStyleClass().add("title");
         Label lblMinGT = new Label("Min-grond temperatuur(°C):");
-        numMinGT = new Spinner<> ();
-        numMinGT.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(-20, 40 , currentWaardes.get().getMinGT())); // Min temp source: https://www.howplantswork.com/2010/01/07/how-plants-survive-the-cold-or-not/ , Max temp source: https://www.americanmeadows.com/how-hot-is-too-hot-for-plants, init value source: https://www.houseplantsexpert.com/indoor-plants-temperature-guide.html
         numMinGT.setEditable(true);
         Button btnMinGT = new Button("Reset");
         btnMinGT.setOnAction(e -> {
             numMinGT.getValueFactory().setValue(currentWaardes.get().getMinGT());
         });
         Label lblMaxGT = new Label("Max-grond temperatuur(°C):");
-        numMaxGT = new Spinner<> ();
-        numMaxGT.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(-20, 40, currentWaardes.get().getMaxGT())); // Min temp source: https://www.howplantswork.com/2010/01/07/how-plants-survive-the-cold-or-not/ , Max temp source: https://www.americanmeadows.com/how-hot-is-too-hot-for-plants, init value source: https://www.houseplantsexpert.com/indoor-plants-temperature-guide.html
         numMaxGT.setEditable(true);
         Button btnMaxGT = new Button("Reset");
         btnMaxGT.setOnAction(e -> {
             numMaxGT.getValueFactory().setValue(currentWaardes.get().getMaxGT());
         });
         Label lblMinGV = new Label("Min-grond vochtigheid(%):");
-        numMinGV = new Spinner<> ();
-        numMinGV.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 100, currentWaardes.get().getMinGV())); // Moisture doesn't go below 0 or above 100 because it's a percentage. init value source: https://www.greenwaybiotech.com/blogs/gardening-articles/how-soil-moisture-affects-your-plants-growth
         numMinGV.setEditable(true);
         Button btnMinGV = new Button("Reset");
         btnMinGV.setOnAction(e -> {
             numMinGV.getValueFactory().setValue(currentWaardes.get().getMinGV());
         });
         Label lblMaxGV = new Label("Max-grond vochtigheid(%):");
-        numMaxGV = new Spinner<> ();
-        numMaxGV.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 100, currentWaardes.get().getMaxGV())); // Moisture doesn't go below 0 or above 100 because it's a percentage. init value source: https://www.greenwaybiotech.com/blogs/gardening-articles/how-soil-moisture-affects-your-plants-growth
         numMaxGV.setEditable(true);
         Button btnMaxGV = new Button("Reset");
         btnMaxGV.setOnAction(e -> {
@@ -209,37 +204,33 @@ public class Beheer {
         Label lblLucht = new Label("LUCHT");
         lblLucht.getStyleClass().add("title");
         Label lblMinLT = new Label("Min-Lucht temperatuur(°C):");
-        numMinLT = new Spinner<> ();
-        numMinLT.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(-20, 40 , currentWaardes.get().getMinLT())); // Min temp source: https://www.howplantswork.com/2010/01/07/how-plants-survive-the-cold-or-not/ , Max temp source: https://www.americanmeadows.com/how-hot-is-too-hot-for-plants, init value source: https://www.houseplantsexpert.com/indoor-plants-temperature-guide.html
         numMinLT.setEditable(true);
         Button btnMinLT = new Button("Reset");
         btnMinLT.setOnAction(e -> {
             numMinLT.getValueFactory().setValue(currentWaardes.get().getMinLT());
         });
         Label lblMaxLT = new Label("Max-Lucht temperatuur(°C):");
-        numMaxLT = new Spinner<> ();
-        numMaxLT.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(-20, 40, currentWaardes.get().getMaxLT())); // Min temp source: https://www.howplantswork.com/2010/01/07/how-plants-survive-the-cold-or-not/ , Max temp source: https://www.americanmeadows.com/how-hot-is-too-hot-for-plants, init value source: https://www.houseplantsexpert.com/indoor-plants-temperature-guide.html
         numMaxLT.setEditable(true);
         Button btnMaxLT = new Button("Reset");
         btnMaxLT.setOnAction(e -> {
             numMaxLT.getValueFactory().setValue(currentWaardes.get().getMaxLT());
         });
         Label lblMinLV = new Label("Min-Lucht vochtigheid(%):");
-        numMinLV = new Spinner<> ();
-        numMinLV.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 100, currentWaardes.get().getMinLV())); // Moisture doesn't go below 0 or above 100 because it's a percentage. init value source: https://www.greenwaybiotech.com/blogs/gardening-articles/how-soil-moisture-affects-your-plants-growth
         numMinLV.setEditable(true);
         Button btnMinLV = new Button("Reset");
         btnMinLV.setOnAction(e -> {
             numMinLV.getValueFactory().setValue(currentWaardes.get().getMinLV());
         });
         Label lblMaxLV = new Label("Max-Lucht vochtigheid(%):");
-        numMaxLV = new Spinner<> ();
-        numMaxLV.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(0, 100, currentWaardes.get().getMaxLV())); // Moisture doesn't go below 0 or above 100 because it's a percentage. init value source: https://www.greenwaybiotech.com/blogs/gardening-articles/how-soil-moisture-affects-your-plants-growth
+
         numMaxLV.setEditable(true);
         Button btnMaxLV = new Button("Reset");
         btnMaxLV.setOnAction(e -> {
             numMaxLV.getValueFactory().setValue(currentWaardes.get().getMaxLV());
         });
+
+        // get and load all the data
+        LoadData(OgDevice);
 
 
         gp.add(btnEditDevice, 1, 3);
@@ -306,45 +297,43 @@ public class Beheer {
         gp.setVgap(5);
         gp.prefWidthProperty().bind(wrapperBox.widthProperty());
 
-
-        Text txtSysMessage = new Text (""); // set a new line so the label is visible by using an empty line./
         txtSysMessage.setFill(Color.RED);
+        fadeout.setFromValue(1.0);
+        fadeout.setToValue(0.0);
+        fadeout.setOnFinished(e ->{
+            txtSysMessage.setFill(Color.RED);
+            txtSysMessage.setText("");
+        });
 
         Button btnSave = new Button("Opslaan");
         btnSave.setOnAction(e -> {
-            txtSysMessage.setFill(Color.GREEN);
             txtSysMessage.setText("");
             MinMaxWaardes oldMinMax = currentWaardes.get();
             MinMaxWaardes newMinMax = getInsertinNewObject();
             if (oldMinMax.getFromDB()){
                 if (!newMinMax.equals(oldMinMax)){
                     if (MinMaxWaardesController.updateMinMaxWaardes(oldMinMax, newMinMax)){
-                        txtSysMessage.setFill(Color.GREEN);
-                        txtSysMessage.setText("Succesvol opgeslagen.");
-                        currentWaardes = new AtomicReference<>(LoadData(al)); // update the old values
+                        ShowMessage(Color.GREEN, "Succesvol opgeslagen.");
+                        LoadData(OgDevice); // update the old values
 
                     }
                     else{
-                        txtSysMessage.setFill(Color.RED);
-                        txtSysMessage.setText("Er ging iets fout, controleer alle waardes of probeer het later nog eens.\nAls dit vaker voor komt neem contact op met de customer Support.");
+                        ShowMessage(Color.RED, "Er ging iets fout, controleer alle waardes of probeer het later nog eens.\nAls dit vaker voor komt neem contact op met de customer Support.");
                     }
                 }
                 else{
-                    txtSysMessage.setFill(Color.YELLOW);
-                    txtSysMessage.setText("Geen veranderingen gevonden.");
+                    ShowMessage(Color.YELLOW, "Geen veranderingen gevonden.");
                 }
             }
             else{
                 Pair<Boolean, String> Result = MinMaxWaardesController.CreateMMW(newMinMax);
                 if (Result.getKey()){
-                    txtSysMessage.setFill(Color.GREEN);
-                    txtSysMessage.setText(Result.getValue());
-                    currentWaardes = new AtomicReference<>(LoadData(al)); // update the old values
+                    ShowMessage(Color.GREEN, Result.getValue());
+                    LoadData(OgDevice); // update the old values
 
                 }
                 else{
-                    txtSysMessage.setFill(Color.RED);
-                    txtSysMessage.setText("Er ging iets fout, controleer alle waardes of probeer het later nog eens.\nError: " + Result.getValue());
+                    ShowMessage(Color.RED, "Er ging iets fout, controleer alle waardes of probeer het later nog eens.\nError: " + Result.getValue());
                 }
             }
         });
@@ -404,13 +393,16 @@ public class Beheer {
      */
     private MinMaxWaardes getInsertinNewObject(){
         return new MinMaxWaardes(
-                al,
+                OgDevice,
+
                 numMinPH.getValue(),
                 numMaxPH.getValue(),
+
                 numMinGT.getValue(),
                 numMaxGT.getValue(),
                 numMinLT.getValue(),
                 numMaxLT.getValue(),
+
                 numMinGV.getValue(),
                 numMaxGV.getValue(),
                 numMinLV.getValue(),
@@ -418,35 +410,66 @@ public class Beheer {
         );
     }
 
-    private MinMaxWaardes LoadData(ArduinoLocatie al){
-        return MinMaxWaardesController.getSpecificMinMaxWaardes(al);
+    private void LoadData(ArduinoLocatie al){
+        currentWaardes =  new AtomicReference<>(MinMaxWaardesController.getSpecificMinMaxWaardes(al));
+
+        // Fill the new data
+        lblLocatie.setText(currentWaardes.get().getLocatie().getLocatie());
+
+        numMinPH.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(PHMargin[0],PHMargin[1], currentWaardes.get().getMinPH()));
+        numMaxPH.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(PHMargin[0],PHMargin[1], currentWaardes.get().getMaxPH()));
+
+        numMinGT.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(TempMargin[0], TempMargin[1], currentWaardes.get().getMinGT()));
+        numMaxGT.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(TempMargin[0], TempMargin[1], currentWaardes.get().getMaxGT()));
+        numMinLT.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(TempMargin[0], TempMargin[1], currentWaardes.get().getMinLT()));
+        numMaxLT.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(TempMargin[0], TempMargin[1], currentWaardes.get().getMaxLT()));
+
+        numMinGV.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(HumMargin[0], HumMargin[1], currentWaardes.get().getMinGV()));
+        numMaxGV.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(HumMargin[0], HumMargin[1], currentWaardes.get().getMaxGV()));
+        numMinLV.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(HumMargin[0], HumMargin[1], currentWaardes.get().getMinLV()));
+        numMaxLV.setValueFactory(new SpinnerValueFactory.DoubleSpinnerValueFactory(HumMargin[0], HumMargin[1], currentWaardes.get().getMaxLV()));
+
     }
 
-    private void getUsers(ComboBox<Gebruiker> cbxUser, Gebruiker ogUser){
+    private void FillInAllData(MinMaxWaardes MMW){
+
+    }
+
+    private void getUsers(){
         // Clear the list in case old values still exist
-        cbxUser.getItems().clear();
+        cbxUsers.getItems().clear();
         // Load and add the items from the database
-        cbxUser.getItems().addAll(Objects.requireNonNull(UserController.getAllUsers()));
+        cbxUsers.getItems().addAll(Objects.requireNonNull(UserController.getAllUsers()));
 
         // If there are no arduino's registered list a 'no devices' object
-        if (cbxUser.getItems().isEmpty()){
-            cbxUser.getItems().add(user);
-            cbxUser.setDisable(true);
+        if (cbxUsers.getItems().isEmpty()){
+            cbxUsers.getItems().add(user);
+            cbxUsers.setDisable(true);
         }
         else {
-            cbxUser.setDisable(false);
+            cbxUsers.setDisable(false);
         }
 
         // automatically select the first item
-        cbxUser.getSelectionModel().select(0);
+        cbxUsers.getSelectionModel().select(0);
 
         // select the current user
-        for (Gebruiker user: cbxUser.getItems()
+        for (Gebruiker user: cbxUsers.getItems()
         ) {
-            if (ogUser.equals(user)){
-                cbxUser.getSelectionModel().select(user);
+            if (OgUser.equals(user)){
+                cbxUsers.getSelectionModel().select(user);
             }
         }
+    }
+
+    private void ShowMessage(Color clr, String msg){
+        Double duration = (Double)(msg.length()/5.0);
+        System.out.println(String.format("MSG.length = %d, Duration = %f", msg.length(), duration));
+        fadeout.setDuration(Duration.seconds(duration));
+        txtSysMessage.setFill(clr);
+        txtSysMessage.setText(msg);
+        fadeout.playFromStart();
+//        sysTransition.playFromStart();
     }
 
 }

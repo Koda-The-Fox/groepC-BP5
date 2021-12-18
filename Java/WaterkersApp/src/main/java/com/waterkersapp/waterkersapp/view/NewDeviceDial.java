@@ -22,6 +22,7 @@ import static com.waterkersapp.waterkersapp.MainWindow.ICON;
 
 public class NewDeviceDial {
 
+    private static ArduinoLocatie OgDevice;
     private static ArduinoLocatie newDevice;
     private static TTN_Info newTTNI = null;
     private static TTN_Info currentTTNI;
@@ -31,7 +32,8 @@ public class NewDeviceDial {
     // Do not start or end with a space
     private static final Pattern negativeREGEXSQLInput = Pattern.compile("^((.*[';\n\r\t].*).)*$|^ .*$|^.* $");
 
-    public static void create(ArduinoLocatie al) {
+    public static AtomicReference<Pair<Pair<Boolean, String>, ArduinoLocatie>> create(ArduinoLocatie OgDevice) {
+        NewDeviceDial.OgDevice = OgDevice;
         Dialog<Boolean> dialog = new Dialog<>();
         Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
         stage.getIcons().add(ICON);
@@ -41,14 +43,14 @@ public class NewDeviceDial {
         // if the variable ogUser == null the page is meant to create a user not edit one.
         dialog.setTitle("Aparaat aanmaken.");
         dialog.setHeaderText("Aparaat aanmaken.");
-        if (al != null){
+        if (OgDevice != null){
             dialog.setTitle("Aparaat bewerken.");
-            dialog.setHeaderText("Gegevens veranderen voor device: " + al.getLocatie() + " (" + al.getArduinoID() + ")");
+            dialog.setHeaderText("Gegevens veranderen voor device: " + OgDevice.getLocatie() + " (" + OgDevice.getArduinoID() + ")");
         }
 
         // Set the button types.
         ButtonType okButtonType;
-        if (al != null) {
+        if (OgDevice != null) {
             okButtonType = new ButtonType("Opslaan", ButtonBar.ButtonData.OK_DONE);
         }else{
             okButtonType = new ButtonType("Aanmaken", ButtonBar.ButtonData.OK_DONE);
@@ -63,13 +65,13 @@ public class NewDeviceDial {
         gp.add(lblLocName, 1, 1);
 
         TextField tbxLocatieNaam = new TextField();
-        if (al != null){
-            tbxLocatieNaam.setText(al.getLocatie());
+        if (OgDevice != null){
+            tbxLocatieNaam.setText(OgDevice.getLocatie());
         }
         gp.add(tbxLocatieNaam, 2, 1);
 
-        if (al != null) {
-            currentTTNI = (TTN_Info) TTNInfController.GetTTNInfo(al);
+        if (OgDevice != null) {
+            currentTTNI = (TTN_Info) TTNInfController.GetTTNInfo(OgDevice);
         }
 
         GridPane gpTTN = new GridPane();
@@ -89,7 +91,7 @@ public class NewDeviceDial {
         int TTNInputLength = 300;
 
         if (currentTTNI == null){
-            currentTTNI = new TTN_Info(al);
+            currentTTNI = new TTN_Info(OgDevice);
         }
 
         // TTN Input fields
@@ -121,7 +123,7 @@ public class NewDeviceDial {
         tbxAPIPAss.getStyleClass().add("text-field");
         gpTTN.add(tbxAPIPAss, 2,6, 3, 1);
 
-        if (al != null){
+        if (OgDevice != null){
             // TTN Device Connection
             tbxDevID.setText(currentTTNI.getTTN_DeviceID());
 
@@ -190,90 +192,90 @@ public class NewDeviceDial {
 
         dialog.getDialogPane().setContent(wrapperBox);
 
-        AtomicReference<Pair<Boolean, String>> result = new AtomicReference<>(new Pair<>(false, "No result yet"));
+        AtomicReference<Pair<Pair<Boolean, String>, ArduinoLocatie>> result = new AtomicReference<>(new Pair<>(new Pair<>(false, "No result yet"), newDevice));
         dialog.setResultConverter(dialogButton -> {
             txtSystemMsg.setText("\n");
 
 
             // Cancel button
             if (dialogButton == CancelButtonType) {
-                result.set(new Pair<>(true, "Dialoog geannuleerd.\n"));
-                txtSystemMsg.setText(result.get().getValue());
-                return result.get().getKey(); // return the key which is the Boolean
+                result.set(new Pair<>(new Pair<>(true, "Dialoog geannuleerd.\n"), OgDevice));
+                txtSystemMsg.setText(result.get().getKey().getValue());
+                return result.get().getKey().getKey(); // return the key which is the Boolean
             }
 
-            if (al == null) {
+            if (OgDevice == null) {
                 newDevice = new ArduinoLocatie(tbxLocatieNaam.getText());
             }else {
-                newDevice = new ArduinoLocatie(al.getArduinoID(), tbxLocatieNaam.getText());
+                newDevice = new ArduinoLocatie(OgDevice.getArduinoID(), tbxLocatieNaam.getText());
                 newTTNI = new TTN_Info(ArduinoLocatieController.getAllArduinoLocatie(newDevice.getLocatie()), tbxDevID.getText(), tbxAppID.getText(), tbxConURL.getText(), tbxUser.getText(), tbxAPIPAss.getText());
             }
             // Check name validity
             // tbxLocatieNaam
             if (negativeREGEXSQLInput.matcher(tbxLocatieNaam.getText()).matches()){
-                result.set(new Pair<>(false, String.format(regexErr, "Locatienaam")));
-                txtSystemMsg.setText(result.get().getValue());
-                return result.get().getKey(); // return the key which is the Boolean
+                result.set(new Pair<>(new Pair<>(false, String.format(regexErr, "Locatienaam")), OgDevice));
+                txtSystemMsg.setText(result.get().getKey().getValue());
+                return result.get().getKey().getKey(); // return the key which is the Boolean
             }
             // tbxDevID
             else if (chbxTTN.isSelected()&&negativeREGEXSQLInput.matcher(tbxDevID.getText()).matches()){
-                result.set(new Pair<>(false, String.format(regexErr, "Device ID")));
-                txtSystemMsg.setText(result.get().getValue());
-                return result.get().getKey(); // return the key which is the Boolean
+                result.set(new Pair<>(new Pair<>(false, String.format(regexErr, "Device ID")), OgDevice));
+                txtSystemMsg.setText(result.get().getKey().getValue());
+                return result.get().getKey().getKey(); // return the key which is the Boolean
             }
             // tbxAppID
             else if (chbxTTN.isSelected()&&negativeREGEXSQLInput.matcher(tbxAppID.getText()).matches()){
-                result.set(new Pair<>(false, String.format(regexErr, "Applicatie ID")));
-                txtSystemMsg.setText(result.get().getValue());
-                return result.get().getKey(); // return the key which is the Boolean
+                result.set(new Pair<>(new Pair<>(false, String.format(regexErr, "Applicatie ID")), OgDevice));
+                txtSystemMsg.setText(result.get().getKey().getValue());
+                return result.get().getKey().getKey(); // return the key which is the Boolean
             }
             // tbxConURL
             else if (chbxTTN.isSelected()&&negativeREGEXSQLInput.matcher(tbxConURL.getText()).matches()){
-                result.set(new Pair<>(false, String.format(regexErr, "Connectie URL")));
-                txtSystemMsg.setText(result.get().getValue());
-                return result.get().getKey(); // return the key which is the Boolean
+                result.set(new Pair<>(new Pair<>(false, String.format(regexErr, "Connectie URL")), OgDevice));
+                txtSystemMsg.setText(result.get().getKey().getValue());
+                return result.get().getKey().getKey(); // return the key which is the Boolean
             }
             // tbxUser
             else if (chbxTTN.isSelected()&&negativeREGEXSQLInput.matcher(tbxUser.getText()).matches()){
-                result.set(new Pair<>(false, String.format(regexErr, "Gebruikersnaam")));
-                txtSystemMsg.setText(result.get().getValue());
-                return result.get().getKey(); // return the key which is the Boolean
+                result.set(new Pair<>(new Pair<>(false, String.format(regexErr, "Gebruikersnaam")), OgDevice));
+                txtSystemMsg.setText(result.get().getKey().getValue());
+                return result.get().getKey().getKey(); // return the key which is the Boolean
             }
             // tbxAPIPAss
             else if (chbxTTN.isSelected()&&negativeREGEXSQLInput.matcher(tbxAPIPAss.getText()).matches()){
-                result.set(new Pair<>(false, String.format(regexErr, "API Wachtwoord")));
-                txtSystemMsg.setText(result.get().getValue());
-                return result.get().getKey(); // return the key which is the Boolean
+                result.set(new Pair<>(new Pair<>(false, String.format(regexErr, "API Wachtwoord")), OgDevice));
+                txtSystemMsg.setText(result.get().getKey().getValue());
+                return result.get().getKey().getKey(); // return the key which is the Boolean
             }
 
             // Detect empty fields
             else if (tbxLocatieNaam.getText().isEmpty()){
-                result.set(new Pair<>(false, "Gebruikersnaam mag niet leeg zijn.\n"));
-                txtSystemMsg.setText(result.get().getValue());
-                return result.get().getKey(); // return the key which is the Boolean
+                result.set(new Pair<>(new Pair<>(false, "Gebruikersnaam mag niet leeg zijn.\n"), OgDevice));
+                txtSystemMsg.setText(result.get().getKey().getValue());
+                return result.get().getKey().getKey(); // return the key which is the Boolean
             }
             else if (chbxTTN.isSelected() && (tbxDevID.getText().isEmpty() || tbxAppID.getText().isEmpty() || tbxConURL.getText().isEmpty() || tbxUser.getText().isEmpty() || tbxAPIPAss.getText().isEmpty())){
-                result.set(new Pair<>(false, "Vul AUB alle data in voor de TTN Connectie.\n"));
-                txtSystemMsg.setText(result.get().getValue());
-                return result.get().getKey(); // return the key which is the Boolean
+                result.set(new Pair<>(new Pair<>(false, "Vul AUB alle data in voor de TTN Connectie.\n"), OgDevice));
+                txtSystemMsg.setText(result.get().getKey().getValue());
+                return result.get().getKey().getKey(); // return the key which is the Boolean
             }
 
-            else if ((chbxTTN.isSelected() && (al != null && al.equals(newDevice)) && newTTNI.equals(currentTTNI)) || (!chbxTTN.isSelected() && (al != null && al.equals(newDevice)))){
+            else if ((chbxTTN.isSelected() && (OgDevice != null && OgDevice.equals(newDevice)) && newTTNI.equals(currentTTNI)) || (!chbxTTN.isSelected() && (OgDevice != null && OgDevice.equals(newDevice)))){
                 txtSystemMsg.setFill(Color.YELLOW);
                 txtSystemMsg.setText("Geen veranderingen gevonden.\n");
             }
 
             // Check duplicate names
-            else if (al == null && !ArduinoLocatieController.CheckDevicename(newDevice.getLocatie())){
-                result.set(new Pair<>(false, "Een aparaat met dezelfde naam bestaat al.\n"));
-                txtSystemMsg.setText(result.get().getValue());
-                return result.get().getKey(); // return the key which is the Boolean
+            else if (OgDevice == null && !ArduinoLocatieController.CheckDevicename(newDevice.getLocatie())){
+                result.set(new Pair<>(new Pair<>(false, "Een aparaat met dezelfde naam bestaat OgDevice.\n"), OgDevice));
+                txtSystemMsg.setText(result.get().getKey().getValue());
+                return result.get().getKey().getKey(); // return the key which is the Boolean
             }
             else {
                 if (dialogButton == okButtonType) {
-                    if (al == null) {
-                        result.set(ArduinoLocatieController.CreateDevice(newDevice));
-                        if (result.get().getKey() && chbxTTN.isSelected()){
+                    if (OgDevice == null) {
+                        result.set(new Pair<>(ArduinoLocatieController.CreateDevice(newDevice), newDevice));
+                        if (result.get().getKey().getKey() && chbxTTN.isSelected()){
 
                             newTTNI = new TTN_Info(ArduinoLocatieController.getAllArduinoLocatie(newDevice.getLocatie()), tbxDevID.getText(), tbxAppID.getText(), tbxConURL.getText(), tbxUser.getText(), tbxAPIPAss.getText());
 
@@ -282,30 +284,30 @@ public class NewDeviceDial {
 
                             // We replace the result, because wel already established it was true
                             if (newTTNI.getArduino() == null) {
-                                result.set(new Pair<>(false, "Er ging iets fout met het opslaan van de TTN Informatie.\n"));
+                                result.set(new Pair<>(new Pair<>(false, "Er ging iets fout met het opslaan van de TTN Informatie.\n"), OgDevice));
                             }
                             else {
-                                result.set(TTNInfController.CreateTTNI(newTTNI));
+                                result.set(new Pair<>(TTNInfController.CreateTTNI(newTTNI), newDevice));
                             }
                         }
                     } else {
-                        result.set(ArduinoLocatieController.ChangeDevice(al, newDevice));
+                        result.set(new Pair<>(ArduinoLocatieController.ChangeDevice(OgDevice, newDevice), OgDevice));
 
                         newTTNI = new TTN_Info(ArduinoLocatieController.getAllArduinoLocatie(newDevice.getLocatie()), tbxDevID.getText(), tbxAppID.getText(), tbxConURL.getText(), tbxUser.getText(), tbxAPIPAss.getText());
 
-                        if (result.get().getKey() && chbxTTN.isSelected()){
+                        if (result.get().getKey().getKey() && chbxTTN.isSelected()){
                             // We replace the result, because wel already established it was true
                             if (!currentTTNI.equals(newTTNI)) {
-                                result.set(TTNInfController.ChangeTTNI(currentTTNI, newTTNI));
+                                result.set(new Pair<>(TTNInfController.ChangeTTNI(currentTTNI, newTTNI), newDevice));
                             }
                         }
                     }
-                    txtSystemMsg.setText(result.get().getValue()); // set the error message to the text
-                    return result.get().getKey(); // return the key which is the Boolean
+                    txtSystemMsg.setText(result.get().getKey().getValue()); // set the error message to the text
+                    return result.get().getKey().getKey(); // return the key which is the Boolean
                 }
             }
-            result.set(new Pair<>(false, "empty result\n"));
-            return result.get().getKey(); // return the key which is the Boolean
+            result.set(new Pair<>(new Pair<>(false, "empty result\n"),OgDevice));
+            return result.get().getKey().getKey(); // return the key which is the Boolean
         });
 
         dialog.setOnCloseRequest(e ->{
@@ -315,6 +317,8 @@ public class NewDeviceDial {
         });
 
         dialog.showAndWait();
+
+        return result;
     }
 
     /*

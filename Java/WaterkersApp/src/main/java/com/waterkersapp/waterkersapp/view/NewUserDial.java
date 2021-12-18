@@ -48,7 +48,7 @@ public class NewUserDial {
     // Do not start or end with a space
     private static final Pattern negativeREGEXSQLInput = Pattern.compile("^((.*[';\n\r\t].*).)*$|^ .*$|^.* $");
 
-    public static void create(Gebruiker ogUser, Gebruiker editor) {// Create the custom dialog.// Create the custom dialog.
+    public static AtomicReference<Pair<Pair<Boolean, String>, Gebruiker>> create(Gebruiker ogUser, Gebruiker editor) {// Create the custom dialog.// Create the custom dialog.
         NewUserDial.ogUser = ogUser;
 
         Dialog<Boolean> dialog = new Dialog<>();
@@ -104,12 +104,7 @@ public class NewUserDial {
             ndeCngeUser.setDisable(false);
         }
         tbxUsername.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (tbxUsername.getText().isEmpty()){
-                ndeCngeUser.setDisable(true);
-            }
-            else {
-                ndeCngeUser.setDisable(false);
-            }
+            ndeCngeUser.setDisable(tbxUsername.getText().isEmpty());
         });
         gp.add(tbxUsername, 2, 1, 1, 1);
         Button btnRstUsername = new Button("Reset");
@@ -130,7 +125,7 @@ public class NewUserDial {
         gp.add(txtSystemMsgPassword, 2, 3, 2, 1);
         btnChngePasword.setOnAction(e -> {
             txtSystemMsgPassword.setText("");
-            if (ChangePassDial.create(ogUser)){
+            if (ChangePassDial.create(ogUser, editor)){
                 txtSystemMsgPassword.setFill(Color.GREEN);
                 txtSystemMsgPassword.setText("Wachtwoord " + ACTION + "  gelukt.");
             }
@@ -246,6 +241,12 @@ public class NewUserDial {
             gp.add(chxAdmin, 2, 9, 1, 1);
         }
 
+        Label lblCurPass = new Label("Huidig wachtwoord: ");
+        if (ogUser == null)
+            lblCurPass.setText("Wachtwoord nogmaals: ");
+        if (editor.getAdmin() && ogUser != null)
+            lblCurPass.setText("Admin wachtwoord van '"+editor.getLoginNaam()+"': ");
+        gp.add(lblCurPass, 1, 10, 1, 1);
         PasswordField tbxCurPass = new PasswordField();
         gp.add(tbxCurPass, 2, 10, 1, 1);
 
@@ -274,7 +275,6 @@ public class NewUserDial {
             }
         });
 
-
         wrapperBox.getChildren().addAll(gp);
 
         wrapperBox.setSpacing(5);
@@ -282,19 +282,16 @@ public class NewUserDial {
 
         dialog.getDialogPane().setContent(wrapperBox);
 
-
-        AtomicReference<Pair<Boolean, String>> result = new AtomicReference<>(new Pair<>(false, "No result yet\n"));
+        AtomicReference<Pair<Pair<Boolean, String>,Gebruiker>> result = new AtomicReference<>(new Pair<>(new Pair<>(false, "No result yet\n"),ogUser));
         dialog.setResultConverter(dialogButton -> {
             txtSystemMsg.setText("");
 
             newUser = new Gebruiker(tbxUsername.getText(), tbxcrtePass.getText(), chxAdmin.isSelected());
 
-
-
             if (dialogButton == CancelButtonType) {
-                result.set(new Pair<>(true, "gebruiker " + ACTION + " geannuleerd.\n"));
-                txtSystemMsg.setText(result.get().getValue());
-                return result.get().getKey(); // return the key which is the Boolean
+                result.set(new Pair<>(new Pair<>(true, "gebruiker " + ACTION + " geannuleerd.\n"), ogUser));
+                txtSystemMsg.setText(result.get().getKey().getValue());
+                return result.get().getKey().getKey(); // return the key which is the Boolean
             }
 
             // Validation
@@ -308,53 +305,59 @@ public class NewUserDial {
                 txtSystemMsg.setText(String.format(regexErr, "Huidig wachtwoord"));
             }
 
-
             else if (tbxUsername.getText().isEmpty()){
-                result.set(new Pair<>(false, "Gebruikersnaam mag niet leeg zijn.\n"));
-                txtSystemMsg.setText(result.get().getValue());
-                return result.get().getKey(); // return the key which is the Boolean
+                result.set(new Pair<>(new Pair<>(false, "Gebruikersnaam mag\nniet leeg zijn."),ogUser));
+                txtSystemMsg.setText(result.get().getKey().getValue());
+                return result.get().getKey().getKey(); // return the key which is the Boolean
             }
             else if (ogUser == null && tbxcrtePass.getText().isEmpty()){
-                result.set(new Pair<>(false, "Vul aub een wachtwoord in.\n"));
-                txtSystemMsg.setText(result.get().getValue());
-                return result.get().getKey(); // return the key which is the Boolean
+                result.set(new Pair<>(new Pair<>(false, "Vul aub een wachtwoord in.\n"), null));
+                txtSystemMsg.setText(result.get().getKey().getValue());
+                return result.get().getKey().getKey(); // return the key which is the Boolean
             }
             else if (tbxCurPass.getText().isEmpty()){
-                result.set(new Pair<>(false, "Vul aub het huidige wachtwoord in.\n"));
-                txtSystemMsg.setText(result.get().getValue());
-                return result.get().getKey(); // return the key which is the Boolean
+                result.set(new Pair<>(new Pair<>(false, "Vul aub het huidige\nwachtwoord in."),ogUser));
+                txtSystemMsg.setText(result.get().getKey().getValue());
+                return result.get().getKey().getKey(); // return the key which is the Boolean
             }
-            else if (!UserController.CheckPassword(ogUser, tbxCurPass.getText())){
-                result.set(new Pair<>(false, "Het ingevulde huidige wachtwoord is verkeerd.\n"));
-                txtSystemMsg.setText(result.get().getValue());
-                return result.get().getKey(); // return the key which is the Boolean
+            else if (editor.getAdmin() && !UserController.CheckPassword(editor, tbxCurPass.getText())){
+                result.set(new Pair<>(new Pair<>(false, "Het ingevulde admin\nwachtwoord is verkeerd."),ogUser));
+                txtSystemMsg.setText(result.get().getKey().getValue());
+                return result.get().getKey().getKey(); // return the key which is the Boolean
             }
-
+//            else if (!UserController.CheckPassword(ogUser, tbxCurPass.getText())){
+            else if ((  !editor.getAdmin() && ogUser != null && !UserController.CheckPassword(ogUser, tbxCurPass.getText()))
+                    ||  !editor.getAdmin() && ogUser == null && !tbxcrtePass.getText().equals(tbxCurPass.getText())
+            ){
+                result.set(new Pair<>(new Pair<>(false, "Het ingevulde huidige\nwachtwoord is verkeerd."),ogUser));
+                txtSystemMsg.setText(result.get().getKey().getValue());
+                return result.get().getKey().getKey(); // return the key which is the Boolean
+            }
 
             else if (ogUser == null && !UserController.CheckUsername(newUser.getLoginNaam())){
-                result.set(new Pair<>(false, "Gebruikersnaam bestaat al.\n"));
-                txtSystemMsg.setText(result.get().getValue());
-                return result.get().getKey(); // return the key which is the Boolean
+                result.set(new Pair<>(new Pair<>(false, "Gebruikersnaam bestaat al.\n"), ogUser));
+                txtSystemMsg.setText(result.get().getKey().getValue());
+                return result.get().getKey().getKey(); // return the key which is the Boolean
             }
             else {
                 if (dialogButton == okButtonType) {
                     if (ogUser == null) {
-                        result.set(UserController.CreateUser(newUser));
+                        result.set(new Pair<>(UserController.CreateUser(newUser), newUser));
                     } else {
                         ogUser.setLoginPass(tbxCurPass.getText());
-                        result.set(UserController.ChangeUser(ogUser, newUser));
+                        editor.setLoginPass(tbxCurPass.getText());
+                        result.set(new Pair<>(UserController.ChangeUser(ogUser, newUser, editor), ogUser));
                     }
-                    if (result.get().getKey()){
-                        result.set(BeheerdArduinoController.CreateBeheerdRecord(newUser, tvDevices.getItems()));
+                    if (result.get().getKey().getKey()){
+                        result.set(new Pair<>(BeheerdArduinoController.CreateBeheerdRecord(newUser, tvDevices.getItems()), newUser));
                     }
-                    txtSystemMsg.setText(result.get().getValue()); // set the error message to the text
-                    return result.get().getKey(); // return the key which is the Boolean
+                    txtSystemMsg.setText(result.get().getKey().getValue()); // set the error message to the text
+                    return result.get().getKey().getKey(); // return the key which is the Boolean
                 }
             }
-            result.set(new Pair<>(false, "empty result\n"));
-            return result.get().getKey(); // return the key which is the Boolean
+            result.set(new Pair<>(new Pair<>(false, "empty result\n"),ogUser));
+            return result.get().getKey().getKey(); // return the key which is the Boolean
         });
-
 
         dialog.setOnCloseRequest(e ->{
             if(!dialog.getResult()) {
@@ -363,11 +366,12 @@ public class NewUserDial {
         });
 
         dialog.showAndWait();
+
+        return result;
     }
 
 
     protected static void loadResetData() {
-
         // Full list of all devices
         olAltDev = FXCollections.observableArrayList();
         olAltDev.addAll(Objects.requireNonNull(ArduinoLocatieController.getAllArduinoLocaties(null, false)));

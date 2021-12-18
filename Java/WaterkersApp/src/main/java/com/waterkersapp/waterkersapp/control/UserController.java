@@ -133,7 +133,7 @@ public class UserController {
         return new Pair<>(false, err);
     }
 
-    public static Pair<Boolean, String> ChangeUser(Gebruiker previousUser, Gebruiker newUser) {
+    public static Pair<Boolean, String> ChangeUser(Gebruiker previousUser, Gebruiker newUser, Gebruiker editor) {
         Connection con = null;
         String err = "";
 
@@ -141,6 +141,16 @@ public class UserController {
         String Querry = "update `Gebruiker` " +
                 String.format("set `LoginNaam` = '%s', `admin` = %s ", newUser.getLoginNaam(), newUser.getAdmin()) +
                 String.format("where `LoginNaam` = '%s' and `LoginPass` = sha2('%s', 256);", previousUser.getLoginNaam(), previousUser.getLoginPass());
+
+        // validate the editor if it's an admin and isn't editing itself
+        if (editor.getAdmin() && !editor.equals(previousUser)) {
+            Querry = String.format("update `Gebruiker` set `LoginNaam` = '%s', `admin` = %s where `LoginNaam` = '%s';", newUser.getLoginNaam(), newUser.getAdmin(), previousUser.getLoginNaam());
+
+            if (!LoginController.validateLogin(editor.getLoginNaam(), editor.getLoginPass())){
+                return new Pair<>(false, "Het admin wachtwoord is verkeerd.\n");
+            }
+        }
+
         try {
             con = DBCPDataSource.getConnection();
             Statement stat = con.createStatement();
