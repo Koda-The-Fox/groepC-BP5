@@ -20,8 +20,8 @@ public class MainWindow extends Application {
     @Override
     public void start(Stage primaryStage) {
         // #TODO Uncomment when done debugging
-        Login login = new Login();
-        Login.create(login);
+//        Login login = new Login();
+//        Login.create(login);
 
         Gebruiker Jordy = new Gebruiker("JorVV", false);
         Gebruiker Admin = new Gebruiker("Admn", true);
@@ -54,7 +54,7 @@ public class MainWindow extends Application {
         // change/create user device
 //        NewDeviceDial.create(al); // change device
 //        NewDeviceDial.create(Kas2); // change device
-//        NewDeviceDial.create(GroepC_Arduino); // change GroepC_Arduino device
+        NewDeviceDial.create(GroepC_Arduino); // change GroepC_Arduino device
 //        NewDeviceDial.create(null); // new device
 
 //         change/create user dialog
