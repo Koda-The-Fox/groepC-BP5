@@ -1,5 +1,7 @@
 package com.greengenie.green_genie.view;
 
+import com.greengenie.green_genie.algorithm.Driver;
+import com.greengenie.green_genie.model.Input;
 import com.greengenie.green_genie.model.Weather;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -14,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
 import java.util.Objects;
 
 import static com.greengenie.green_genie.MainWindow.ICON;
@@ -189,6 +192,7 @@ public class InputWeather {
         numSun.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, gatheredWeather.getRain()));
         contentGrid.add(numSun, 2, row);
         row++;// end of row
+
 
 
 

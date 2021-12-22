@@ -120,6 +120,12 @@ public class Menu {
 
 
 
+        Button btnInputValues = new Button("Values");
+        btnInputValues.setOnAction(e ->{
+            InputValues.create(new InputValues());
+        });
+        contentGrid.add(btnInputValues, 1, 6);
+
 
 
         /////////////////////////////////////// [ending code] \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
