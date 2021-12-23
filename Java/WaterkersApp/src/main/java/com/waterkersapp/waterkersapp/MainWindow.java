@@ -19,15 +19,16 @@ public class MainWindow extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // #TODO Uncomment when done debugging
         Login login = new Login();
         Login.create(login);
 
+        /*
         Gebruiker Jordy = new Gebruiker("JorVV", false);
         Gebruiker Admin = new Gebruiker("Admn", true);
         ArduinoLocatie al = new ArduinoLocatie(10, "TestLocatie", "Testing");
         ArduinoLocatie GroepC_Arduino = new ArduinoLocatie(1, "GroepC_Arduino", "Uit");
         ArduinoLocatie Kas2 = new ArduinoLocatie(2, "Kas2", "Uit");
+         */
 
         // LOGIN
 //        Login login = new Login();

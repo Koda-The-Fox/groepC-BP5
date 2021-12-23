@@ -98,9 +98,8 @@ public class Menu {
         });
         logoBox.getChildren().add(btnLogout);
 
-
+        // get all devices and put them in the combobox
         logoBox.getChildren().add(cbLocatie);
-
         getArduinoLocaties();
 
         Button btnRefresh = new Button("\uD83D\uDD04");
@@ -164,8 +163,6 @@ public class Menu {
 
         //wrapperBox.setAlignment(Pos.CENTER);
         wrapperBox.setPadding(new Insets(5, ICON_SIZE[1], 50, ICON_SIZE[1]));
-
-        // set then size of the wrapperBox dynamically to the window(Stage)
         wrapperBox.prefWidthProperty().bind(borderPane.widthProperty());
         wrapperBox.prefHeightProperty().bind(borderPane.heightProperty());
 
@@ -179,8 +176,6 @@ public class Menu {
         btnSettings.prefWidthProperty().bind(gridPane.widthProperty());
         btnSettings.prefHeightProperty().bind(gridPane.heightProperty());
 
-        wrapperBox.prefWidthProperty().bind(borderPane.widthProperty());
-        wrapperBox.prefHeightProperty().bind(borderPane.heightProperty());
 
 
         borderPane.setLeft(wrapperBox);

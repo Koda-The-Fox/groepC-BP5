@@ -83,11 +83,9 @@ public class NewDeviceDial {
         });
 
         //Override TTN is not allowed to be filled in the application rn
-        //#TODO#5 (Optional) Enable after the MQTT app gets the data from the Database and writes it in the file.
-        gpTTN.setDisable(true);
-//        gpTTN.setDisable(!chbxTTN.isSelected());
-//        gp.add(chbxTTN, 1, 2);
-//        gp.add(gpTTN, 1, 3, 3, 1);
+        gpTTN.setDisable(!chbxTTN.isSelected());
+        gp.add(chbxTTN, 1, 2);
+        gp.add(gpTTN, 1, 3, 3, 1);
 
 
         int TTNInputLength = 300;

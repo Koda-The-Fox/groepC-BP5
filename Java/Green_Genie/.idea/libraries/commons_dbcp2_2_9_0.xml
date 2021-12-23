@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="commons-dbcp2-2.9.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/main/resources/com/greengenie/lib/SQL/commons-dbcp2-2.9.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/main/resources/com/greengenie/lib/SQL/commons-logging-1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/main/resources/com/greengenie/lib/SQL/commons-pool2-2.11.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/main/resources/com/greengenie/lib/SQL/mysql-connector-java-8.0.21.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/src/main/resources/com/greengenie/lib/SQL/sources/commons-dbcp2-2.3.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -2,7 +2,6 @@
 package com.greengenie.green_genie.algorithm;
 
 import com.greengenie.green_genie.model.Input;
-import com.greengenie.green_genie.model.MinMaxWaardes;
 
 import java.io.FileNotFoundException;
 import java.util.Objects;
@@ -10,32 +9,17 @@ import java.util.Objects;
 public class Driver {
 
 
-	static final String filepath = System.getProperty("user.dir")+"/src/main/resources/com/greengenie/dataset/PlantGroeiDataSet.csv";
-
-	public static void main(String[] args) throws FileNotFoundException {
-		
-		ID3 id3 = new ID3();
-		id3.rawdata = id3.loadCSV(filepath);
-//		id3.printArrayList(id3.rawdata);
-		
-		id3.runID3(id3.rawdata,null);
-		Node rootnode = id3.tree.getRoot();
-
-//		System.out.println("\nDisplaying Tree\n");
-		rootnode.print("",true);
-		//WalkTrough(rootnode);
-	}
+	public static final String FILEPATH = System.getProperty("user.dir")+"/src/main/resources/com/greengenie/dataset/PlantGroeiDataSet_v1.csv";
 
 	public static String getAdvice(Input inpt) throws FileNotFoundException {
 		ID3 id3 = new ID3();
-		id3.rawdata = id3.loadCSV(filepath);
+		id3.rawdata = id3.loadCSV(FILEPATH);
 
 		id3.runID3(id3.rawdata,null);
 		Node rootnode = id3.tree.getRoot();
 
 		return WalkTrough(rootnode, inpt);
 	}
-
 
 	private static String WalkTrough(Node rootnode, Input inpt){
 		String result =null;

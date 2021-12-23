@@ -6,5 +6,6 @@ public class Input {
    public ValueClassification Grond_Temp;
    public ValueClassification Lucht_Vocht;
    public ValueClassification Lucht_Temp;
+   public String Acceptabel;
 
 }

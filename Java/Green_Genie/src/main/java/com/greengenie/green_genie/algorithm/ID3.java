@@ -1,7 +1,8 @@
 package com.greengenie.green_genie.algorithm;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import com.greengenie.green_genie.model.Input;
+
+import java.io.*;
 import java.util.*;
 
 public class ID3 {
@@ -29,6 +30,90 @@ public class ID3 {
             data.add(lineArrayList);
         }
         return data;
+    }
+
+    /**
+     * Write the rawdata back to the CSV file.
+     * @param filepath the location of the csv file
+     * @throws IOException
+     */
+    public void writeCSV(String filepath) throws IOException {
+        FileWriter writer = new FileWriter(filepath);
+        StringBuilder fileData = new StringBuilder();
+        try {
+            for (ArrayList<String> alS : rawdata) {
+                String row = "";
+                for (String str : alS) {
+                    row += str;
+                    if (!str.equals(alS.get(alS.size() - 1))) {
+                        row += ",";
+                    }
+                }
+                fileData.append(row + "\n");
+            }
+            writer.write(fileData.toString());
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }finally {
+            writer.flush();
+            writer.close();
+        }
+
+    }
+
+    public void addRecord(Input inpt){
+        ArrayList<String> simulatedLine = new ArrayList<>();
+        simulatedLine.add(inpt.Grond_Vocht.toString());
+        simulatedLine.add(inpt.Grond_Temp.toString());
+        simulatedLine.add(inpt.Lucht_Vocht.toString());
+        simulatedLine.add(inpt.Lucht_Temp.toString());
+        simulatedLine.add(inpt.Acceptabel);
+
+        int removeInt = getRecordPosition(simulatedLine);
+        if (removeInt == rawdata.size()+1) {
+            System.out.println("Adding new record ("+removeInt+").");
+            rawdata.add(simulatedLine);
+        }
+        else {
+            System.out.println("Record already exists ("+removeInt+").");
+        }
+    }
+
+    public void removeRecord(Input inpt){
+        ArrayList<String> simulatedLine = new ArrayList<>();
+        simulatedLine.add(inpt.Grond_Vocht.toString());
+        simulatedLine.add(inpt.Grond_Temp.toString());
+        simulatedLine.add(inpt.Lucht_Vocht.toString());
+        simulatedLine.add(inpt.Lucht_Temp.toString());
+        simulatedLine.add(inpt.Acceptabel);
+        int removeInt = getRecordPosition(simulatedLine);
+        if (removeInt != rawdata.size()+1) {
+            System.out.println("Removing record ("+removeInt+").");
+            rawdata.remove(removeInt);
+        }
+    }
+    public int getRecordPosition(ArrayList<String> record){
+        int recordInt = rawdata.size() + 1;
+        for (int i = 0; i < rawdata.size(); i++) {
+            ArrayList<String> lineArrayList = rawdata.get(i);
+            int same = 0;
+            /* 0 = not set
+             * 1 = same
+             * 2 = not same */
+            for (int j = 0; j<lineArrayList.size();j++){
+                if (lineArrayList.get(j).equals(record.get(j))){
+                    if (same != 2)
+                        same = 1;
+                }else{
+                    same = 2;
+                }
+            }
+            if (same == 1){
+                System.out.println("Found record (" + recordInt + ").");
+                recordInt = i;
+            }
+        }
+        return recordInt;
     }
 
     /**

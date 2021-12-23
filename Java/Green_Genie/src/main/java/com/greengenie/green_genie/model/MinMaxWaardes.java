@@ -1,6 +1,7 @@
 package com.greengenie.green_genie.model;
 
 public class MinMaxWaardes {
+    private ArduinoLocatie AL = new ArduinoLocatie();
     private double MinPH = 6; // value source : https://www.nrcs.usda.gov/Internet/FSE_DOCUMENTS/nrcs142p2_052208.pdf
     private double MaxPH = 7; // value source : https://www.nrcs.usda.gov/Internet/FSE_DOCUMENTS/nrcs142p2_052208.pdf
     private double MinGT = 15; // value source: https://www.houseplantsexpert.com/indoor-plants-temperature-guide.html
@@ -16,7 +17,12 @@ public class MinMaxWaardes {
 
     public MinMaxWaardes() {}
 
-    public MinMaxWaardes( double minPH, double maxPH, double minGT, double maxGT, double minLT, double maxLT, double minGV, double maxGV, double minLV, double maxLV) {
+    public MinMaxWaardes(ArduinoLocatie AL) {
+        this.AL = AL;
+    }
+
+    public MinMaxWaardes(ArduinoLocatie al, double minPH, double maxPH, double minGT, double maxGT, double minLT, double maxLT, double minGV, double maxGV, double minLV, double maxLV) {
+        AL = al;
         MinPH = minPH;
         MaxPH = maxPH;
         MinGT = minGT;
@@ -28,6 +34,15 @@ public class MinMaxWaardes {
         MinLV = minLV;
         MaxLV = maxLV;
     }
+
+    public ArduinoLocatie getAL() {
+        return AL;
+    }
+
+    public void setAL(ArduinoLocatie AL) {
+        this.AL = AL;
+    }
+
     public double getMinPH() {
         return MinPH;
     }
@@ -118,6 +133,7 @@ public class MinMaxWaardes {
 
     public MinMaxWaardes copy(){
         return new MinMaxWaardes(
+                this.AL,
                 this.MinPH,
                 this.MaxPH,
                 this.MinGT,
@@ -144,5 +160,13 @@ public class MinMaxWaardes {
                 this.MaxGV == otherMMW.MaxGV &&
                 this.MinLV == otherMMW.MinLV &&
                 this.MaxLV == otherMMW.MaxLV;
+    }
+
+    @Override
+    public String toString() {
+        return "Lucht temperatuur= " + MinLT + " <-> " + MaxLT +
+                "\nLucht vochtigheid= \t" + MinLV + " <-> " + MaxLV +
+                "\nGrond temperatuur= " + MinGT + " <-> " + MaxGT +
+                "\nGrond vochtigheid= " + MinGV + " <-> " + MaxGV;
     }
 }

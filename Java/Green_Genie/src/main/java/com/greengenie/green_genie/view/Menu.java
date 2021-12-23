@@ -1,6 +1,8 @@
 package com.greengenie.green_genie.view;
 
+import com.greengenie.green_genie.control.ArduinoLocatieController;
 import com.greengenie.green_genie.dial.InputDialog;
+import com.greengenie.green_genie.model.ArduinoLocatie;
 import com.greengenie.green_genie.model.Weather;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -9,6 +11,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -31,6 +34,7 @@ public class Menu {
 
 
     BorderPane borderPane = new BorderPane();
+    ComboBox<ArduinoLocatie> cbLocatie = new ComboBox<>();
 
     public static Stage stage;
 
@@ -70,13 +74,6 @@ public class Menu {
         contentGrid.prefWidthProperty().bind(wrapperBox.widthProperty());
         contentGrid.prefHeightProperty().bind(wrapperBox.heightProperty());
         contentGrid.setPadding(new Insets(10));
-        /*
-        contentGrid.setVgap(10);
-        contentGrid.setHgap(60);
-
-        contentGrid.setPadding(new Insets(-contentGrid.getVgap(),0,0, -contentGrid.getHgap())); // negate the first VGap & Hgap.
-         */
-
 
         HBox logoBox = new HBox();
         logoBox.setAlignment(Pos.CENTER_LEFT);
@@ -93,45 +90,55 @@ public class Menu {
         imgLogo.setFitWidth(ICON_SIZE[1]);
         logoBox.getChildren().add(imgLogo);
 
-
-        contentGrid.add(logoBox, 1, 1, 3, 1);
-
-        try {
-            Label lbltest = new Label(new Weather().getSimpleDirection(2, true));
-            contentGrid.add(lbltest, 1, 2);
-        } catch (Exception ex){
-            ex.printStackTrace();
-        }
-
-        Button btnInputWeather = new Button("Weather");
-        btnInputWeather.setOnAction(e ->{
-            InputWeather.create(new InputWeather());
-        });
-        contentGrid.add(btnInputWeather, 1, 3);
-
-        Label lbloutput = new Label("Dialog not openned yet.");
-        contentGrid.add(lbloutput, 1, 5);
-        Button btnInput = new Button("Dialog");
-        btnInput.setOnAction(e ->{
-            lbloutput.setText(InputDialog.HighMediumLow("Question?"));
-        });
-
-        contentGrid.add(btnInput, 1, 4);
+        int ROW = 1;
+        contentGrid.add(logoBox, 1, ROW, 3, 1);
+        ROW++;
 
 
+        contentGrid.add(cbLocatie, 1, ROW, 3, 1);
+        ROW++;
+        getArduinoLocaties();
 
+        Label lblInputValuesErr = new Label();
         Button btnInputValues = new Button("Values");
         btnInputValues.setOnAction(e ->{
-            InputValues.create(new InputValues());
+            if (cbLocatie.getSelectionModel().isEmpty())
+                InputValues.create(new InputValues(null));
+            else
+                InputValues.create(new InputValues(cbLocatie.getValue()));
+            stage.close();
         });
-        contentGrid.add(btnInputValues, 1, 6);
-
-
+        contentGrid.add(btnInputValues, 1, ROW);
+        ROW++;
+        contentGrid.add(lblInputValuesErr, 1, ROW, 2, 1);
+        ROW++;
 
         /////////////////////////////////////// [ending code] \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
         wrapperBox.getChildren().addAll(logoBox, contentGrid);
 
         borderPane.setLeft(wrapperBox);
+    }
+
+    public void getArduinoLocaties(){
+        ArduinoLocatie selected = cbLocatie.getSelectionModel().getSelectedItem();
+
+        // Clear the list in case old values still exist
+        cbLocatie.getItems().clear();
+        // add empty row
+        cbLocatie.getItems().add(new ArduinoLocatie(null, null, "EmptyObject"));
+        // Load and add the items from the database
+        cbLocatie.getItems().addAll(Objects.requireNonNull(ArduinoLocatieController.getAllArduinoLocaties()));
+
+        cbLocatie.setDisable(false);
+        cbLocatie.getSelectionModel().select(0); // automatically select the first item
+        if (selected != null)
+            for (ArduinoLocatie item: cbLocatie.getItems()) {
+                if (selected.equals(item)){
+                    cbLocatie.getSelectionModel().select(item);
+                }
+            }
+
+
     }
 
 }
