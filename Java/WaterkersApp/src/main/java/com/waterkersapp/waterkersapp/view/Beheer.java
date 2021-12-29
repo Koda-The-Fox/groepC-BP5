@@ -136,9 +136,6 @@ public class Beheer {
         /*--------------[Content]---------------*/
 
         Label lblLocatieRO = new Label("Locatie: ");
-        gp.add(lblLocatieRO, 1, 2, 1, 1);
-
-        gp.add(lblLocatie, 2, 2, 1, 1);
 
         Button btnEditDevice = new Button("Aparaat bewerken");
         btnEditDevice.setOnAction(e->{
@@ -233,60 +230,70 @@ public class Beheer {
         LoadData(OgDevice);
 
 
-        gp.add(btnEditDevice, 1, 3);
-
         gp.add(btnEditUser, 1, 1);
 
         if (user.getAdmin()){
             gp.add(cbxUsers, 2, 1);
             gp.add(btnCreateUser, 3, 1);
         }
-        
-        gp.add(lblWater, 1, 5, 2, 1);
 
-        gp.add(lblMinPH, 1, 6);
-        gp.add(numMinPH, 2, 6);
-        gp.add(btnMinPH, 3, 6);
+        if (OgDevice.getArduinoID() != 0) {
 
-        gp.add(lblMaxPH, 1, 7);
-        gp.add(numMaxPH, 2, 7);
-        gp.add(btnMaxPH, 3, 7);
+            gp.add(lblLocatieRO, 1, 2);
 
-        gp.add(lblGrond, 1, 8, 2, 1);
+            gp.add(lblLocatie, 2, 2);
 
-        gp.add(lblMinGT, 1, 9);
-        gp.add(numMinGT, 2, 9);
-        gp.add(btnMinGT, 3, 9);
+            gp.add(btnEditDevice, 1, 3);
 
-        gp.add(lblMaxGT, 1, 10);
-        gp.add(numMaxGT, 2, 10);
-        gp.add(btnMaxGT, 3, 10);
+            gp.add(lblWater, 1, 5, 2, 1);
 
-        gp.add(lblMinGV, 1, 11);
-        gp.add(numMinGV, 2, 11);
-        gp.add(btnMinGV, 3, 11);
+            gp.add(lblMinPH, 1, 6);
+            gp.add(numMinPH, 2, 6);
+            gp.add(btnMinPH, 3, 6);
 
-        gp.add(lblMaxGV, 1, 12);
-        gp.add(numMaxGV, 2, 12);
-        gp.add(btnMaxGV, 3, 12);
+            gp.add(lblMaxPH, 1, 7);
+            gp.add(numMaxPH, 2, 7);
+            gp.add(btnMaxPH, 3, 7);
 
-        gp.add(lblLucht, 1, 13, 2, 1);
+            gp.add(lblGrond, 1, 8, 2, 1);
 
-        gp.add(lblMinLT, 1, 14);
-        gp.add(numMinLT, 2, 14);
-        gp.add(btnMinLT, 3, 14);
+            gp.add(lblMinGT, 1, 9);
+            gp.add(numMinGT, 2, 9);
+            gp.add(btnMinGT, 3, 9);
 
-        gp.add(lblMaxLT, 1, 15);
-        gp.add(numMaxLT, 2, 15);
-        gp.add(btnMaxLT, 3, 15);
+            gp.add(lblMaxGT, 1, 10);
+            gp.add(numMaxGT, 2, 10);
+            gp.add(btnMaxGT, 3, 10);
 
-        gp.add(lblMinLV, 1, 16);
-        gp.add(numMinLV, 2, 16);
-        gp.add(btnMinLV, 3, 16);
+            gp.add(lblMinGV, 1, 11);
+            gp.add(numMinGV, 2, 11);
+            gp.add(btnMinGV, 3, 11);
 
-        gp.add(lblMaxLV, 1, 17);
-        gp.add(numMaxLV, 2, 17);
-        gp.add(btnMaxLV, 3, 17);
+            gp.add(lblMaxGV, 1, 12);
+            gp.add(numMaxGV, 2, 12);
+            gp.add(btnMaxGV, 3, 12);
+
+            gp.add(lblLucht, 1, 13, 2, 1);
+
+            gp.add(lblMinLT, 1, 14);
+            gp.add(numMinLT, 2, 14);
+            gp.add(btnMinLT, 3, 14);
+
+            gp.add(lblMaxLT, 1, 15);
+            gp.add(numMaxLT, 2, 15);
+            gp.add(btnMaxLT, 3, 15);
+
+            gp.add(lblMinLV, 1, 16);
+            gp.add(numMinLV, 2, 16);
+            gp.add(btnMinLV, 3, 16);
+
+            gp.add(lblMaxLV, 1, 17);
+            gp.add(numMaxLV, 2, 17);
+            gp.add(btnMaxLV, 3, 17);
+        }
+        else{
+            CloseOverride = true;
+        }
 
 
         logoTitleBox.getChildren().addAll(imgLogo, titleBox);
@@ -305,37 +312,40 @@ public class Beheer {
             txtSysMessage.setText("");
         });
 
+
         Button btnSave = new Button("Opslaan");
         btnSave.setOnAction(e -> {
             txtSysMessage.setText("");
             MinMaxWaardes oldMinMax = currentWaardes.get();
             MinMaxWaardes newMinMax = getInsertinNewObject();
-            if (oldMinMax.getFromDB()){
-                if (!newMinMax.equals(oldMinMax)){
-                    if (MinMaxWaardesController.updateMinMaxWaardes(oldMinMax, newMinMax)){
-                        ShowMessage(Color.GREEN, "Succesvol opgeslagen.");
+            if (OgDevice.getArduinoID() != 0){
+                if (oldMinMax.getFromDB()) {
+                    if (!newMinMax.equals(oldMinMax)) {
+                        if (MinMaxWaardesController.updateMinMaxWaardes(oldMinMax, newMinMax)) {
+                            ShowMessage(Color.GREEN, "Succesvol opgeslagen.");
+                            LoadData(OgDevice); // update the old values
+                        } else {
+                            ShowMessage(Color.RED, "Er ging iets fout, controleer alle waardes of probeer het later nog eens.\nAls dit vaker voor komt neem contact op met de customer Support.");
+                        }
+                    } else {
+                        ShowMessage(Color.YELLOW, "Geen veranderingen gevonden.");
+                    }
+                } else {
+                    Pair<Boolean, String> Result = MinMaxWaardesController.CreateMMW(newMinMax);
+                    if (Result.getKey()) {
+                        ShowMessage(Color.GREEN, Result.getValue());
                         LoadData(OgDevice); // update the old values
 
-                    }
-                    else{
-                        ShowMessage(Color.RED, "Er ging iets fout, controleer alle waardes of probeer het later nog eens.\nAls dit vaker voor komt neem contact op met de customer Support.");
+                    } else {
+                        ShowMessage(Color.RED, "Er ging iets fout, controleer alle waardes of probeer het later nog eens.\nError: " + Result.getValue());
                     }
                 }
-                else{
-                    ShowMessage(Color.YELLOW, "Geen veranderingen gevonden.");
-                }
+            }else{
+                Menu menu = new Menu(user);
+                Menu.create(menu);
+                stage.close();
             }
-            else{
-                Pair<Boolean, String> Result = MinMaxWaardesController.CreateMMW(newMinMax);
-                if (Result.getKey()){
-                    ShowMessage(Color.GREEN, Result.getValue());
-                    LoadData(OgDevice); // update the old values
 
-                }
-                else{
-                    ShowMessage(Color.RED, "Er ging iets fout, controleer alle waardes of probeer het later nog eens.\nError: " + Result.getValue());
-                }
-            }
         });
         Button btnCancel = new Button("Afbreken");
 

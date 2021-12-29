@@ -134,16 +134,28 @@ public class Menu {
         btnSettings.styleProperty().bind(Bindings.concat( "-fx-font-size: ", fontSize.asString(), ";"));
         GridPane.setConstraints(btnSettings, 1, 2); // node, column, row
         btnSettings.setOnAction(event -> {
-            Beheer beheer;
             if (cbLocatie.getValue().toString() == "Geen locaties"){
-                // no clocations, open empty device
-                beheer = new Beheer(new ArduinoLocatie(), user);
+                // no locations, open empty device
+
+                // Changed 29-12-2021 -
+                // Reason: If There are no locations the user can make more in the menu, Beheer is useless in such case.
+                //          Unless the user is an admin, in that case they need to be able to select other users to edit or create new users.
+//                beheer = new Beheer(new ArduinoLocatie(0, ""), user);
+
+                if (user.getAdmin()){
+                    Beheer beheer = new Beheer(new ArduinoLocatie(0, ""), user);
+                    stage.close();
+                    Beheer.create(beheer);
+                }else {
+                    stage.close();
+                    NewUserDial.create(user, user);
+                }
             }
             else {
-                beheer = new Beheer(cbLocatie.getValue(), user);
+                Beheer beheer = new Beheer(cbLocatie.getValue(), user);
+                stage.close();
+                Beheer.create(beheer);
             }
-            stage.close();
-            Beheer.create(beheer);
         });
 
 
