@@ -132,5 +132,10 @@ public class sensorRegistratie {
                 ", LuchtVocht=" + LuchtVocht.get() +
                 '}';
     }
+
+
+    public Boolean filled(){
+        return (this.ArduinoID.get() != null && this.DatumTijd.get() != null && this.PHwaarde.get() != null && this.GrondTemp.get() != null && this.LuchtTemp.get() != null && this.GrondVocht.get() != null && this.LuchtVocht.get() != null);
+    }
 }
 

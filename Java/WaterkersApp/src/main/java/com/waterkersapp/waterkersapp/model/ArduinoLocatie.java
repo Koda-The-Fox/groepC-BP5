@@ -9,7 +9,7 @@ public class ArduinoLocatie {
 
     final private ObjectProperty<Integer> ArduinoID = new SimpleObjectProperty<>();
     final private ObjectProperty<String> Locatie = new SimpleObjectProperty<>();
-    final private ObjectProperty<String> Status = new SimpleObjectProperty<>();
+    final private ObjectProperty<String> Status = new SimpleObjectProperty<>("Uit");// Default: Uit, This is for possible future use.
 
     /**
      * Creates an empty ArduinoLocatie Object
@@ -19,12 +19,10 @@ public class ArduinoLocatie {
     public ArduinoLocatie(String locatie) {
         // ID is autoincrement
         this.Locatie.set(locatie);
-        this.Status.set("Uit"); // Default  = "Uit"
     }
     public ArduinoLocatie(Integer arduinoID, String locatie) {
         this.ArduinoID.set(arduinoID);
         this.Locatie.set(locatie);
-        this.Status.set("Uit"); // Default  = "Uit"
     }
     public ArduinoLocatie(Integer arduinoID, String locatie, String status) {
         this.ArduinoID.set(arduinoID);
@@ -74,7 +72,8 @@ public class ArduinoLocatie {
             return Locatie.get();
         }
         else {
-            return Locatie.get() + " (" + Status.get() + ")";
+            return ArduinoID.get() + " " + Locatie.get();
+//            return ArduinoID.get() + " " + Locatie.get() + " (" + Status.get() + ")"; // 10-01-2022 - Removed status - Reason: We don't use status.
         }
     }
 

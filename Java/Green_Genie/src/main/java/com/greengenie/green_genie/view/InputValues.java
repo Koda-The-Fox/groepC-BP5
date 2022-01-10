@@ -323,8 +323,10 @@ public class InputValues {
 
         // get the last registered sensor values
         registratie = RegistratieController.GetRegFromDevice(device);
-
-
+        if (!registratie.filled()){
+            System.out.println("Registration not found or not valid, using empty Reg. stencil.");
+            registratie = new sensorRegistratie(null,"",0,0,0,0,0);
+        }
     }
 
     private void FillFields(){
